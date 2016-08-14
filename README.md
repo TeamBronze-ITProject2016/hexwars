@@ -1,6 +1,6 @@
 # Hexwars!
 
-## Deploy instructions
- * click the deploy button
+## Deploy Instructions
+ * Click the deploy button
  * ???
- * profit!
+ * Profit!
