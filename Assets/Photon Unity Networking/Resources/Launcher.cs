@@ -4,6 +4,19 @@ namespace Com.TeamBronze.Hexwars {
 	public class Launcher : Photon.PunBehaviour {
 		#region Public Variables
 
+		/// <summary>
+		/// The PUN loglevel.
+		/// </summary>
+		public PhotonLogLevel Loglevel = PhotonLogLevel.Full;
+
+
+		/// <summary>
+		/// The maximum number of players per room. When a room is full, it can't
+		/// be joined by new players, and so a new room will be created.
+		/// </summary>
+		[Tooltip("The maximum number of players per room. When a room is full, it can't be joined by new players, and so a new room will be created")]
+		public byte MaxPlayersPerRoom = 10;
+
 		#endregion
 
 		#region Private Variables
@@ -25,8 +38,8 @@ namespace Com.TeamBronze.Hexwars {
 		void Awake() {
 
 			// #NotImportant
-			// Force Full LogLevel
-			PhotonNetwork.logLevel = PhotonLogLevel.Full; // Switch to Informational
+			// Force LogLevel
+			PhotonNetwork.logLevel = Loglevel;
 
 			// #Critical
 			// we don't join the lobby. There is no need to join a lobby to get the
@@ -91,10 +104,10 @@ namespace Com.TeamBronze.Hexwars {
 		}
 
 		public override void OnPhotonRandomJoinFailed (object[] codeAndMsg) {
-			Debug.Log("DemoAnimator/Launcher:OnPhotonRandomJoinFailed() was called by PUN. No random room availale, so we create one.\nCalling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 10}, null);");
+			Debug.Log("DemoAnimator/Launcher:OnPhotonRandomJoinFailed() was called by PUN. No random room availale, so we create one.\nCalling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = MaxPlayersPerRoom}, null);");
 
 			// #Critical we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
-			PhotonNetwork.CreateRoom(null, new RoomOptions() { maxPlayers = 10 }, null);
+			PhotonNetwork.CreateRoom(null, new RoomOptions() { maxPlayers = MaxPlayersPerRoom }, null);
 		}
 
 		public override void OnJoinedRoom() {
