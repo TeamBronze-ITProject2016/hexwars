@@ -21,6 +21,8 @@ namespace Com.TeamBronze.Hexwars {
 		public GameObject controlPanel;
 		[Tooltip("The UI Label to inform the user that the connection is in progress")]
 		public GameObject progressLabel;
+		[Tooltip("The UI Label to inform the user that the connection was successfully made")]
+		public GameObject completedLabel;
 
 		#endregion
 
@@ -64,6 +66,7 @@ namespace Com.TeamBronze.Hexwars {
 		void Start() {
 			progressLabel.SetActive(false);
 			controlPanel.SetActive(true);
+			completedLabel.SetActive(false);
 		}
 
 		#endregion
@@ -80,6 +83,7 @@ namespace Com.TeamBronze.Hexwars {
 
 			progressLabel.SetActive(true);
 			controlPanel.SetActive(false);
+			completedLabel.SetActive(false);
 
 			// we check if we are connected or not, we join if we are, else we
 			// initiate the connection to the server.
@@ -100,6 +104,10 @@ namespace Com.TeamBronze.Hexwars {
 		#region Photon.PunBehaviour CallBacks
 
 		public override void OnConnectedToMaster() {
+			progressLabel.SetActive(false);
+			controlPanel.SetActive(false);
+			completedLabel.SetActive(true);
+
 			Debug.Log("DemoAnimator/Launcher: OnConnectedToMaster() was called by PUN");
 
 			// #Critical The first thing we try to do is to join a potential exising
@@ -111,6 +119,7 @@ namespace Com.TeamBronze.Hexwars {
 		public override void OnDisconnectedFromPhoton() {
 			progressLabel.SetActive(false);
 			controlPanel.SetActive(true);
+			completedLabel.SetActive(false);
 
 			Debug.LogWarning("DemoAnimator/Launcher: OnDisconnectedFromPhoton() was called by PUN");
 		}
