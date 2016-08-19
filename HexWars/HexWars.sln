@@ -1,14 +1,30 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2008
 
-
+Project("{BC131F75-8F5A-84DD-59F3-E6893D80FB3B}") = "HexWars", "Assembly-CSharp-firstpass.csproj", "{FD4B4F19-D8FC-71BB-4343-B887B97FCC8D}"
+EndProject
+Project("{BC131F75-8F5A-84DD-59F3-E6893D80FB3B}") = "HexWars", "Assembly-CSharp.csproj", "{BBC7E277-BCC8-2E9D-396E-D3246481B1F0}"
+EndProject
+Project("{BC131F75-8F5A-84DD-59F3-E6893D80FB3B}") = "HexWars", "Assembly-CSharp-Editor.csproj", "{2C8CA65A-6F86-5759-BA14-B523F79CFF17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-
+		{FD4B4F19-D8FC-71BB-4343-B887B97FCC8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD4B4F19-D8FC-71BB-4343-B887B97FCC8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD4B4F19-D8FC-71BB-4343-B887B97FCC8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD4B4F19-D8FC-71BB-4343-B887B97FCC8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBC7E277-BCC8-2E9D-396E-D3246481B1F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBC7E277-BCC8-2E9D-396E-D3246481B1F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBC7E277-BCC8-2E9D-396E-D3246481B1F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBC7E277-BCC8-2E9D-396E-D3246481B1F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C8CA65A-6F86-5759-BA14-B523F79CFF17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C8CA65A-6F86-5759-BA14-B523F79CFF17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C8CA65A-6F86-5759-BA14-B523F79CFF17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C8CA65A-6F86-5759-BA14-B523F79CFF17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
