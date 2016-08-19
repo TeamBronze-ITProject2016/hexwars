@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Com.TeamBronze.Hexwars {
-	public class Launcher : MonoBehaviour {
+	public class Launcher : Photon.PunBehaviour {
 		#region Public Variables
 
 		#endregion
@@ -67,10 +67,38 @@ namespace Com.TeamBronze.Hexwars {
 				// we'll create one.
 				PhotonNetwork.JoinRandomRoom();
 			} else {
-				// #Critical, we must first and foremost connect to Photon Online Server
+				// #Critical we must first and foremost connect to Photon Online Server
 				// Starting point for the game to connect to Photon Cloud
 				PhotonNetwork.ConnectUsingSettings(_gameVersion);
 			}
+		}
+
+		#endregion
+
+		#region Photon.PunBehaviour CallBacks
+
+		public override void OnConnectedToMaster() {
+			Debug.Log("DemoAnimator/Launcher: OnConnectedToMaster() was called by PUN");
+
+			// #Critical The first thing we try to do is to join a potential exising
+			// room. If there is, good, else, we'll be called back with
+			// OnPhotonRandomJoinFailed()
+			PhotonNetwork.JoinRandomRoom();
+		}
+
+		public override void OnDisconnectedFromPhoton() {
+			Debug.LogWarning("DemoAnimator/Launcher: OnDisconnectedFromPhoton() was called by PUN");
+		}
+
+		public override void OnPhotonRandomJoinFailed (object[] codeAndMsg) {
+			Debug.Log("DemoAnimator/Launcher:OnPhotonRandomJoinFailed() was called by PUN. No random room availale, so we create one.\nCalling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 10}, null);");
+
+			// #Critical we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
+			PhotonNetwork.CreateRoom(null, new RoomOptions() { maxPlayers = 10 }, null);
+		}
+
+		public override void OnJoinedRoom() {
+			Debug.Log("DemoAnimator/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.");
 		}
 
 		#endregion
