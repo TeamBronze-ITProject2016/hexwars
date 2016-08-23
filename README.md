@@ -1,4 +1,4 @@
-# Hexwars!!
+# Hexwars!
 
 ## Deploy Instructions
  * Ensure that you have Unity v5.4.0+ installed on your computer
