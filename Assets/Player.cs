@@ -1,6 +1,6 @@
-﻿﻿/* Player.cs
- * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
- * Description: The base class for all players. 
+﻿/* Player.cs
+* Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+* Description: The base class for all players. 
 */
 
 using UnityEngine;
@@ -36,7 +36,7 @@ public class Player : Entity
 
     /*Called once per frame*/
     void FixedUpdate()
-    { 
+    {
         /*Hacky movement code, just for testing*/
         float deltaTime = Time.deltaTime;
         float forward = 0.0f;
