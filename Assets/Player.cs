@@ -9,6 +9,7 @@ using System.Collections;
 public class Player : Entity
 {
     private Rigidbody2D rb;
+    public float acceleration = 9.81f;
 
     /*Initialise*/
     void Start()
@@ -21,16 +22,20 @@ public class Player : Entity
     {
         if(Input.GetMouseButtonDown(0)) /* CHANGE TO USE INPUT CONTROLLER CLASS */
         {
+            Debug.Log("Player/FixedUpdate(): Mouse Button Down");
             Vector2 coordinate = (Vector2)Input.mousePosition; /* CHANGE TO USE INPUT CONTROLLER CLASS */
-            MoveForward();
             RotateToPoint(coordinate);
+            MoveForward(coordinate);
         }
     }
 
-    void MoveForward()
+    void MoveForward(Vector2 coord)
     {
         /* Apply a forward force to the hexagon.
          * Deceleration can probably be handled via rigidbody linear drag parameter */
+        Vector3 p = Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1));
+
+        rb.AddForce(p * acceleration);
     }
 
     void RotateToPoint(Vector2 x)
