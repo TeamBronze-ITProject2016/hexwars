@@ -8,7 +8,7 @@ using System.Collections;
 
 public class Player : Entity
 {
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     public float acceleration = 9.81f;
 
     /*Initialise*/
