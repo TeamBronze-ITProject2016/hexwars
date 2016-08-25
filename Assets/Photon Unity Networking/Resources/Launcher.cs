@@ -21,8 +21,6 @@ namespace Com.TeamBronze.Hexwars {
 		public GameObject controlPanel;
 		[Tooltip("The UI Label to inform the user that the connection is in progress")]
 		public GameObject progressLabel;
-		[Tooltip("The UI Label to inform the user that the connection was successfully made")]
-		public GameObject completedLabel;
 
 		#endregion
 
@@ -34,15 +32,22 @@ namespace Com.TeamBronze.Hexwars {
 		/// </summary>
 		string _gameVersion = "1";
 
-		#endregion
+        /// <summary>
+        /// Keep track of the current process. Since connection is asynchronous and is based on several callbacks from Photon, 
+        /// we need to keep track of this to properly adjust the behavior when we receive call back by Photon.
+        /// Typically this is used for the OnConnectedToMaster() callback.
+        /// </summary>
+        bool isConnecting;
 
-		#region MonoBehaviour CallBacks
+        #endregion
 
-		/// <summary>
-		/// MonoBehaviour method called on GameObject by Unity during early
-		/// initialization phase.
-		/// </summary>
-		void Awake() {
+        #region MonoBehaviour CallBacks
+
+        /// <summary>
+        /// MonoBehaviour method called on GameObject by Unity during early
+        /// initialization phase.
+        /// </summary>
+        void Awake() {
 
 			// #NotImportant
 			// Force LogLevel
@@ -66,7 +71,6 @@ namespace Com.TeamBronze.Hexwars {
 		void Start() {
 			progressLabel.SetActive(false);
 			controlPanel.SetActive(true);
-			completedLabel.SetActive(false);
 		}
 
 		#endregion
@@ -83,11 +87,13 @@ namespace Com.TeamBronze.Hexwars {
 
 			progressLabel.SetActive(true);
 			controlPanel.SetActive(false);
-			completedLabel.SetActive(false);
 
-			// we check if we are connected or not, we join if we are, else we
-			// initiate the connection to the server.
-			if (PhotonNetwork.connected) {
+            // keep track of the will to join a room, because when we come back from the game we will get a callback that we are connected, so we need to know what to do then
+            isConnecting = true;
+
+            // we check if we are connected or not, we join if we are, else we
+            // initiate the connection to the server.
+            if (PhotonNetwork.connected) {
 				// #Critical we need at this point to attempt joining a Random Room.
 				// If it fails, we'll get notified in OnPhotonRandomJoinFailed() and
 				// we'll create one.
@@ -104,22 +110,24 @@ namespace Com.TeamBronze.Hexwars {
 		#region Photon.PunBehaviour CallBacks
 
 		public override void OnConnectedToMaster() {
-			progressLabel.SetActive(false);
-			controlPanel.SetActive(false);
-			completedLabel.SetActive(true);
 
-			Debug.Log("DemoAnimator/Launcher: OnConnectedToMaster() was called by PUN");
+            Debug.Log("DemoAnimator/Launcher: OnConnectedToMaster() was called by PUN");
+            // we don't want to do anything if we are not attempting to join a room. 
+            // this case where isConnecting is false is typically when you lost or quit the game, when this level is loaded, OnConnectedToMaster will be called, in that case
+            // we don't want to do anything.
+            if (isConnecting)
+            {
 
-			// #Critical The first thing we try to do is to join a potential exising
-			// room. If there is, good, else, we'll be called back with
-			// OnPhotonRandomJoinFailed()
-			PhotonNetwork.JoinRandomRoom();
-		}
+                progressLabel.SetActive(false);
+                controlPanel.SetActive(false);
+                // #Critical: The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
+                PhotonNetwork.JoinRandomRoom();
+            }
+        }
 
 		public override void OnDisconnectedFromPhoton() {
 			progressLabel.SetActive(false);
 			controlPanel.SetActive(true);
-			completedLabel.SetActive(false);
 
 			Debug.LogWarning("DemoAnimator/Launcher: OnDisconnectedFromPhoton() was called by PUN");
 		}
@@ -133,7 +141,17 @@ namespace Com.TeamBronze.Hexwars {
 
 		public override void OnJoinedRoom() {
 			Debug.Log("DemoAnimator/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.");
-		}
+            // #Critical: We only load if we are the first player, else we rely on  PhotonNetwork.automaticallySyncScene to sync our instance scene.
+            if (PhotonNetwork.room.playerCount == 1)
+            {
+                Debug.Log("We load the 'Room for 1' ");
+
+
+                // #Critical
+                // Load the Room Level. 
+                PhotonNetwork.LoadLevel("Room for 1");
+            }
+        }
 
 		#endregion
 
