@@ -20,13 +20,16 @@ public class Player : Entity
     /*Called once per frame*/
     void FixedUpdate()
     {
-        if(Input.GetMouseButtonDown(0)) /* CHANGE TO USE INPUT CONTROLLER CLASS */
+        Vector2 coordinate = (Vector2)Input.mousePosition; /* CHANGE TO USE INPUT CONTROLLER CLASS */
+
+        if (Input.GetMouseButtonDown(0)) /* CHANGE TO USE INPUT CONTROLLER CLASS */
         {
             Debug.Log("Player/FixedUpdate(): Mouse Button Down");
-            Vector2 coordinate = (Vector2)Input.mousePosition; /* CHANGE TO USE INPUT CONTROLLER CLASS */
             MoveForward(coordinate);
             RotateToPoint(coordinate);
         }
+
+        RotateToPoint(coordinate);
     }
 
     void MoveForward(Vector2 coord)
