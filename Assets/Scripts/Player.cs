@@ -22,11 +22,12 @@ public class Player : Entity
     {
         Vector2 coordinate = (Vector2)Input.mousePosition; /* CHANGE TO USE INPUT CONTROLLER CLASS */
 
+        // Convert the coordinate into a Vector3 from rb.position to the coordinate
+
         if (Input.GetMouseButtonDown(0)) /* CHANGE TO USE INPUT CONTROLLER CLASS */
         {
             Debug.Log("Player/FixedUpdate(): Mouse Button Down");
             MoveForward(coordinate);
-            RotateToPoint(coordinate);
         }
 
         RotateToPoint(coordinate);
@@ -36,7 +37,7 @@ public class Player : Entity
     {
         /* Apply a forward force to the hexagon.
          * Deceleration can probably be handled via rigidbody linear drag parameter */
-        Vector3 p = Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1));
+        Vector3 p = Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1)) - new Vector3(rb.position.x, rb.position.y, 1);
 
         Debug.Log("Player/MoveForward(): Adding force of size " + p);
 
@@ -49,7 +50,6 @@ public class Player : Entity
 
         //find the vector pointing from our position to the target
         Vector3 p = new Vector3(rb.position.x, rb.position.y, 1) - Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1));
-
         Debug.Log("Player/RotateToPoint(): Rotating to vector " + p);
 
         //rotate us over time according to speed until we are in the required rotation
