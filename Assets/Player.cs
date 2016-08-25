@@ -8,47 +8,33 @@ using System.Collections;
 
 public class Player : Entity
 {
-
-    Rigidbody2D rigidBody;
-    
+    private Rigidbody2D rb;
 
     /*Initialise*/
     void Start()
     {
-
-        /*Add RigidBody2D component dynamically*/
-        rigidBody = (Rigidbody2D)this.gameObject.AddComponent(typeof(Rigidbody2D));
-        rigidBody.gravityScale = 0.0f;
-
-        /*Load part prefab and get reference to attached Part script*/
-        GameObject partPrefab = (GameObject)Resources.Load("part");
-        Part partScript = partPrefab.GetComponent<Part>();
-
-        GameObject obj = (GameObject)Instantiate(partPrefab, new Vector2(1, 1), Quaternion.identity);
-        obj.transform.parent = this.gameObject.transform;
+        rb = GetComponent<Rigidbody2D>();
     }
 
     /*Called once per frame*/
     void FixedUpdate()
     {
-        Vector2 coordinate = (Vector2)Input.mousePosition;
-        moveToPoint(coordinate);
+        if(Input.GetMouseButtonDown(0)) /* CHANGE TO USE INPUT CONTROLLER CLASS */
+        {
+            Vector2 coordinate = (Vector2)Input.mousePosition; /* CHANGE TO USE INPUT CONTROLLER CLASS */
+            MoveForward();
+            RotateToPoint(coordinate);
+        }
     }
 
-    void moveToPoint(Vector2 x)
+    void MoveForward()
     {
-        // Tapping a place on a screen should apply a force to the object
-        // There should be friction
-        // Rotation should be done at a constant rate
-        // Only forward acceleration
-        
+        /* Apply a forward force to the hexagon.
+         * Deceleration can probably be handled via rigidbody linear drag parameter */
+    }
 
-        /** FORCE CODE **/
-
-
-
-
-        /** TORQUE CODE **/
-
+    void RotateToPoint(Vector2 x)
+    {
+        /* Rotate hexagon at a constant rate towards a certain point */
     }
 }
