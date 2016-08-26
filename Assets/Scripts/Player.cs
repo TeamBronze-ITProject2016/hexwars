@@ -8,8 +8,9 @@ using System.Collections;
 
 public class Player : Entity
 {
-    public Rigidbody2D rb;
-    public float Acceleration;
+    private Rigidbody2D rb;
+    public float acceleration;
+    public float rotationSpeed;
 
     /*Initialise*/
     void Start()
@@ -24,39 +25,29 @@ public class Player : Entity
 
         // Convert the coordinate into a Vector3 from rb.position to the coordinate
 
-        if (Input.GetMouseButtonDown(0)) /* CHANGE TO USE INPUT CONTROLLER CLASS */
+        if (Input.GetMouseButton(0)) /* CHANGE TO USE INPUT CONTROLLER CLASS */
         {
             Debug.Log("Player/FixedUpdate(): Mouse Button Down");
-            MoveForward(coordinate);
+            RotateToPoint(coordinate);
+            MoveForward();
         }
-
-        RotateToPoint(coordinate);
     }
 
-    void MoveForward(Vector2 coord)
+    /* Apply a forward force to the hexagon. */
+    void MoveForward()
     {
-        /* Apply a forward force to the hexagon.
-         * Deceleration can probably be handled via rigidbody linear drag parameter */
-        Vector3 p = Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1)) - new Vector3(rb.position.x, rb.position.y, 1);
-
-        Debug.Log("Player/MoveForward(): Adding force of size " + p);
-
-        rb.AddForce(p * Acceleration);
+        float angleInRad = rb.rotation * Mathf.Deg2Rad;
+        Vector2 direction = new Vector2(-(float)Mathf.Cos(angleInRad), -(float)Mathf.Sin(angleInRad));
+        rb.AddForce(direction * acceleration);
     }
 
+    /* Rotate hexagon at a constant rate towards a certain point */
     void RotateToPoint(Vector2 coord)
     {
-        /* Rotate hexagon at a constant rate towards a certain point */
-
-        //find the vector pointing from our position to the target
+        /* Find the vector pointing from our position to the target */
         Vector3 p = new Vector3(rb.position.x, rb.position.y, 1) - Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1));
-        Debug.Log("Player/RotateToPoint(): Rotating to vector " + p);
 
-        //rotate us over time according to speed until we are in the required rotation
-        if (p != Vector3.zero)
-        {
-            float angle = Mathf.Atan2(p.y, p.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        }
+        float targetAngle = Mathf.Atan2(p.y, p.x) * Mathf.Rad2Deg;
+        rb.MoveRotation(Mathf.MoveTowardsAngle(rb.rotation, targetAngle, rotationSpeed * Time.deltaTime));
     }
 }
