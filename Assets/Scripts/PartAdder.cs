@@ -7,15 +7,18 @@ public class PartAdder : MonoBehaviour {
     // Check is edge is occupied
     private bool[] edges = { true, true, true, true, true, true };
     // Store pixel locations of where part is to be attached
-    private Vector3[] partPos = { new Vector3(64/2, 93/2), new Vector3(128/2, 0), new Vector3(64/2, -93/2), new Vector3(-64/2, -93/2), new Vector3(-128/2, 0), new Vector3(-64/2, 93/2) };
+    private Vector3[] partPos = { new Vector3(29, 47), new Vector3(56, 0), new Vector3(29, -47), new Vector3(-29, -47), new Vector3(-56, 0), new Vector3(-29, 47) };
 
 	// Use this for initialization
 	void Start () {
-        // Test adding 3 parts
-        AddPart(2);
-        AddPart(1);
-        AddPart(3);
-	}
+        // Test adding all parts
+       //AddPart(0);
+        //AddPart(1);
+        //AddPart(2);
+        //AddPart(3);
+        //AddPart(4);
+        //AddPart(5);
+    }
 	
 	// Update is called once per frame
 	void Update () {
