@@ -11,7 +11,10 @@ public class PartAdder : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        // Test adding 3 parts
         AddPart(2);
+        AddPart(1);
+        AddPart(3);
 	}
 	
 	// Update is called once per frame
@@ -28,8 +31,7 @@ public class PartAdder : MonoBehaviour {
         pos = Camera.main.WorldToScreenPoint(pos) + partPos[partNumber]; 
         // Instantiate part at position
         GameObject addedPart = (GameObject)Instantiate(attackingPart, Camera.main.ScreenToWorldPoint(pos), Quaternion.Euler(new Vector3(0, 0, 30 - 60 * (partNumber + 1))));
-
-        Debug.Log(pos);
+        // Add part as child of parent hexagon
         addedPart.transform.parent = player.gameObject.transform;
     }
 }
