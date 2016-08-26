@@ -12,12 +12,12 @@ public class PartAdder : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         // Test adding all parts
-       //AddPart(0);
-        //AddPart(1);
-        //AddPart(2);
-        //AddPart(3);
-        //AddPart(4);
-        //AddPart(5);
+        AddPart(0);
+        AddPart(1);
+        AddPart(2);
+        AddPart(3);
+        AddPart(4);
+        AddPart(5);
     }
 	
 	// Update is called once per frame
