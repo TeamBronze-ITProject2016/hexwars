@@ -27,9 +27,9 @@ public class PartAdder : MonoBehaviour {
         // Get position of where to add part
         pos = Camera.main.WorldToScreenPoint(pos) + partPos[partNumber]; 
         // Instantiate part at position
-        Instantiate(attackingPart, Camera.main.ScreenToWorldPoint(pos), Quaternion.Euler(new Vector3(0, 0, 30 - 60 * (partNumber + 1))));
+        GameObject addedPart = (GameObject)Instantiate(attackingPart, Camera.main.ScreenToWorldPoint(pos), Quaternion.Euler(new Vector3(0, 0, 30 - 60 * (partNumber + 1))));
 
         Debug.Log(pos);
-        //attackingPart.transform.parent = player.gameObject.transform;
+        addedPart.transform.parent = player.gameObject.transform;
     }
 }
