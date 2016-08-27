@@ -6,28 +6,28 @@
 using UnityEngine;
 using System.Collections;
 
+
 public class Player : Entity
 {
-    private Rigidbody2D rb;
     public float acceleration;
     public float rotationSpeed;
+
+    private Rigidbody2D rb;
+    private TeamBronze.HexWars.InputManager inputManager; /* Need to fix namespaces */
 
     /*Initialise*/
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        inputManager = GameObject.Find("InputManager").GetComponent<TeamBronze.HexWars.InputManager>();
     }
 
     /*Called once per frame*/
     void FixedUpdate()
     {
-        Vector2 coordinate = (Vector2)Input.mousePosition; /* CHANGE TO USE INPUT CONTROLLER CLASS */
-
-        // Convert the coordinate into a Vector3 from rb.position to the coordinate
-
-        if (Input.GetMouseButton(0)) /* CHANGE TO USE INPUT CONTROLLER CLASS */
+        if (inputManager.IsActive())
         {
-            Debug.Log("Player/FixedUpdate(): Mouse Button Down");
+            Vector2 coordinate = inputManager.GetPos();
             RotateToPoint(coordinate);
             MoveForward();
         }

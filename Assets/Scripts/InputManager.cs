@@ -15,7 +15,7 @@ namespace TeamBronze.HexWars
 
         }
 
-        bool IsActive()
+        public bool IsActive()
         {
             /* Mouse */
             if (inputType == 0)
@@ -28,7 +28,7 @@ namespace TeamBronze.HexWars
             }
         }
 
-        Vector2 GetPos()
+        public Vector2 GetPos()
         {
             /* Mouse */
             if (inputType == 0)
