@@ -38,7 +38,7 @@ public class Player : Entity
     {
         float angleInRad = rb.rotation * Mathf.Deg2Rad;
         Vector2 direction = new Vector2(-(float)Mathf.Cos(angleInRad), -(float)Mathf.Sin(angleInRad));
-        rb.AddForce(direction * acceleration);
+        rb.AddForce(direction * acceleration * rb.mass);
     }
 
     /* Rotate hexagon at a constant rate towards a certain point */
