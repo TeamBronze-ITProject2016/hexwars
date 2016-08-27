@@ -5,11 +5,13 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Player : Entity
 {
     public Rigidbody2D rb;
     public float Acceleration;
+    public Dictionary<int, GameObject> childDict = new Dictionary<int, GameObject>();
 
     /*Initialise*/
     void Start()
@@ -26,7 +28,7 @@ public class Player : Entity
 
         if (Input.GetMouseButtonDown(0)) /* CHANGE TO USE INPUT CONTROLLER CLASS */
         {
-            Debug.Log("Player/FixedUpdate(): Mouse Button Down");
+            //Debug.Log("Player/FixedUpdate(): Mouse Button Down");
             MoveForward(coordinate);
         }
 
@@ -39,7 +41,7 @@ public class Player : Entity
          * Deceleration can probably be handled via rigidbody linear drag parameter */
         Vector3 p = Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1)) - new Vector3(rb.position.x, rb.position.y, 1);
 
-        Debug.Log("Player/MoveForward(): Adding force of size " + p);
+        //Debug.Log("Player/MoveForward(): Adding force of size " + p);
 
         rb.AddForce(p * Acceleration);
     }
@@ -50,7 +52,7 @@ public class Player : Entity
 
         //find the vector pointing from our position to the target
         Vector3 p = new Vector3(rb.position.x, rb.position.y, 1) - Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1));
-        Debug.Log("Player/RotateToPoint(): Rotating to vector " + p);
+        //Debug.Log("Player/RotateToPoint(): Rotating to vector " + p);
 
         //rotate us over time according to speed until we are in the required rotation
         if (p != Vector3.zero)
