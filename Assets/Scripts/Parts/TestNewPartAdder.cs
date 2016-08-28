@@ -1,36 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace TeamBronze.HexWars
 {
     public class TestNewPartAdder : MonoBehaviour
     {
-
+        public GameObject playerObj;
         public GameObject hexagonPart;
         public GameObject trianglePart;
 
-        public static int horizontalDiagOffset = 29;
-        public static int verticalDiagOffset = 47;
+        public static float horiztonalDiagOffsetWorld = 0.56F;
+        public static float verticalDiagOffsetWorld = 0.92F;
 
-        public static int horizontalParallelOffset = 56;
-        public static int verticalParallelOffset = 0;
+        public static float horizontalParallelOffsetWorld = 1.1F;
+        public static float verticalParallelOffsetWorld = 0F;
 
-        // Store pixel locations of where part is to be attached
-        public Vector3[] hexEdgeOffsets = {
-        new Vector3(horizontalDiagOffset, verticalDiagOffset),
-        new Vector3(horizontalParallelOffset, verticalParallelOffset),
-        new Vector3(horizontalDiagOffset, -verticalDiagOffset),
-        new Vector3(-horizontalDiagOffset, -verticalDiagOffset),
-        new Vector3(-horizontalParallelOffset, verticalParallelOffset),
-        new Vector3(-horizontalDiagOffset, verticalDiagOffset)
-    };
+        public Vector3[] hexEdgeOffsetsWorld;
 
         // Use this for initialization
         void Start()
         {
+            hexEdgeOffsetsWorld = new Vector3[] {
+            new Vector3(horiztonalDiagOffsetWorld, verticalDiagOffsetWorld),
+            new Vector3(horizontalParallelOffsetWorld, verticalParallelOffsetWorld),
+            new Vector3(horiztonalDiagOffsetWorld, -verticalDiagOffsetWorld),
+            new Vector3(-horiztonalDiagOffsetWorld, -verticalDiagOffsetWorld),
+            new Vector3(-horizontalParallelOffsetWorld, verticalParallelOffsetWorld),
+            new Vector3(-horiztonalDiagOffsetWorld, verticalDiagOffsetWorld)
+        };
+            Debug.Log(hexEdgeOffsetsWorld[0]);
+            //GameObject player = GameObject.Find("Player");
+            //AddRandomParts(player.GetComponent<Player>());
             GameObject player = GameObject.Find("Player");
-            AddRandomParts(player.GetComponent<Player>());
-            //AddRandomPart(startHex);
+            playerObj = player;
+            InvokeRepeating("AddRandomPartsQueue", 2.0f, 2.0f);
         }
 
         // Update is called once per frame
@@ -39,13 +43,16 @@ namespace TeamBronze.HexWars
 
         }
 
-        void AddTriangle(GameObject parent, int position)
+        GameObject AddTriangle(GameObject parent, int position)
         {
             Vector3 pos = parent.transform.position;
             // Get position of where to add part
-            pos = Camera.main.WorldToScreenPoint(pos) + hexEdgeOffsets[position];
+            //Debug.Log(pos);
+            pos = pos + hexEdgeOffsetsWorld[position];
+            //Debug.Log(pos);
+            //Debug.Log(hexEdgeOffsetsWorld[position]);
             // Instantiate part at position
-            GameObject addedPart = (GameObject)Instantiate(trianglePart, Camera.main.ScreenToWorldPoint(pos), Quaternion.Euler(new Vector3(0, 0, 30 - 60 * (position + 1))));
+            GameObject addedPart = (GameObject)Instantiate(trianglePart, pos, Quaternion.Euler(new Vector3(0, 0, parent.transform.rotation.z + 30 - 60 * (position + 1))));
             // Add part as child of parent hexagon
             addedPart.transform.parent = parent.gameObject.transform;
             // Modifiy Child Hexagon Data
@@ -54,24 +61,21 @@ namespace TeamBronze.HexWars
             childTriData.position = position;
             // Modify Parent Hexagon Data
             HexagonData parHexData = parent.GetComponent<HexagonData>();
-            if (parHexData == null)
-            {
-                Player parPlayerData = parent.GetComponent<Player>();
-                parPlayerData.childDict.Add(position, addedPart);
-            }
-            else
-            {
-                parHexData.childDict.Add(position, addedPart);
-            }
+            parHexData.childDict.Add(position, addedPart);
+
+            return addedPart;
         }
 
-        void AddHexagon(GameObject parent, int position)
+        GameObject AddHexagon(GameObject parent, int position)
         {
             Vector3 pos = parent.transform.position;
             // Get position of where to add part
-            pos = Camera.main.WorldToScreenPoint(pos) + 2 * hexEdgeOffsets[position];
+            //Debug.Log(pos);
+            pos = pos + 2 * hexEdgeOffsetsWorld[position];
+            //Debug.Log(pos);
+            //Debug.Log(hexEdgeOffsetsWorld[position]);
             // Instantiate part at position
-            GameObject addedPart = (GameObject)Instantiate(hexagonPart, Camera.main.ScreenToWorldPoint(pos), Quaternion.identity);
+            GameObject addedPart = (GameObject)Instantiate(hexagonPart, pos, Quaternion.Euler(new Vector3(0, 0, parent.transform.rotation.z)));
             // Add part as child of parent hexagon
             addedPart.transform.parent = parent.gameObject.transform;
             // Modifiy Child Hexagon Data
@@ -80,14 +84,45 @@ namespace TeamBronze.HexWars
             hexData.position = position;
             // Modify Parent Hexagon Data
             HexagonData parHexData = parent.GetComponent<HexagonData>();
-            if (parHexData == null)
+            parHexData.childDict.Add(position, addedPart);
+
+            return addedPart;
+        }
+
+        GameObject FindEmpty(GameObject parent)
+        {
+            Queue queue = new Queue();
+            queue.Enqueue(parent);
+            while (queue.Count > 0)
             {
-                Player parPlayerData = parent.GetComponent<Player>();
-                parPlayerData.childDict.Add(position, addedPart);
+                GameObject obj = (GameObject)queue.Dequeue();
+                Debug.Log(obj.tag);
+                if (obj.tag == "Hexagon")
+                {
+                    foreach (KeyValuePair<int, GameObject> entry in obj.GetComponent<HexagonData>().childDict)
+                    {
+                        if (entry.Value.tag == "Hexagon")
+                        {
+                            Debug.Log("HEXFOUND");
+                            queue.Enqueue(entry.Value);
+                        }
+                    }
+                    if (obj.GetComponent<HexagonData>().childDict.Count < 3)
+                    {
+                        return obj;
+                    }
+                }
             }
+            return null;
+        }
+
+        void AddRandomPartsQueue()
+        {
+            GameObject obj = FindEmpty(playerObj);
+            if (obj) AddPart(obj);
             else
             {
-                parHexData.childDict.Add(position, addedPart);
+                Debug.Log("WTF");
             }
         }
 
@@ -99,55 +134,28 @@ namespace TeamBronze.HexWars
         // No comments, will fix later
         void AddPart(GameObject parent)
         {
+            Debug.Log(hexEdgeOffsetsWorld);
             // Modify Parent Hexagon Data
             HexagonData parHexData = parent.GetComponent<HexagonData>();
-            if (parHexData == null)
+            while (parHexData.childDict.Count < 3)
             {
-                Player parPlayerData = parent.GetComponent<Player>();
-                while (parPlayerData.childDict.Count != 3)
+                if (Random.Range(0, 2) == 0)
                 {
-                    if (Random.Range(0, 2) == 0)
+                    int key;
+                    do
                     {
-                        int key;
-                        do
-                        {
-                            key = Random.Range(0, 6);
-                        } while (parPlayerData.childDict.ContainsKey(key));
-                        AddHexagon(parPlayerData.gameObject, key);
-                    }
-                    else
-                    {
-                        int key;
-                        do
-                        {
-                            key = Random.Range(0, 6);
-                        } while (parPlayerData.childDict.ContainsKey(key));
-                        AddTriangle(parPlayerData.gameObject, key);
-                    }
+                        key = Random.Range(0, 6);
+                    } while (parHexData.childDict.ContainsKey(key));
+                    GameObject addedPart = AddHexagon(parHexData.gameObject, key);
                 }
-            }
-            else
-            {
-                while (parHexData.childDict.Count != 3)
+                else
                 {
-                    if (Random.Range(0, 2) == 0)
+                    int key;
+                    do
                     {
-                        int key;
-                        do
-                        {
-                            key = Random.Range(0, 6);
-                        } while (parHexData.childDict.ContainsKey(key));
-                        AddHexagon(parHexData.gameObject, key);
-                    }
-                    else
-                    {
-                        int key;
-                        do
-                        {
-                            key = Random.Range(0, 6);
-                        } while (parHexData.childDict.ContainsKey(key));
-                        AddTriangle(parHexData.gameObject, key);
-                    }
+                        key = Random.Range(0, 6);
+                    } while (parHexData.childDict.ContainsKey(key));
+                    AddTriangle(parHexData.gameObject, key);
                 }
             }
         }

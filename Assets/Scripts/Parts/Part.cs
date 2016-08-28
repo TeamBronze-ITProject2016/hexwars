@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace TeamBronze.HexWars
 {
-    public class Part : ScriptableObject
+    public class Part : MonoBehaviour
     {
         public GameObject thisPart;
 

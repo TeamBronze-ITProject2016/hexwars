@@ -17,9 +17,6 @@ namespace TeamBronze.HexWars
         [Tooltip("Rotation speed of the player (constant rate)")]
         public float rotationSpeed;
 
-        /* For storing parts */
-        public Dictionary<int, GameObject> childDict = new Dictionary<int, GameObject>();
-
         private Rigidbody2D rb;
         private InputManager inputManager; /* Need to fix namespaces */
 
