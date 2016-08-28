@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Com.TeamBronze.Hexwars {
+namespace TeamBronze.Hexwars {
 	public class Launcher : Photon.PunBehaviour {
 		#region Public Variables
 
