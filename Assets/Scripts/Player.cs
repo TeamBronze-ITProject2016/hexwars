@@ -12,6 +12,7 @@ public class Player : Entity
 {
     public float acceleration;
     public float rotationSpeed;
+    public Dictionary<int, GameObject> childDict = new Dictionary<int, GameObject>();
 
     private Rigidbody2D rb;
     private TeamBronze.HexWars.InputManager inputManager; /* Need to fix namespaces */
