@@ -9,10 +9,15 @@ using System.Collections.Generic;
 
 namespace TeamBronze.HexWars
 {
-    public class Player : Entity
+    public class Player : MonoBehaviour
     {
+        [Tooltip("Forward acceleration of the player")]
         public float acceleration;
+
+        [Tooltip("Rotation speed of the player (constant rate)")]
         public float rotationSpeed;
+
+        /* For storing parts */
         public Dictionary<int, GameObject> childDict = new Dictionary<int, GameObject>();
 
         private Rigidbody2D rb;
