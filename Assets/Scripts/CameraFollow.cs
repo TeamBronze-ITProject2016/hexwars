@@ -6,21 +6,36 @@ namespace TeamBronze.HexWars
 {
     public class CameraFollow : MonoBehaviour
     {
-        Transform cameraTransform;
+        public float zoomBase = 5;
+        public float zoomRatio = 1;
+        Camera mainCamera;
 
         // Use this for initialization
         void Start()
         {
             /* TODO: Check if attached to local player */
             if(true) {
-                cameraTransform = Camera.main.transform;
+                mainCamera = Camera.main;
             }
         }
 
         void LateUpdate()
         {
-            /* Set camera position to this GameObject's position */
-            cameraTransform.position = new Vector3(transform.position.x, transform.position.y, cameraTransform.position.z);
+            setPos(mainCamera);
+            setZoom(mainCamera);
+        }
+
+        void setPos(Camera camera)
+        {
+            mainCamera.transform.position = new Vector3(
+                transform.position.x, transform.position.y, mainCamera.transform.position.z
+            );
+        }
+
+        void setZoom(Camera camera)
+        {
+            float mass = GetComponent<Rigidbody2D>().mass;
+            mainCamera.orthographicSize = zoomBase + zoomRatio * mass;
         }
     }
 }
