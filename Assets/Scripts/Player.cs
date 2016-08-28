@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace TeamBronze.HexWars
 {
-    public class Player : MonoBehaviour
+    public class Player : Photon.PunBehaviour
     {
         [Tooltip("Forward acceleration of the player")]
         public float acceleration;
@@ -30,6 +30,11 @@ namespace TeamBronze.HexWars
         /*Called once per frame*/
         void FixedUpdate()
         {
+            if (!photonView.isMine)
+            {
+                return;
+            }
+
             if (inputManager.IsActive())
             {
                 Vector2 coordinate = inputManager.GetPos();
