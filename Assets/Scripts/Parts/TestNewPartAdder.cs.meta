@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e62d0e25d7816a64abaa9937734af1b4
+timeCreated: 1472300755
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - hexagonPart: {fileID: 182858, guid: c288a2b03c595ab44bd273b4969b335f, type: 2}
+  - trianglePart: {fileID: 134378, guid: efee05741f84a87429a573a1a2114332, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
