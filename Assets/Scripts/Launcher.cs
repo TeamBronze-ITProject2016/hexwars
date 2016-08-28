@@ -19,6 +19,8 @@ namespace TeamBronze.HexWars
          * you to make breaking changes). */
         string _gameVersion = "dev";
 
+        bool isConnecting;
+
         /* MonoBehaviour method called on GameObject by Unity during early initialization phase. */
         void Awake()
         {
@@ -45,6 +47,7 @@ namespace TeamBronze.HexWars
          * - if not yet connected, Connect this application instance to Photon Cloud Network */
         public void Connect()
         {
+            isConnecting = true;
             progressLabel.SetActive(true);
             controlPanel.SetActive(false);
 
@@ -65,7 +68,10 @@ namespace TeamBronze.HexWars
 
         public override void OnConnectedToMaster()
         {
-            PhotonNetwork.JoinRandomRoom();
+            if (isConnecting)
+            {
+                PhotonNetwork.JoinRandomRoom();
+            }
         }
 
         public override void OnDisconnectedFromPhoton()
@@ -88,6 +94,15 @@ namespace TeamBronze.HexWars
         public override void OnJoinedRoom()
         {
             Debug.Log("DemoAnimator/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.");
+
+            /* We only load if we are the first player, else we rely on PhotonNetwork.automaticallySyncScene to sync our instance scene. */
+            if (PhotonNetwork.room.playerCount == 1)
+            {
+                Debug.Log("We load the 'Room' ");
+
+                /* Load the Room Level */
+                PhotonNetwork.LoadLevel("Room");
+            }
         }
     }
 }

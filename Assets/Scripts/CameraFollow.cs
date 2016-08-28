@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace TeamBronze.HexWars
 {
-    public class CameraFollow : MonoBehaviour
+    public class CameraFollow : Photon.PunBehaviour
     {
         public float zoomBase = 5;
         public float zoomRatio = 1;
@@ -15,7 +15,7 @@ namespace TeamBronze.HexWars
         void Start()
         {
             /* TODO: Check if attached to local player */
-            if(true) {
+            if(photonView.isMine) {
                 mainCamera = Camera.main;
             }
         }
@@ -40,4 +40,3 @@ namespace TeamBronze.HexWars
         }
     }
 }
-
