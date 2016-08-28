@@ -8,6 +8,7 @@ namespace TeamBronze.HexWars
     {
         public float zoomBase = 5;
         public float zoomRatio = 1;
+
         Camera mainCamera;
 
         // Use this for initialization
