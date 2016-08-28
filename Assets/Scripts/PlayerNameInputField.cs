@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 using System.Collections;
 
-namespace Com.TeamBronze.Hexwars {
+namespace TeamBronze.Hexwars {
 	/// <summary>
 	/// Player name input field. Let the user input his name, will appear above
 	/// the player in the game.
