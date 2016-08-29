@@ -118,7 +118,7 @@ namespace TeamBronze.HexWars
 
         void AddRandomPartsQueue()
         {
-            GameObject obj = FindEmpty(playerObj);
+            GameObject obj = playerObj; /* FindEmpty(playerObj);*/
             if (obj) AddPart(obj);
             else
             {
