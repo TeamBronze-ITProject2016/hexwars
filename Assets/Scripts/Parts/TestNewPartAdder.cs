@@ -28,14 +28,27 @@ namespace TeamBronze.HexWars
             new Vector3(-horiztonalDiagOffsetWorld, -verticalDiagOffsetWorld),
             new Vector3(-horizontalParallelOffsetWorld, verticalParallelOffsetWorld),
             new Vector3(-horiztonalDiagOffsetWorld, verticalDiagOffsetWorld)
-        };
+        	};
             Debug.Log(hexEdgeOffsetsWorld[0]);
             //GameObject player = GameObject.Find("Player");
             //AddRandomParts(player.GetComponent<Player>());
-            GameObject player = GameObject.Find("Player");
-            playerObj = player;
+            //GameObject player = GameObject.FindGameObjectWithTag("LocalPlayer");
+			//Debug.Log (player);
+            //playerObj = player;
+			//InvokeRepeating("AddRandomParts", 2.0f, 2.0f);
+			//AddPart(playerObj);
             InvokeRepeating("AddRandomPartsQueue", 2.0f, 2.0f);
         }
+
+		void AddRandomParts(){
+			if (playerObj == null)
+				playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
+			if (Random.Range(0,2) == -1)
+				AddTriangle(playerObj,Random.Range(0,6));
+			else {
+				AddHexagon (playerObj, Random.Range(0, 6));
+			}
+		}
 
         // Update is called once per frame
         void Update()
@@ -45,15 +58,22 @@ namespace TeamBronze.HexWars
 
         GameObject AddTriangle(GameObject parent, int position)
         {
+			if (parent.GetComponent<HexagonData>().childDict.ContainsKey(position))
+				return null;
+			
             Vector3 pos = parent.transform.position;
             // Get position of where to add part
-            //Debug.Log(pos);
-            pos = pos + hexEdgeOffsetsWorld[position];
-            //Debug.Log(pos);
-            //Debug.Log(hexEdgeOffsetsWorld[position]);
-            // Instantiate part at position
-            GameObject addedPart = (GameObject)Instantiate(trianglePart, pos, Quaternion.Euler(new Vector3(0, 0, parent.transform.rotation.z + 30 - 60 * (position + 1))));
-            // Add part as child of parent hexagon
+			float dist = Vector3.Distance (pos, pos + hexEdgeOffsetsWorld [position]);
+			Quaternion angle = parent.transform.rotation * Quaternion.Euler(0, 0, 120 - (60 * (position + 1)));
+			// angle *= Quaternion.Euler(0, 0, - (60 * (position + 1)));
+			float x = dist * Mathf.Cos(angle.eulerAngles.z * Mathf.Deg2Rad);
+			float y = dist * Mathf.Sin(angle.eulerAngles.z * Mathf.Deg2Rad);
+			Vector3 newPosition = pos + new Vector3(x,y,pos.z);
+
+			// Instantiate part at position
+			GameObject addedPart = (GameObject)Instantiate(trianglePart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z + 30 - 60 * (position + 1))));
+
+			// Add part as child of parent hexagon
             addedPart.transform.parent = parent.gameObject.transform;
             // Modifiy Child Hexagon Data
             TriangleData childTriData = addedPart.GetComponent<TriangleData>();
@@ -68,14 +88,19 @@ namespace TeamBronze.HexWars
 
         GameObject AddHexagon(GameObject parent, int position)
         {
-            Vector3 pos = parent.transform.position;
-            // Get position of where to add part
-            //Debug.Log(pos);
-            pos = pos + 2 * hexEdgeOffsetsWorld[position];
-            //Debug.Log(pos);
-            //Debug.Log(hexEdgeOffsetsWorld[position]);
-            // Instantiate part at position
-            GameObject addedPart = (GameObject)Instantiate(hexagonPart, pos, Quaternion.Euler(new Vector3(0, 0, parent.transform.rotation.z)));
+			if (parent.GetComponent<HexagonData>().childDict.ContainsKey(position))
+				return null;
+			
+			Vector3 pos = parent.transform.position;
+			// Get position of where to add part
+			float dist = Vector3.Distance (pos, pos + hexEdgeOffsetsWorld [position]);
+			Quaternion angle = parent.transform.rotation * Quaternion.Euler(0, 0, 120 - (60 * (position + 1)));
+			// angle *= Quaternion.Euler(0, 0, - (60 * (position + 1)));
+			float x = 2 * dist * Mathf.Cos(angle.eulerAngles.z * Mathf.Deg2Rad);
+			float y = 2 * dist * Mathf.Sin(angle.eulerAngles.z * Mathf.Deg2Rad);
+			Vector3 newPosition = pos + new Vector3(x,y,pos.z);
+
+			GameObject addedPart = (GameObject)Instantiate(hexagonPart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)));
             // Add part as child of parent hexagon
             addedPart.transform.parent = parent.gameObject.transform;
             // Modifiy Child Hexagon Data
@@ -97,7 +122,7 @@ namespace TeamBronze.HexWars
             {
                 GameObject obj = (GameObject)queue.Dequeue();
                 Debug.Log(obj.tag);
-                if (obj.tag == "Hexagon")
+                if (obj.tag == "Hexagon" || obj.tag == "LocalPlayer")
                 {
                     foreach (KeyValuePair<int, GameObject> entry in obj.GetComponent<HexagonData>().childDict)
                     {
@@ -118,7 +143,9 @@ namespace TeamBronze.HexWars
 
         void AddRandomPartsQueue()
         {
-            GameObject obj = playerObj; /* FindEmpty(playerObj);*/
+            if (playerObj == null)
+                playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
+            GameObject obj = FindEmpty(playerObj);
             if (obj) AddPart(obj);
             else
             {

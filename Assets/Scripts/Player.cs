@@ -23,6 +23,9 @@ namespace TeamBronze.HexWars
         /*Initialise*/
         void Start()
         {
+			if (photonView.isMine) {
+				gameObject.tag = "LocalPlayer";
+			}
             rb = GetComponent<Rigidbody2D>();
             inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
         }
@@ -41,7 +44,7 @@ namespace TeamBronze.HexWars
                 RotateToPoint(coordinate);
                 MoveForward();
             }
-        }
+        } 
 
         /* Apply a forward force to the hexagon. */
         void MoveForward()
