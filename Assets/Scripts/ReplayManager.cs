@@ -45,9 +45,9 @@ public class ReplayManager : MonoBehaviour {
 	    replayDict = new Dictionary<GameObject, ArrayList>();
 	}
 
-    /*Find the closest data point in list to the given point. Returns the index of thje
+    /*Find the closest data point in list to the given point. Returns the index of the
      * data point if successful or -1 if unsuccessful*/
-    int findClosestReplayData(ArrayList list, float time) {
+    int findClosestReplayData(ArrayList list, float time, float maxDist) {
         int closest = -1, left = 0, right = list.Count - 1;
         float deltaMax = float.PositiveInfinity;
 
@@ -65,8 +65,8 @@ public class ReplayManager : MonoBehaviour {
             if(delta > deltaMax)
                 return closest;
 
-            /*Record closest data point*/
-            if(delta < deltaMax){
+            /*Record closest data point within maximum distance*/
+            if(delta < deltaMax && delta <= maxDist){
                 deltaMax = Mathf.Abs(middle.time - time);
                 closest = midIndex;
             }
@@ -83,12 +83,16 @@ public class ReplayManager : MonoBehaviour {
 	
 	/*Update the stored replay data for all registered GameObjects.*/
 	void Update () {
+        if (getPlaybackTime() > getReplayLength())
+            playing = false;
+
         /*Playback*/
         if (playing) {
             foreach(KeyValuePair<GameObject, ArrayList> pair in replayDict){
                 /*Get closest data point*/
                 ArrayList list = pair.Value;
-                int index = findClosestReplayData(list, getPlaybackTime());
+                int index = findClosestReplayData(list, getPlaybackTime(), 
+                    MIN_REPLAY_POINT_INTERVAL * 2.0f);
 
                 /*Check if we failed*/
                 if (index == -1)
@@ -104,7 +108,8 @@ public class ReplayManager : MonoBehaviour {
                     ReplayData next = (ReplayData)list[index + 1];
                     float timeDelta = next.time - data.time;
                     Vector2 vel = (next.position - data.position) / timeDelta;
-                    Vector3 rvel = (next.rotation.eulerAngles - data.rotation.eulerAngles) / timeDelta;
+                    Vector3 rvel = (next.rotation.eulerAngles - data.rotation.eulerAngles) 
+                                   / timeDelta;
 
                     /*Set velocity and angular velocity*/
                     rb.velocity = vel;
@@ -148,6 +153,10 @@ public class ReplayManager : MonoBehaviour {
                     curList.RemoveAt(0);
             }
         }
+        
+        /*Record length of replay*/
+        replayLength = Mathf.Clamp(replayLength + Time.deltaTime, 0.0f, 
+            MAX_REPLAY_LENGTH);
 	}
 
     /*Register a game object.
