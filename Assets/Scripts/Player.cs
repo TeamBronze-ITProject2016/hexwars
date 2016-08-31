@@ -58,7 +58,7 @@ namespace TeamBronze.HexWars
         void RotateToPoint(Vector2 coord)
         {
             /* Find the vector pointing from our position to the target */
-            Vector3 p = new Vector3(rb.position.x, rb.position.y, 1) - Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1));
+            Vector3 p = rb.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1));
 
             float targetAngle = Mathf.Atan2(p.y, p.x) * Mathf.Rad2Deg;
             rb.MoveRotation(Mathf.MoveTowardsAngle(rb.rotation, targetAngle, rotationSpeed * Time.deltaTime));

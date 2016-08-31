@@ -1,58 +1,80 @@
-﻿using UnityEngine;
+﻿/*InputManager.cs
+* Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+* Description: Handles user input.
+*/
+using UnityEngine;
 using System.Collections;
 
+/*TODO:
+ * -When touch controls are used, make sure that the touch is in the bounds of the inner
+ * joystick.*/
 
 namespace TeamBronze.HexWars
 {
+    /*Handles all the input functionality*/
     public class InputManager : MonoBehaviour
     {
+        /*Input type*/
+        public enum InputType {
+            Mouse = 0,
+            Touch = 1,
+        }
+
         [Tooltip("0 = mouse, 1 = touch")]
-        public int inputType = 0;
+        public InputType inputType = InputType.Mouse;
 
-        // Use this for initialization
-        void Start()
-        {
+        /*Used for drawing joystick.*/
+        private Vector2 lastMove;
 
-        }
+        public bool IsActive(){
+            lastMove = new Vector2(0.0f, 0.0f);
 
-        public bool IsActive()
-        {
             /* Mouse */
-            if (inputType == 0)
-            {
+            if (inputType == InputType.Mouse)
                 return Input.GetMouseButton(0);
-            }
-            else if (inputType == 1)
-            {
+
+            /* Touch */
+            if (inputType == InputType.Touch)
                 return Input.touchCount > 0;
-            }
-            else
-            {
-                throw new System.Exception("Invalid inputType value");
-            }
+
+            /*Unrecognised input type.*/
+            throw new System.Exception("InputManager::IsActive() - Invalid inputType value!");
         }
 
-        public Vector2 GetPos()
-        {
+        public Vector2 GetPos(){
             /* Mouse */
-            if (inputType == 0)
-            {
+            if (inputType == InputType.Mouse){
+                lastMove = Input.mousePosition;
                 return (Vector2)Input.mousePosition;
             }
-            else if (inputType == 1) {
-                if (Input.touchCount > 0)
-                {
+
+            /*Touch*/
+            if (inputType == InputType.Touch) {
+                if (Input.touchCount > 0){
+                    lastMove = Input.GetTouch(0).position;
                     return Input.GetTouch(0).position;
-                }
-                else
-                {
-                    throw new System.Exception("Tried to GetPos() with no touch");
+                }else{
+                    throw new System.Exception(@"InputManager::GetPos() - Tried to 
+                                                GetPos() with no touch!");
                 }
             }
-            else
-            {
-                throw new System.Exception("Invalid inputType value");
-            }
+
+            /*Unrecognised input type.*/
+            throw new System.Exception("InputManager::GetPos() - Invalid inputType value!");
+        }
+
+        /*Returns a unit vector indicating the direction of movement. Used to draw the
+         * joystick.*/
+        public Vector2 lastMoveVector() {
+            if (lastMove == new Vector2(0.0f, 0.0f))
+                return new Vector2(0.0f, 0.0f);
+
+            Vector2 unit = new Vector2(Screen.width, Screen.height) / 2.0f - lastMove;
+            Debug.Log(string.Format("lastMoveVector = {0} {1}", lastMove.x, lastMove.y));
+            unit.Normalize();
+            unit.x *= -1.0f;
+            Debug.Log(string.Format("unit = {0} {1}", unit.x, unit.y));
+            return unit;
         }
     }
 }
