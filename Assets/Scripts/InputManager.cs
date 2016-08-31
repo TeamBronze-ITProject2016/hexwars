@@ -66,14 +66,14 @@ namespace TeamBronze.HexWars
         /*Returns a unit vector indicating the direction of movement. Used to draw the
          * joystick.*/
         public Vector2 lastMoveVector() {
+            /*Return null vector if there is no movement input.*/
             if (lastMove == new Vector2(0.0f, 0.0f))
                 return new Vector2(0.0f, 0.0f);
 
+            /*Calculate movement vector*/
             Vector2 unit = new Vector2(Screen.width, Screen.height) / 2.0f - lastMove;
-            Debug.Log(string.Format("lastMoveVector = {0} {1}", lastMove.x, lastMove.y));
             unit.Normalize();
             unit.x *= -1.0f;
-            Debug.Log(string.Format("unit = {0} {1}", unit.x, unit.y));
             return unit;
         }
     }

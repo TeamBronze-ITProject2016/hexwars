@@ -55,7 +55,6 @@ namespace TeamBronze.HexWars
 
             /*Draw Joystick*/
             joystickOff = inputManager.lastMoveVector() * joystickMoveRadius;
-            Debug.Log(string.Format("joystickOff = {0} {1}", joystickOff.x, joystickOff.y));
             GUI.color = Color.white;
             GUI.DrawTexture(new Rect(0.0f, Screen.height - 
                 JOYSTICK_OUTER_RADIUS, JOYSTICK_OUTER_RADIUS, 
