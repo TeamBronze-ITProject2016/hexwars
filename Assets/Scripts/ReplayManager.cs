@@ -85,8 +85,20 @@ namespace TeamBronze.HexWars
         
         /*Update the stored replay data for all registered GameObjects.*/
         void Update () {
-            if (getPlaybackTime() > getReplayLength())
+            if (replayDict == null) {
+                Debug.Log("ReplayDict is null - Start() not called?");
+                Start();
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))
+                playback();
+
+            if (getPlaybackTime() > getReplayLength()) { 
                 playing = false;
+                Time.timeScale = 1.0f;
+            }
+
+            //Debug.Log("Count " + replayDict.Count); count is 0 here?
 
             /*Playback*/
             if (playing) {
@@ -97,8 +109,10 @@ namespace TeamBronze.HexWars
                         MIN_REPLAY_POINT_INTERVAL * 2.0f);
 
                     /*Check if we failed*/
-                    if (index == -1)
+                    if (index == -1) {
+                        Debug.Log("Failed to find replay data point");
                         continue;
+                    }
 
                     /*Set GameObject data to recorded values*/
                     GameObject obj = pair.Key;
@@ -121,6 +135,7 @@ namespace TeamBronze.HexWars
                     /*Set position and rotation*/
                     obj.transform.position = data.position;
                     obj.transform.rotation = data.rotation;
+                    Debug.Log("Set values...");
                 }
 
                 /*Don't record data if we are playing the replay*/
@@ -146,6 +161,8 @@ namespace TeamBronze.HexWars
                     obj.transform.position.y), obj.transform.rotation, Time.time);
                 curList.Add(curPoint);
 
+                Debug.Log("Recorded data point");
+
                 /*Check if we have reached MIN_REPLAY_LENGTH seconds worth of data
                  if so, remove earliest data point*/
                 if(curList.Count >= 2){
@@ -169,6 +186,11 @@ namespace TeamBronze.HexWars
                 Debug.LogWarning("ReplayManager: Attempted to register null GameObject!");
                 return false;
             }
+
+            if (replayDict == null) {
+                Debug.LogError("????????");
+                Start();
+            }
             
             if(replayDict.ContainsKey(obj)){
                 Debug.LogWarning(@"ReplayManager: Attempted to register already registered
@@ -179,6 +201,7 @@ namespace TeamBronze.HexWars
             /*Register game object*/
             ArrayList list = new ArrayList();
             replayDict.Add(obj, list);
+            Debug.Log("ReplayManager - GameObject Registered");
             return true;
         }
 
