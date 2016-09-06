@@ -1,6 +1,6 @@
-﻿/*ReplayManager.cs
+﻿/*GUIManager.cs
 * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
-* Description: Handles storage and playback of replay data
+* Description: Handles GUI functions
 */
 using UnityEngine;
 using System.Collections;
@@ -8,8 +8,6 @@ using System.Collections;
 /*TODO: 
  * - Draw player names
  * - Merge all buttons and GUI stuff into this class
- * - Use GUI.Rect and GUI.Button
- * - Add menu and replay button to test
  */
 
 namespace TeamBronze.HexWars
@@ -40,6 +38,7 @@ namespace TeamBronze.HexWars
         private const float GUI_BUTTON_HEIGHTFACTOR = 0.04f;
 
         /*Joystick*/
+        private bool joystickEnabled = false;
         private Texture joystickInner = null;
         private Texture joystickOuter = null;
         private Vector2 joystickOff = new Vector2(0.0f, 0.0f);
@@ -102,14 +101,17 @@ namespace TeamBronze.HexWars
                 }
 
                 /*Draw Joystick*/
-                joystickOff = inputManager.lastMoveVector() * joystickMoveRadius;
-                GUI.color = Color.white;
-                GUI.DrawTexture(new Rect(0.0f, Screen.height - 
-                    JOYSTICK_OUTER_RADIUS, JOYSTICK_OUTER_RADIUS, 
-                    JOYSTICK_OUTER_RADIUS), joystickOuter);
-                GUI.DrawTexture(new Rect(JOYSTICK_OUTER_RADIUS/2.0f - JOYSTICK_INNER_RADIUS/2.0f + joystickOff.x, Screen.height - 
-                    JOYSTICK_OUTER_RADIUS/2.0f - JOYSTICK_INNER_RADIUS/2.0f + joystickOff.y, JOYSTICK_INNER_RADIUS, 
-                    JOYSTICK_INNER_RADIUS), joystickInner);
+                if (joystickEnabled)
+                {
+                    joystickOff = inputManager.lastMoveVector() * joystickMoveRadius;
+                    GUI.color = Color.white;
+                    GUI.DrawTexture(new Rect(0.0f, Screen.height -
+                        JOYSTICK_OUTER_RADIUS, JOYSTICK_OUTER_RADIUS,
+                        JOYSTICK_OUTER_RADIUS), joystickOuter);
+                    GUI.DrawTexture(new Rect(JOYSTICK_OUTER_RADIUS / 2.0f - JOYSTICK_INNER_RADIUS / 2.0f + joystickOff.x, Screen.height -
+                        JOYSTICK_OUTER_RADIUS / 2.0f - JOYSTICK_INNER_RADIUS / 2.0f + joystickOff.y, JOYSTICK_INNER_RADIUS,
+                        JOYSTICK_INNER_RADIUS), joystickInner);
+                }
                 break;
 
             /*In-Game Menu*/
@@ -154,6 +156,11 @@ namespace TeamBronze.HexWars
                 state = GUIState.InGame;
                 break;
             }
+        }
+
+        public void setJoystickEnabled(bool val)
+        {
+            joystickEnabled = val;
         }
     }
 }
