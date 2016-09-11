@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace TeamBronze.HexWars
 {
-    public class TestNewPartAdder : MonoBehaviour
+    public class PartAdder : MonoBehaviour
     {
         // Stores the prefabs for each gameobject part
         public GameObject playerObj;
@@ -19,8 +19,6 @@ namespace TeamBronze.HexWars
 
         public Vector3[] hexEdgeOffsetsWorld;
 
-        public int count = 0;
-
         // Use this for initialization
         void Start()
         {
@@ -31,7 +29,7 @@ namespace TeamBronze.HexWars
             new Vector3(-horiztonalDiagOffsetWorld, -verticalDiagOffsetWorld),
             new Vector3(-horizontalParallelOffsetWorld, verticalParallelOffsetWorld),
             new Vector3(-horiztonalDiagOffsetWorld, verticalDiagOffsetWorld)
-        	};
+            };
             //GameObject player = GameObject.Find("Player");
             //AddRandomParts(player.GetComponent<Player>());
             //GameObject player = GameObject.FindGameObjectWithTag("LocalPlayer");
@@ -39,26 +37,21 @@ namespace TeamBronze.HexWars
             //playerObj = player;
             //InvokeRepeating("AddRandomParts", 2.0f, 2.0f);
             //AddPart(playerObj);
-            //InvokeRepeating("AddRandomPartsQueue", 2.0f, 2.0f);
-            InvokeRepeating("AddRandomParts", 2.0f, 2.0f);
-            //AddRandomParts();
+            InvokeRepeating("AddRandomPartsQueue", 2.0f, 2.0f);
         }
 
         // Adds a random part to player gameObject
-		void AddRandomParts(){
+        void AddRandomParts()
+        {
             if (playerObj == null)
-				playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
-            if (Random.Range(0, 2) == -1) {
-                int rand = Random.Range(0, 6);
-                Debug.Log("GENPOS " + rand);
-                AddTriangle(playerObj, rand);
+                playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
+            if (Random.Range(0, 2) == -1)
+                AddTriangle(playerObj, Random.Range(0, 6));
+            else
+            {
+                AddHexagon(playerObj, Random.Range(0, 6));
             }
-            else {
-                Debug.Log("GENPOS " + count);
-                AddHexagon(playerObj, count);
-                count += 1; 
-            }
-		}
+        }
 
         // Update is called once per frame
         void Update()
@@ -69,34 +62,35 @@ namespace TeamBronze.HexWars
         // Adds a triangle gameObject to parent
         GameObject AddTriangle(GameObject parent, int position)
         {
-			if (parent.GetComponent<HexagonData>().childDict.ContainsKey(position))
-				return null;
-			
+            if (parent.GetComponent<HexagonData>().childDict.ContainsKey(position))
+                return null;
+
             Vector3 pos = parent.transform.position;
             // Get position of where to add part
-			float dist = Vector3.Distance (pos, pos + hexEdgeOffsetsWorld [position]);
-			Quaternion angle = parent.transform.rotation * Quaternion.Euler(0, 0, 120 - (60 * (position + 1)));
-			// angle *= Quaternion.Euler(0, 0, - (60 * (position + 1)));
-			float x = 2 * dist * Mathf.Cos(angle.eulerAngles.z * Mathf.Deg2Rad);
-            float y = 2 * dist * Mathf.Sin(angle.eulerAngles.z * Mathf.Deg2Rad);
-			Vector3 newPosition = pos + new Vector3(x,y,pos.z);
+            float dist = Vector3.Distance(pos, pos + hexEdgeOffsetsWorld[position]);
+            Quaternion angle = parent.transform.rotation * Quaternion.Euler(0, 0, 120 - (60 * (position + 1)));
+            // angle *= Quaternion.Euler(0, 0, - (60 * (position + 1)));
+            float x = dist * Mathf.Cos(angle.eulerAngles.z * Mathf.Deg2Rad);
+            float y = dist * Mathf.Sin(angle.eulerAngles.z * Mathf.Deg2Rad);
+            Vector3 newPosition = pos + new Vector3(x, y, pos.z);
+            Vector3 checkPosition = pos + new Vector3(2 * x, 2 * y, pos.z);
 
-            if (checkOccupied(newPosition))
+            if (checkOccupied(checkPosition, playerObj))
                 return null;
 
             // Instantiate part at position
             GameObject addedPart = (GameObject)Instantiate(trianglePart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z + 30 - 60 * (position + 1))));
 
-			// Add part as child of parent hexagon
-            addedPart.transform.parent = playerObj.transform;
+            // Add part as child of parent hexagon
+            addedPart.transform.parent = parent.gameObject.transform;
             // Modifiy Child Hexagon Data
             TriangleData childTriData = addedPart.GetComponent<TriangleData>();
+            childTriData.parent = parent;
             childTriData.position = position;
-            // Modify connecting objects
-            updateSurrounding(addedPart);
-            // Add part to global gameobject list
-            Player playerScript = playerObj.GetComponent<Player>();
-            playerScript.partList.Add(addedPart);
+            Debug.Log("added at " + position);
+            // Modify Parent Hexagon Data
+            HexagonData parHexData = parent.GetComponent<HexagonData>();
+            parHexData.childDict.Add(position, addedPart);
 
             return addedPart;
         }
@@ -104,96 +98,65 @@ namespace TeamBronze.HexWars
         // Adds a hexagon gameObject to parent
         GameObject AddHexagon(GameObject parent, int position)
         {
-			if (parent.GetComponent<HexagonData>().childDict.ContainsKey(position))
-				return null;
-			
-			Vector3 pos = parent.transform.position;
-			// Get position of where to add part
-			float dist = Vector3.Distance (pos, pos + hexEdgeOffsetsWorld [position]);
-            Debug.Log(dist);
-			Quaternion angle = parent.transform.rotation * Quaternion.Euler(0, 0, 120 - (60 * (position + 1)));
-			// angle *= Quaternion.Euler(0, 0, - (60 * (position + 1)));
-			float x = 2 * dist * Mathf.Cos(angle.eulerAngles.z * Mathf.Deg2Rad);
-			float y = 2 * dist * Mathf.Sin(angle.eulerAngles.z * Mathf.Deg2Rad);
-			Vector3 newPosition = pos + new Vector3(x,y,pos.z);
-
-            if (checkOccupied(newPosition))
+            if (parent.GetComponent<HexagonData>().childDict.ContainsKey(position))
                 return null;
 
-			GameObject addedPart = (GameObject)Instantiate(hexagonPart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)));
+            Vector3 pos = parent.transform.position;
+            // Get position of where to add part
+            float dist = Vector3.Distance(pos, pos + hexEdgeOffsetsWorld[position]);
+            Quaternion angle = parent.transform.rotation * Quaternion.Euler(0, 0, 120 - (60 * (position + 1)));
+            // angle *= Quaternion.Euler(0, 0, - (60 * (position + 1)));
+            float x = 2 * dist * Mathf.Cos(angle.eulerAngles.z * Mathf.Deg2Rad);
+            float y = 2 * dist * Mathf.Sin(angle.eulerAngles.z * Mathf.Deg2Rad);
+            Vector3 newPosition = pos + new Vector3(x, y, pos.z);
+
+            if (checkOccupied(newPosition, playerObj))
+                return null;
+
+            GameObject addedPart = (GameObject)Instantiate(hexagonPart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)));
             // Add part as child of parent hexagon
-            addedPart.transform.parent = playerObj.transform;
+            addedPart.transform.parent = parent.gameObject.transform;
             // Modifiy Child Hexagon Data
             HexagonData hexData = addedPart.GetComponent<HexagonData>();
+            hexData.parent = parent;
             hexData.position = position;
-            // Modify connecting objects
-            updateSurrounding(addedPart);
-            // Add part to global gameobject list
-            Player playerScript = playerObj.GetComponent<Player>();
-            playerScript.partList.Add(addedPart);
+            // Modify Parent Hexagon Data
+            HexagonData parHexData = parent.GetComponent<HexagonData>();
+            parHexData.childDict.Add(position, addedPart);
 
             return addedPart;
         }
 
-        private void updateSurrounding(GameObject newObject)
-        {
-            foreach (GameObject obj in playerObj.GetComponent<Player>().partList)
-            {
-                Debug.Log("dist= " + Vector3.Distance(newObject.transform.position, obj.transform.position));
-                // Updates all surrounding objects
-                if (Vector3.Distance(newObject.transform.position, obj.transform.position) < 2.3f)
-                {
-                    int pos = getPosFromAngle(obj.transform.position, newObject.transform.position);
-                    Debug.Log("POS IS " + pos);
-                    if (obj.tag == "Hexagon" || obj.tag == "LocalPlayer")
-                    {
-                        obj.GetComponent<HexagonData>().childDict.Add(pos, newObject);
-                    }
-                    if (newObject.tag == "Hexagon") {
-                        pos = getOppositePos(pos);
-                        newObject.GetComponent<HexagonData>().childDict.Add(pos, obj);
-                    }
-                }
-            }
-            return;
-        }
-        
-        // Gets position using angle from two vectors
-        private int getPosFromAngle(Vector3 posOrigin, Vector3 posNew)
-        {
-            // Get angle counterclockwise from vector3.up
-            float angle = Quaternion.FromToRotation(Vector3.up, posNew - posOrigin).eulerAngles.z;
-            if (angle <= 60) return 5;
-            else if (angle <= 120) return 4;
-            else if (angle <= 180) return 3;
-            else if (angle <= 240) return 2 ;
-            else if (angle <= 300) return 1;
-            else return 0;
-        }
-
-        // Gets the opposite position from int
-        private int getOppositePos(int pos)
-        {
-            if (pos == 5) return 2;
-            else if (pos == 4) return 1;
-            else if (pos == 3) return 0;
-            else if (pos == 2) return 5;
-            else if (pos == 1) return 4;
-            else return 3;
-        }
-
         // Checks if position newPos is already occupied
-        bool checkOccupied(Vector3 newPos)
+        bool checkOccupied(Vector3 newPos, GameObject parent)
         {
-            foreach (GameObject obj in playerObj.GetComponent<Player>().partList)
+            Vector3 childPos = parent.transform.position;
+            // Modified the position if parent gameobject is triangle
+            // This is because the pos point of the triangle is at the bottom edge of the triangle
+            if (parent.tag == "Triangle")
             {
-                // Updates all surrounding objects
-                if (Vector3.Distance(newPos, obj.transform.position) < 1.5*horizontalParallelOffsetWorld)
+                Vector3 pos = parent.transform.position;
+                float dist = Vector3.Distance(pos, pos + hexEdgeOffsetsWorld[parent.GetComponent<TriangleData>().position]);
+                Quaternion angle = playerObj.transform.rotation * Quaternion.Euler(0, 0, 120 - (60 * (parent.GetComponent<TriangleData>().position + 1)));
+                float x = dist * Mathf.Cos(angle.eulerAngles.z * Mathf.Deg2Rad);
+                float y = dist * Mathf.Sin(angle.eulerAngles.z * Mathf.Deg2Rad);
+                childPos = pos + new Vector3(x, y, pos.z);
+            }
+            // Checks if position to add new part is too close to another gameobject
+            if (Vector3.Distance(newPos, childPos) < 1)
+            {
+                return true;
+            }
+            // Recursively checks all gameobject to see if position is occupied
+            bool retval = false;
+            if (parent.tag == "Hexagon" || parent.tag == "LocalPlayer")
+            {
+                foreach (KeyValuePair<int, GameObject> entry in parent.GetComponent<HexagonData>().childDict)
                 {
-                    return true;
+                    retval = retval || checkOccupied(newPos, entry.Value);
                 }
             }
-            return false;
+            return retval;
         }
 
         // Finds an empty spot for the hexagon
@@ -246,7 +209,7 @@ namespace TeamBronze.HexWars
             Debug.Log(hexEdgeOffsetsWorld);
             // Modify Parent Hexagon Data
             HexagonData parHexData = parent.GetComponent<HexagonData>();
-            for (int i =0; i<3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 if (Random.Range(0, 2) == 0)
                 {
