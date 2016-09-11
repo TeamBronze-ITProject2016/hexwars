@@ -135,6 +135,65 @@ namespace TeamBronze.HexWars
             return addedPart;
         }
 
+        // Search all objects remaining to see if a path from player to object is present
+        // If path is not present, object should be destoryed  
+        private ArrayList findDestoryedObjects(GameObject destroyedObj)
+        {
+            ArrayList destroyedObjects = new ArrayList();
+            // Search all objects to see if path is present
+            foreach (GameObject obj in playerObj.GetComponent<Player>().partList)
+            {
+                if (!findPathBFS(destroyedObj, obj))
+                    destroyedObjects.Add(obj);
+            }
+            return destroyedObjects;
+        }
+
+        // Use BFS to find path from player to gameobject, ignoring the destroyed object
+        private bool findPathBFS(GameObject destroyedObj, GameObject searchObj)
+        {
+            // Visited dictionary
+            Dictionary<GameObject, bool> visited = new Dictionary<GameObject, bool>();
+            // Add all objects except destoryed object to visited
+            foreach (GameObject obj in playerObj.GetComponent<Player>().partList)
+            {
+                if (obj != destroyedObj)
+                    visited.Add(obj, false);
+            }
+
+            Queue<GameObject> queue = new Queue<GameObject>();
+
+            // Start at playerObj origin
+            visited[playerObj] = true;
+            queue.Enqueue(playerObj);
+
+            // Search using BFS until all parts are visited
+            while(queue.Count > 0)
+            {
+                GameObject obj = queue.Dequeue();
+                foreach (KeyValuePair<int, GameObject> entry in obj.GetComponent<HexagonData>().childDict)
+                {
+                    if (entry.Value == destroyedObj)
+                        continue;
+
+                    // If path is found, exit
+                    if (entry.Value == searchObj)
+                        return true;
+
+                    // Add node to queue, ignore visted nodes
+                    if (!visited[entry.Value])
+                    {
+                        visited[entry.Value] = true;
+                        // Ignore triangles
+                        if (entry.Value.tag != "triangle")
+                            queue.Enqueue(entry.Value);
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Finds all surrounding gameobjects and updates their dictionaries
         private void updateSurrounding(GameObject newObject)
         {
             foreach (GameObject obj in playerObj.GetComponent<Player>().partList)
@@ -145,10 +204,12 @@ namespace TeamBronze.HexWars
                 {
                     int pos = getPosFromAngle(obj.transform.position, newObject.transform.position);
                     Debug.Log("POS IS " + pos);
+                    // Update origin player
                     if (obj.tag == "Hexagon" || obj.tag == "LocalPlayer")
                     {
                         obj.GetComponent<HexagonData>().childDict.Add(pos, newObject);
                     }
+                    // Update added player
                     if (newObject.tag == "Hexagon") {
                         pos = getOppositePos(pos);
                         newObject.GetComponent<HexagonData>().childDict.Add(pos, obj);
