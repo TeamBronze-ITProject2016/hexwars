@@ -31,14 +31,6 @@ sysinfo.txt
 *.unitypackage
 
 # Custom gitignores
-*.prefab
-*.prefab.meta
-*.unity
-*.unity.meta
-/Assets/*.prefab
-/Assets/*.prefab.meta
-/Assets/*.unity
-/Assets/*.unity.meta
 /ProjectSettings/ProjectVersion.txt
 /ProjectSettings/GraphicsSettings.asset
 /ProjectSettings/ProjectSettings.asset

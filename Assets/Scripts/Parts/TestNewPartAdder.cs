@@ -85,7 +85,7 @@ namespace TeamBronze.HexWars
                 return null;
 
             // Instantiate part at position
-            GameObject addedPart = (GameObject)Instantiate(trianglePart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z + 30 - 60 * (position + 1))));
+            GameObject addedPart = PhotonNetwork.Instantiate(trianglePart.name, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z + 30 - 60 * (position + 1))),0);
 
 			// Add part as child of parent hexagon
             addedPart.transform.parent = playerObj.transform;
@@ -120,7 +120,7 @@ namespace TeamBronze.HexWars
             if (checkOccupied(newPosition))
                 return null;
 
-			GameObject addedPart = (GameObject)Instantiate(hexagonPart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)));
+			GameObject addedPart = PhotonNetwork.Instantiate(hexagonPart.name, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)),0);
             // Add part as child of parent hexagon
             addedPart.transform.parent = playerObj.transform;
             // Modifiy Child Hexagon Data
