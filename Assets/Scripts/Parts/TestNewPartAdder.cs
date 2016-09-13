@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace TeamBronze.HexWars
 {
-    public class TestNewPartAdder : MonoBehaviour
+	public class TestNewPartAdder : Photon.MonoBehaviour
     {
         // Stores the prefabs for each gameobject part
         public GameObject playerObj;
@@ -44,8 +44,12 @@ namespace TeamBronze.HexWars
             //AddRandomParts();
         }
 
+		void AddRandomPartsRPC(){
+			photonView.RPC ("AddRandomParts", PhotonTargets.All);
+		}
+
         // Adds a random part to player gameObject
-		void AddRandomParts(){
+		[PunRPC] void AddRandomParts(){
             if (playerObj == null)
 				playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
             if (Random.Range(0, 2) == -1) {
@@ -85,7 +89,8 @@ namespace TeamBronze.HexWars
                 return null;
 
             // Instantiate part at position
-            GameObject addedPart = PhotonNetwork.Instantiate(trianglePart.name, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z + 30 - 60 * (position + 1))),0);
+			//GameObject addedPart = PhotonNetwork.Instantiate(trianglePart.name, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z + 30 - 60 * (position + 1))),0);
+			GameObject addedPart = (GameObject)Instantiate(trianglePart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)));
 
 			// Add part as child of parent hexagon
             addedPart.transform.parent = playerObj.transform;
@@ -120,8 +125,10 @@ namespace TeamBronze.HexWars
             if (checkOccupied(newPosition))
                 return null;
 
-			GameObject addedPart = PhotonNetwork.Instantiate(hexagonPart.name, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)),0);
-            // Add part as child of parent hexagon
+			//GameObject addedPart = PhotonNetwork.Instantiate(hexagonPart.name, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)),0);
+			GameObject addedPart = (GameObject)Instantiate(hexagonPart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)));
+
+			// Add part as child of parent hexagon
             addedPart.transform.parent = playerObj.transform;
             // Modifiy Child Hexagon Data
             HexagonData hexData = addedPart.GetComponent<HexagonData>();

@@ -33,7 +33,7 @@ namespace TeamBronze.HexWars
             if (PhotonNetwork.isMasterClient)
             {
                 Debug.Log("OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient); /* Called before OnPhotonPlayerDisconnected */
-                LoadArena();
+                //LoadArena();
             }
         }
 
@@ -44,7 +44,7 @@ namespace TeamBronze.HexWars
             if (PhotonNetwork.isMasterClient)
             {
                 Debug.Log("OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient); /* Called before OnPhotonPlayerDisconnected */
-                LoadArena();
+                //LoadArena();
             }
         }
 
