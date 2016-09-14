@@ -44,12 +44,8 @@ namespace TeamBronze.HexWars
             //AddRandomParts();
         }
 
-		void AddRandomPartsRPC(){
-			photonView.RPC ("AddRandomParts", PhotonTargets.All);
-		}
-
         // Adds a random part to player gameObject
-		[PunRPC] void AddRandomParts(){
+		void AddRandomParts(){
             if (playerObj == null)
 				playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
             if (Random.Range(0, 2) == -1) {
@@ -89,8 +85,8 @@ namespace TeamBronze.HexWars
                 return null;
 
             // Instantiate part at position
-			//GameObject addedPart = PhotonNetwork.Instantiate(trianglePart.name, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z + 30 - 60 * (position + 1))),0);
-			GameObject addedPart = (GameObject)Instantiate(trianglePart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)));
+			GameObject addedPart = PhotonNetwork.Instantiate(trianglePart.name, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z + 30 - 60 * (position + 1))),0);
+			//GameObject addedPart = (GameObject)Instantiate(trianglePart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)));
 
 			// Add part as child of parent hexagon
             addedPart.transform.parent = playerObj.transform;
@@ -125,8 +121,8 @@ namespace TeamBronze.HexWars
             if (checkOccupied(newPosition))
                 return null;
 
-			//GameObject addedPart = PhotonNetwork.Instantiate(hexagonPart.name, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)),0);
-			GameObject addedPart = (GameObject)Instantiate(hexagonPart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)));
+			GameObject addedPart = PhotonNetwork.Instantiate(hexagonPart.name, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)),0);
+			//GameObject addedPart = (GameObject)Instantiate(hexagonPart, newPosition, Quaternion.Euler(new Vector3(0, 0, parent.transform.eulerAngles.z)));
 
 			// Add part as child of parent hexagon
             addedPart.transform.parent = playerObj.transform;
@@ -144,7 +140,7 @@ namespace TeamBronze.HexWars
 
         // Search all objects remaining to see if a path from player to object is present
         // If path is not present, object should be destoryed  
-        private ArrayList findDestoryedObjects(GameObject destroyedObj)
+        private ArrayList findDestroyedObjects(GameObject destroyedObj)
         {
             ArrayList destroyedObjects = new ArrayList();
             // Search all objects to see if path is present
