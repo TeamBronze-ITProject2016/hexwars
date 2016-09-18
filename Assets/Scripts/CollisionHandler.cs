@@ -13,12 +13,20 @@ namespace TeamBronze.HexWars
 			Debug.Log (collision.gameObject.tag);
 			if (collision.collider.gameObject.tag == "Triangle")
             {
-				List<GameObject> list = GameObject.FindGameObjectWithTag("PartAdder").GetComponent<TestNewPartAdder>().findDestroyedObjects(gameObject);;
+				TestNewPartAdder partAdder = GameObject.FindGameObjectWithTag ("PartAdder").GetComponent<TestNewPartAdder> ();
+				List<GameObject> list = partAdder.findDestroyedObjects(gameObject);;
            
 				foreach (GameObject obj in list)
                 {
-                    PhotonNetwork.Destroy(obj);
+					foreach (KeyValuePair<int, GameObject> entry in obj.GetComponent<HexagonData>().childDict) {
+						if (entry.Value.tag == "Hexagon") {
+							entry.Value.GetComponent<HexagonData> ().childDict.Remove (partAdder.getOppositePos(entry.Key));
+						}
+					}
                 }
+				foreach (GameObject obj in list) {
+					PhotonNetwork.Destroy (obj);
+				}
             }
         }
     }

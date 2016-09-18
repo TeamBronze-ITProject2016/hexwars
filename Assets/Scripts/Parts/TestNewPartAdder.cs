@@ -271,7 +271,7 @@ namespace TeamBronze.HexWars
 		}
 
         // Gets the opposite position from int
-        private int getOppositePos(int pos)
+        public int getOppositePos(int pos)
         {
             if (pos == 5) return 2;
             else if (pos == 4) return 1;
