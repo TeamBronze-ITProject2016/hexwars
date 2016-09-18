@@ -31,8 +31,3 @@ sysinfo.txt
 *.unitypackage
 
 # Custom gitignores
-*.prefab
-*.prefab.meta
-*.unity
-*.unity.meta
-/ProjectSettings/ProjectVersion.txt
