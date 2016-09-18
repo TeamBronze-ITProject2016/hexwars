@@ -105,8 +105,10 @@ namespace TeamBronze.HexWars
         // Adds a hexagon gameObject to parent
         GameObject AddHexagon(GameObject parent, int position)
         {
-			if (parent.GetComponent<HexagonData>().childDict.ContainsKey(position))
+			if (parent.GetComponent<HexagonData> ().childDict.ContainsKey (position)) {
+				Debug.Log ("ALREADY ADDED");
 				return null;
+			}
 			
 			Vector3 pos = parent.transform.position;
 			// Get position of where to add part
@@ -226,7 +228,9 @@ namespace TeamBronze.HexWars
         private int getPosFromAngle(Vector3 posOrigin, Vector3 posNew)
         {
             // Get angle counterclockwise from vector3.up
-            float angle = Quaternion.FromToRotation(Vector3.up, posNew - posOrigin).eulerAngles.z;
+			float angle = Quaternion.FromToRotation(Vector3.up, posNew - posOrigin).eulerAngles.z - playerObj.transform.eulerAngles.z;
+			angle = normalizeAngle (angle);
+			Debug.Log ("angle = " + angle);
             if (angle <= 60) return 5;
             else if (angle <= 120) return 4;
             else if (angle <= 180) return 3;
@@ -234,6 +238,14 @@ namespace TeamBronze.HexWars
             else if (angle <= 300) return 1;
             else return 0;
         }
+
+		private float normalizeAngle(float angle){
+			angle = angle % 360;
+			if (angle < 0) {
+				angle += 360;
+			}
+			return angle;
+		}
 
         // Gets the opposite position from int
         private int getOppositePos(int pos)
@@ -254,6 +266,7 @@ namespace TeamBronze.HexWars
                 // Updates all surrounding objects
                 if (Vector3.Distance(newPos, obj.transform.position) < 1.5*horizontalParallelOffsetWorld)
                 {
+					Debug.Log ("OCCUPIED");
                     return true;
                 }
             }
