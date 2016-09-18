@@ -43,7 +43,7 @@ namespace TeamBronze.HexWars
             //InvokeRepeating("AddRandomParts", 2.0f, 2.0f);
             //AddRandomParts();
 
-            //InvokeRepeating("unitTest", 2.0f, 2.0f);
+            InvokeRepeating("unitTest", 2.0f, 2.0f);
 
         }
 
@@ -56,15 +56,6 @@ namespace TeamBronze.HexWars
                 GameObject a = AddHexagon(playerObj.gameObject, 0);
                 GameObject b = AddHexagon(playerObj.gameObject, 1);
                 GameObject c = AddHexagon(b, 2);
-                Debug.Log("b " + b.GetInstanceID() + ", c " + c.GetInstanceID() + ", a " + a.GetInstanceID());
-                printChildren(playerObj, "p");
-                printChildren(a, "a");
-                printChildren(b, "b");
-                printChildren(c, "c");
-                
-                List<GameObject> array = findDestroyedObjects(b);
-                Debug.Log(array.Count);
-                Debug.Log("b " + b.GetInstanceID() + ", c " + c.GetInstanceID() + ", array " + (array[0]).GetInstanceID());
             }
         }
 
