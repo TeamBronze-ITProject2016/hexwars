@@ -18,6 +18,8 @@ namespace TeamBronze.HexWars
 
         static public GameManager Instance;
 
+        private ReplayManager replayManager;
+
         /* Called when the local player left the room. We need to load the launcher scene. */
         public override void OnLeftRoom()
         {
@@ -63,6 +65,17 @@ namespace TeamBronze.HexWars
                 /* We're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate */
                 PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
                 Instantiate(voiceAudioSourcePrefab);
+            }
+
+            replayManager = FindObjectOfType<ReplayManager>();
+
+            if (replayManager)
+            {
+                replayManager.registerGameObject(playerPrefab);
+            }
+            else
+            {
+                Debug.LogError("GameManager - replayManager not found!");
             }
         }
 
