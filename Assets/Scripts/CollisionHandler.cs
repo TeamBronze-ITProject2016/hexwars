@@ -30,7 +30,10 @@ namespace TeamBronze.HexWars
                 }
 
 				foreach (GameObject obj in list) {
-					PhotonNetwork.Destroy (obj);
+					try{
+						PhotonNetwork.Destroy (obj);
+					}catch{
+					}
 				}
             }
         }
