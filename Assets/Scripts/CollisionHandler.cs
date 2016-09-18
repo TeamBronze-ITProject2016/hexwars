@@ -14,16 +14,23 @@ namespace TeamBronze.HexWars
 			if (collision.collider.gameObject.tag == "Triangle")
             {
 				TestNewPartAdder partAdder = GameObject.FindGameObjectWithTag ("PartAdder").GetComponent<TestNewPartAdder> ();
-				List<GameObject> list = partAdder.findDestroyedObjects(gameObject);;
+				List<GameObject> list = partAdder.findDestroyedObjects(gameObject);
            
 				foreach (GameObject obj in list)
                 {
-					foreach (KeyValuePair<int, GameObject> entry in obj.GetComponent<HexagonData>().childDict) {
-						if (entry.Value.tag == "Hexagon") {
-							entry.Value.GetComponent<HexagonData> ().childDict.Remove (partAdder.getOppositePos(entry.Key));
-						}
+					try{
+						foreach (KeyValuePair<int, GameObject> entry in obj.GetComponent<HexagonData>().childDict) {
+								if (entry.Value.tag == "Hexagon" || entry.Value.tag == "Player" || entry.Value.tag == "LocalPlayer") {
+									Debug.Log ("Keyrem = " + entry.Key);
+									entry.Value.GetComponent<HexagonData>().childDict.Remove(partAdder.getOppositePos(entry.Key));
+								}
+							}
+						}catch{
 					}
                 }
+
+				Debug.Log(GameObject.FindGameObjectWithTag ("LocalPlayer").GetComponent<HexagonData> ().childDict.Count);
+
 				foreach (GameObject obj in list) {
 					PhotonNetwork.Destroy (obj);
 				}

@@ -55,7 +55,12 @@ namespace TeamBronze.HexWars
                 if (playerObj == null) return;
                 GameObject a = AddHexagon(playerObj.gameObject, 0);
                 GameObject b = AddHexagon(playerObj.gameObject, 1);
-                GameObject c = AddHexagon(b, 2);
+                //GameObject c = AddHexagon(b, 2);
+
+				//printChildren (playerObj, "p");
+				//printChildren (a, "a");
+				//printChildren (b, "b");
+				//printChildren (c, "c");
             }
         }
 
@@ -63,7 +68,7 @@ namespace TeamBronze.HexWars
         {
             foreach (KeyValuePair<int, GameObject> entry in obj.GetComponent<HexagonData>().childDict)
             {
-                Debug.Log(str + " child = " + entry.Value.GetInstanceID());
+				Debug.Log(str + " child = " + entry.Value.GetInstanceID() + " key = " + entry.Key);
             }
         }
 
