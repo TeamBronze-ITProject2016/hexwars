@@ -14,10 +14,12 @@ namespace TeamBronze.HexWars
         // Use this for initialization
         void Start()
         {
+            Debug.Log("CameraFollow: Initialising....");
+
             /* TODO: Check if attached to local player */
-            if(photonView.isMine) {
+            //if(photonView.isMine) {
                 mainCamera = Camera.main;
-            }
+            //}
         }
 
         void LateUpdate()
@@ -28,6 +30,11 @@ namespace TeamBronze.HexWars
 
         void setPos(Camera camera)
         {
+            if (!mainCamera){
+                Debug.Log("CameraFollow: mainCamera does not exist!");
+                return;
+            }
+
             mainCamera.transform.position = new Vector3(
                 transform.position.x, transform.position.y, mainCamera.transform.position.z
             );
@@ -35,6 +42,11 @@ namespace TeamBronze.HexWars
 
         void setZoom(Camera camera)
         {
+            if (!mainCamera) {
+                Debug.Log("CameraFollow: mainCamera does not exist!");
+                return;
+            }
+
             float mass = GetComponent<Rigidbody2D>().mass;
             mainCamera.orthographicSize = zoomBase + zoomRatio * mass;
         }

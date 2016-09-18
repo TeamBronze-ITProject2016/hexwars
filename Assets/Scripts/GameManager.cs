@@ -64,7 +64,15 @@ namespace TeamBronze.HexWars
             }
 
             replayManager = FindObjectOfType<ReplayManager>();
-            replayManager.registerGameObject(playerPrefab);
+
+            if (replayManager)
+            {
+                replayManager.registerGameObject(playerPrefab);
+            }
+            else
+            {
+                Debug.LogError("GameManager - replayManager not found!");
+            }
         }
 
         void LoadArena()

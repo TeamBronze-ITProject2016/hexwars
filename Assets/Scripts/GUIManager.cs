@@ -81,8 +81,9 @@ namespace TeamBronze.HexWars
                 float btnWidth = Screen.width * GUI_BUTTON_WIDTHFACTOR;
                 float btnHeight = Screen.width * GUI_BUTTON_HEIGHTFACTOR;
 
-                if(GUI.Button(new Rect(0.0f, 0.0f, btnWidth, btnHeight), "Voice Chat")){
-                    Debug.Log("Voice Chat button pressed");
+                if(GUI.RepeatButton(new Rect(0.0f, 0.0f, btnWidth, btnHeight), "Voice Chat")){
+                    //This is executed as long as the voice chat button is held down.
+                    Debug.Log("Voice Chat button held!");
                 }
 
                 /*In-Game menu open button*/
@@ -144,7 +145,7 @@ namespace TeamBronze.HexWars
                     Debug.Log("Option 2 Pressed.");
                 }
 
-                /*Option 1*/
+                /*Option 3*/
                 yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
                 if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 3")) {
                     Debug.Log("Option 3 Pressed.");
@@ -158,8 +159,60 @@ namespace TeamBronze.HexWars
             }
         }
 
-        public void setJoystickEnabled(bool val)
-        {
+        /*Returns true if the pointer is within the given Rect*/
+        private bool isPointerInRect(Vector2 pointer, Rect rect) {
+            pointer.y = Screen.height - pointer.y;
+            //Debug.Log("Pointer: (" + pointer.x + "," + pointer.y + ")");
+            //Debug.Log("Rect: (" + rect.xMin + "," + rect.yMin + "), (" + rect.xMax + "," + rect.yMax + ")");
+            /*X bounds*/
+            if (pointer.x < rect.xMin || pointer.x > rect.xMax)
+                return false;
+
+            /*Y bounds*/
+            if (pointer.y < rect.yMin || pointer.y > rect.yMax)
+                return false;
+
+            return true;
+        }
+
+        /*Returns true if the pointer is over the voice chat button.*/
+        private bool isPointerOverVoiceBtn(Vector2 pointer) {
+            float btnWidth = Screen.width * GUI_BUTTON_WIDTHFACTOR;
+            float btnHeight = Screen.width * GUI_BUTTON_HEIGHTFACTOR;
+            return isPointerInRect(pointer, new Rect(0.0f, 0.0f, btnWidth, btnHeight));
+        }
+
+        /*Returns true if the pointer is over the in-game menu open button.*/
+        private bool isPointerOverMenuBtn(Vector2 pointer) {
+            float btnWidth = Screen.width * GUI_BUTTON_WIDTHFACTOR;
+            float btnHeight = Screen.width * GUI_BUTTON_HEIGHTFACTOR;
+            return isPointerInRect(pointer, new Rect(Screen.width - btnWidth, 0.0f, btnWidth, btnHeight));
+        }
+
+        public bool isPointerOverGUIElement(Vector2 pointer) {
+            /*Check all the GUI elements visible in each state.*/
+            switch (state)
+            {
+                case GUIState.InGame:
+                    if (isPointerOverMenuBtn(pointer) || isPointerOverVoiceBtn(pointer))
+                        return true;
+
+                    break;
+
+                default:
+                    break;
+            }
+
+            return false;
+        }
+
+        /*Return true if the in-game menu is visible.*/
+        public bool isInGameMenuShown() {
+            return (state == GUIState.InGameMenu);
+        }
+
+        /*Show or hide the joystick*/
+        public void setJoystickEnabled(bool val) {
             joystickEnabled = val;
         }
     }

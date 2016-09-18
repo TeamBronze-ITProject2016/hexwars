@@ -26,12 +26,40 @@ namespace TeamBronze.HexWars
         /*Used for drawing joystick.*/
         private Vector2 lastMove;
 
+        /*GUI Manager*/
+        GUIManager GUI = null;
+
+        /*Initialise*/
+        void Start(){
+            /*Find GUIManager*/
+            GUI = FindObjectOfType<GUIManager>();
+            Debug.Assert(GUI != null);
+        }
+
         public bool IsActive(){
             lastMove = new Vector2(0.0f, 0.0f);
 
             /* Mouse */
-            if (inputType == InputType.Mouse)
-                return Input.GetMouseButton(0);
+            if (inputType == InputType.Mouse) {
+                /*May need to remove this*/
+                if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+                    return false;
+
+                if (!Input.GetMouseButton(0))
+                    return false;
+
+                /*Return false if in-game menu is visible.*/
+                if (GUI.isInGameMenuShown())
+                    return false;
+
+                /*Check if pointer is above any of the GUI elements*/
+                Vector2 pos = GetPos();
+
+                if (GUI.isPointerOverGUIElement(pos))
+                    return false;
+
+                return true;
+            }
 
             /* Touch */
             if (inputType == InputType.Touch)

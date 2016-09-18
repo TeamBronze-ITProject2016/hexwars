@@ -95,7 +95,7 @@ namespace TeamBronze.HexWars
 
             if (getPlaybackTime() > getReplayLength()) { 
                 playing = false;
-                Time.timeScale = 1.0f;
+                Time.timeScale = originalTimeScale;
             }
 
             //Debug.Log("Count " + replayDict.Count); count is 0 here?
@@ -161,7 +161,7 @@ namespace TeamBronze.HexWars
                     obj.transform.position.y), obj.transform.rotation, Time.time);
                 curList.Add(curPoint);
 
-                Debug.Log("Recorded data point");
+                //Debug.Log("Recorded data point");
 
                 /*Check if we have reached MIN_REPLAY_LENGTH seconds worth of data
                  if so, remove earliest data point*/
@@ -178,7 +178,7 @@ namespace TeamBronze.HexWars
                 MAX_REPLAY_LENGTH);
         }
 
-        /*Register a game object.
+        /*Register a game object. 
          * Returns a non-negative index if successful, or -1 if unsuccessful.*/
         public bool registerGameObject(GameObject obj){
             /*Check if null, or already registered*/
@@ -221,6 +221,7 @@ namespace TeamBronze.HexWars
         public void playback(){
             playing = true;
             playbackStart = Time.time;
+            originalTimeScale = Time.timeScale;
             Time.timeScale = PLAYBACK_TIMESCALE;
         }
 

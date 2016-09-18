@@ -27,12 +27,22 @@ namespace TeamBronze.HexWars
 				gameObject.tag = "LocalPlayer";
 			}
             rb = GetComponent<Rigidbody2D>();
-            inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
+            inputManager = FindObjectOfType<InputManager>();
+
+            if (!inputManager){
+                Debug.Log("Player.cs - Could not find InputManager!");
+            }
         }
 
         /*Called once per frame*/
         void FixedUpdate()
         {
+            if (!inputManager)
+            {
+                Debug.Log("Player - Warning: Not initialised!");
+                Start();
+            }
+
             if (!photonView.isMine)
             {
                 return;
