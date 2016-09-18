@@ -13,6 +13,9 @@ namespace TeamBronze.HexWars
         [Tooltip("The prefab to use for representing the player")]
         public GameObject playerPrefab;
 
+        [Tooltip("The prefab with the Photon Voice speaker/recorder")]
+        public GameObject voiceAudioSourcePrefab;
+
         static public GameManager Instance;
 
         /* Called when the local player left the room. We need to load the launcher scene. */
@@ -59,6 +62,7 @@ namespace TeamBronze.HexWars
                 Debug.Log("We are Instantiating LocalPlayer from " + Application.loadedLevelName);
                 /* We're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate */
                 PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+                Instantiate(voiceAudioSourcePrefab);
             }
         }
 
