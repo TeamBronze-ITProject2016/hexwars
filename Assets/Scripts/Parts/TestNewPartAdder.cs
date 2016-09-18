@@ -53,8 +53,12 @@ namespace TeamBronze.HexWars
             {
                 playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
                 if (playerObj == null) return;
-                GameObject a = AddHexagon(playerObj.gameObject, 0);
-                GameObject b = AddHexagon(playerObj.gameObject, 1);
+                GameObject a = AddTriangle(playerObj.gameObject, 0);
+                GameObject b = AddTriangle(playerObj.gameObject, 1);
+				GameObject c = AddTriangle(playerObj.gameObject, 2);
+				GameObject d = AddTriangle(playerObj.gameObject, 3);
+				GameObject e = AddTriangle(playerObj.gameObject, 4);
+				GameObject f = AddTriangle(playerObj.gameObject, 5);
                 //GameObject c = AddHexagon(b, 2);
 
 				//printChildren (playerObj, "p");

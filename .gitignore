@@ -31,6 +31,3 @@ sysinfo.txt
 *.unitypackage
 
 # Custom gitignores
-/ProjectSettings/ProjectVersion.txt
-/ProjectSettings/GraphicsSettings.asset
-/ProjectSettings/ProjectSettings.asset

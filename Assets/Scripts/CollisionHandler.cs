@@ -29,8 +29,6 @@ namespace TeamBronze.HexWars
 					}
                 }
 
-				Debug.Log(GameObject.FindGameObjectWithTag ("LocalPlayer").GetComponent<HexagonData> ().childDict.Count);
-
 				foreach (GameObject obj in list) {
 					PhotonNetwork.Destroy (obj);
 				}
