@@ -22,5 +22,7 @@ public class SampleTest : MonoBehaviour{
 		//The object has a new name
 		Assert.AreEqual(newGameObjectName, gameObject.name);
 	}
+
+
     
 }
