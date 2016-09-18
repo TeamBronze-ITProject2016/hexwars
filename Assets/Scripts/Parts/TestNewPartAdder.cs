@@ -266,11 +266,12 @@ namespace TeamBronze.HexWars
             if (angle <= 60) return 5;
             else if (angle <= 120) return 4;
             else if (angle <= 180) return 3;
-            else if (angle <= 240) return 2 ;
+            else if (angle <= 240) return 2;
             else if (angle <= 300) return 1;
             else return 0;
         }
 
+		// Normalizes angle to 0 degrees to 360 degrees
 		private float normalizeAngle(float angle){
 			angle = angle % 360;
 			if (angle < 0) {
