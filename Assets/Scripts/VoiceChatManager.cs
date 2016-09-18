@@ -16,7 +16,7 @@ namespace TeamBronze.HexWars
         private PhotonVoiceRecorder voiceRecorder;
         private PhotonVoiceSpeaker voiceSpeaker;
 
-        public GameObject localPlayer;
+        private GameObject localPlayer;
         private GameObject[] players;
 
         // Use this for initialization
