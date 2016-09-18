@@ -37,23 +37,16 @@ namespace TeamBronze.HexWars
 
         }
 
-        public void hexagonSetup()
+        void connectPartAdder()
         {
-            if (playerObj == null)
-            {
+            if(playerObj == null)
                 playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
-                if (playerObj == null) return;
-                GameObject a = AddHexagon(playerObj.gameObject, 0);
-                AddTriangle(a, 0);
-            }
         }
 
-        private void printChildren(GameObject obj, string str)
+        public void hexagonSetup()
         {
-            foreach (KeyValuePair<int, GameObject> entry in obj.GetComponent<HexagonData>().childDict)
-            {
-				Debug.Log(str + " child = " + entry.Value.GetInstanceID() + " key = " + entry.Key);
-            }
+            connectPartAdder();
+            AddTriangle(playerObj.gameObject, 4);
         }
 
         // Adds a random part to player gameObject
@@ -62,11 +55,11 @@ namespace TeamBronze.HexWars
 				playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
             if (Random.Range(0, 2) == -1) {
                 int rand = Random.Range(0, 6);
-                Debug.Log("GENPOS " + rand);
+                //Debug.Log("GENPOS " + rand);
                 AddTriangle(playerObj, rand);
             }
             else {
-                Debug.Log("GENPOS " + count);
+                //Debug.Log("GENPOS " + count);
                 AddHexagon(playerObj, count);
                 count += 1; 
             }
@@ -75,7 +68,6 @@ namespace TeamBronze.HexWars
         // Update is called once per frame
         void Update()
         {
-
         }
 
         // Adds a triangle gameObject to parent
@@ -118,14 +110,14 @@ namespace TeamBronze.HexWars
         public GameObject AddHexagon(GameObject parent, int position)
         {
 			if (parent.GetComponent<HexagonData> ().childDict.ContainsKey (position)) {
-				Debug.Log ("ALREADY ADDED");
+				//Debug.Log ("ALREADY ADDED");
 				return null;
 			}
 			
 			Vector3 pos = parent.transform.position;
 			// Get position of where to add part
 			float dist = Vector3.Distance (pos, pos + hexEdgeOffsetsWorld [position]);
-            Debug.Log(dist);
+            //Debug.Log(dist);
 			Quaternion angle = parent.transform.rotation * Quaternion.Euler(0, 0, 120 - (60 * (position + 1)));
 			// angle *= Quaternion.Euler(0, 0, - (60 * (position + 1)));
 			float x = 2 * dist * Mathf.Cos(angle.eulerAngles.z * Mathf.Deg2Rad);
@@ -215,12 +207,12 @@ namespace TeamBronze.HexWars
         {
             foreach (GameObject obj in playerObj.GetComponent<Player>().partList)
             {
-                Debug.Log("dist= " + Vector3.Distance(newObject.transform.position, obj.transform.position));
+                //Debug.Log("dist= " + Vector3.Distance(newObject.transform.position, obj.transform.position));
                 // Updates all surrounding objects
                 if (Vector3.Distance(newObject.transform.position, obj.transform.position) < 2.3f)
                 {
                     int pos = getPosFromAngle(obj.transform.position, newObject.transform.position);
-                    Debug.Log("POS IS " + pos);
+                    //Debug.Log("POS IS " + pos);
                     // Update origin player
                     if (obj.tag == "Hexagon" || obj.tag == "LocalPlayer")
                     {
@@ -242,7 +234,7 @@ namespace TeamBronze.HexWars
             // Get angle counterclockwise from vector3.up
 			float angle = Quaternion.FromToRotation(Vector3.up, posNew - posOrigin).eulerAngles.z - playerObj.transform.eulerAngles.z;
 			angle = normalizeAngle (angle);
-			Debug.Log ("angle = " + angle);
+			//Debug.Log ("angle = " + angle);
             if (angle <= 60) return 5;
             else if (angle <= 120) return 4;
             else if (angle <= 180) return 3;
@@ -279,7 +271,7 @@ namespace TeamBronze.HexWars
                 // Updates all surrounding objects
                 if (Vector3.Distance(newPos, obj.transform.position) < 1.5*horizontalParallelOffsetWorld)
                 {
-					Debug.Log ("OCCUPIED");
+					//Debug.Log ("OCCUPIED");
                     return true;
                 }
             }
@@ -321,7 +313,7 @@ namespace TeamBronze.HexWars
             if (obj) AddPart(obj);
             else
             {
-                Debug.Log("WTF");
+                //Debug.Log("WTF");
             }
         }
 
