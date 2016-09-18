@@ -40,8 +40,40 @@ namespace TeamBronze.HexWars
             //InvokeRepeating("AddRandomParts", 2.0f, 2.0f);
             //AddPart(playerObj);
             //InvokeRepeating("AddRandomPartsQueue", 2.0f, 2.0f);
-            InvokeRepeating("AddRandomParts", 2.0f, 2.0f);
+            //InvokeRepeating("AddRandomParts", 2.0f, 2.0f);
             //AddRandomParts();
+
+            //InvokeRepeating("unitTest", 2.0f, 2.0f);
+
+        }
+
+        public void unitTest()
+        {
+            if (playerObj == null)
+            {
+                playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
+                if (playerObj == null) return;
+                GameObject a = AddHexagon(playerObj.gameObject, 0);
+                GameObject b = AddHexagon(playerObj.gameObject, 1);
+                GameObject c = AddHexagon(b, 2);
+                Debug.Log("b " + b.GetInstanceID() + ", c " + c.GetInstanceID() + ", a " + a.GetInstanceID());
+                printChildren(playerObj, "p");
+                printChildren(a, "a");
+                printChildren(b, "b");
+                printChildren(c, "c");
+                
+                List<GameObject> array = findDestroyedObjects(b);
+                Debug.Log(array.Count);
+                Debug.Log("b " + b.GetInstanceID() + ", c " + c.GetInstanceID() + ", array " + (array[0]).GetInstanceID());
+            }
+        }
+
+        private void printChildren(GameObject obj, string str)
+        {
+            foreach (KeyValuePair<int, GameObject> entry in obj.GetComponent<HexagonData>().childDict)
+            {
+                Debug.Log(str + " child = " + entry.Value.GetInstanceID());
+            }
         }
 
         // Adds a random part to player gameObject
@@ -103,7 +135,7 @@ namespace TeamBronze.HexWars
         }
 
         // Adds a hexagon gameObject to parent
-        GameObject AddHexagon(GameObject parent, int position)
+        public GameObject AddHexagon(GameObject parent, int position)
         {
 			if (parent.GetComponent<HexagonData> ().childDict.ContainsKey (position)) {
 				Debug.Log ("ALREADY ADDED");
@@ -142,9 +174,9 @@ namespace TeamBronze.HexWars
 
         // Search all objects remaining to see if a path from player to object is present
         // If path is not present, object should be destoryed  
-        private ArrayList findDestroyedObjects(GameObject destroyedObj)
+        public List<GameObject> findDestroyedObjects(GameObject destroyedObj)
         {
-            ArrayList destroyedObjects = new ArrayList();
+            List<GameObject> destroyedObjects = new List<GameObject>();
             // Search all objects to see if path is present
             foreach (GameObject obj in playerObj.GetComponent<Player>().partList)
             {

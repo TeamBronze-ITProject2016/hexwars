@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using NUnit.Framework;
+using TeamBronze.HexWars;
 
-public class SampleTest {
+using System.Collections;
+
+public class SampleTest : MonoBehaviour{
 
 	[Test]
 	public void EditorTest()
@@ -19,4 +22,5 @@ public class SampleTest {
 		//The object has a new name
 		Assert.AreEqual(newGameObjectName, gameObject.name);
 	}
+    
 }
