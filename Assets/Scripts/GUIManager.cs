@@ -5,9 +5,13 @@
 using UnityEngine;
 using System.Collections;
 
+/*Uses the Blop sound effect from http://soundbible.com/2067-Blop.html
+Created by Mark DiAngelo. Used under the Creative Commons Attribution 3.0 
+License: https://creativecommons.org/licenses/by/3.0/au/legalcode */
+
 /*TODO: 
  * - Draw player names
- * - Merge all buttons and GUI stuff into this class
+ * - Merge all buttons and gui elements into this class
  */
 
 namespace TeamBronze.HexWars
@@ -23,6 +27,11 @@ namespace TeamBronze.HexWars
         }
 
         GUIState state = GUIState.InGame;
+
+        /*GUI sound effects and audio*/
+        private AudioSource GUIAudioSource;
+        private AudioClip elementSelectedClip;
+        private float guiAudioVolume = 1.0f;
 
         /*Classes needed to draw GUI.*/
         private ReplayManager replayManager = null;
@@ -69,6 +78,13 @@ namespace TeamBronze.HexWars
             /*Load textures. Should use LoadAll in future.*/
             joystickInner = Resources.Load("JoystickInner") as Texture;
             joystickOuter = Resources.Load("JoystickOuter") as Texture;
+
+            /*Initialise audio*/
+            GUIAudioSource = GetComponent<AudioSource>();
+            elementSelectedClip = (AudioClip)Resources.Load("Audio/Blop-Mark_DiAngelo-79054334");
+            Debug.Assert(GUIAudioSource);
+            Debug.Assert(elementSelectedClip);
+     
         }
         
         /*Draw GUI*/
@@ -90,6 +106,7 @@ namespace TeamBronze.HexWars
                 if (GUI.Button(new Rect(Screen.width - btnWidth, 0.0f, btnWidth, btnHeight), "Menu")) {
                     Debug.Log("In-Game menu open button pressed");
                     state = GUIState.InGameMenu;
+                    onElementSelected();
                 }
 
 
@@ -131,24 +148,28 @@ namespace TeamBronze.HexWars
                 if(GUI.Button(new Rect(xOff + width - width*INGAMEMENU_CLOSEBTN_WIDTH_FACTOR, yOff,
                     width*INGAMEMENU_CLOSEBTN_WIDTH_FACTOR, height*INGAMEMENU_MENUITEM_HEIGHT_FACTOR), "X")){
                     state = GUIState.InGame;
+                    onElementSelected();
                 }
 
                 /*Option 1*/
                 yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
                 if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 1")) {
                     Debug.Log("Option 1 Pressed.");
+                    onElementSelected();
                 }
 
                 /*Option 2*/
                 yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
                 if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 2")) {
                     Debug.Log("Option 2 Pressed.");
+                    onElementSelected();
                 }
 
                 /*Option 3*/
                 yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
                 if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 3")) {
                     Debug.Log("Option 3 Pressed.");
+                    onElementSelected();
                 }
                 break;
 
@@ -157,6 +178,12 @@ namespace TeamBronze.HexWars
                 state = GUIState.InGame;
                 break;
             }
+        }
+
+        /*Should be called after any element has been selected.*/
+        private void onElementSelected(){
+            Debug.Log("Playing element selected sound effect"); 
+            GUIAudioSource.PlayOneShot(elementSelectedClip, guiAudioVolume);
         }
 
         /*Returns true if the pointer is within the given Rect*/
