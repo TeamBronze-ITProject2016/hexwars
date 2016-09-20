@@ -11,6 +11,8 @@ namespace TeamBronze.HexWars
 {
     public class Player : Photon.PunBehaviour
     {
+		public float minRot;
+
         [Tooltip("Forward acceleration of the player")]
         public float acceleration;
 
@@ -69,8 +71,31 @@ namespace TeamBronze.HexWars
             /* Find the vector pointing from our position to the target */
             Vector3 p = rb.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1));
 
-            float targetAngle = Mathf.Atan2(p.y, p.x) * Mathf.Rad2Deg;
-            rb.MoveRotation(Mathf.MoveTowardsAngle(rb.rotation, targetAngle, rotationSpeed * Time.deltaTime));
+			float targetAngle = Mathf.Atan2(p.y, p.x) * Mathf.Rad2Deg;
+
+			float rightRotateAmount = normalizeAngle(normalizeAngle(targetAngle) - normalizeAngle(transform.rotation.eulerAngles.z));
+
+			int rotateDir;
+			// Don't rotate if within minimum threshold
+			if (rightRotateAmount < minRot || rightRotateAmount > 360 - minRot)
+				rotateDir = 0;
+			// Rotate Left
+			else if (rightRotateAmount > 180f)
+				rotateDir = -1;
+			// Rotate Right
+			else
+				rotateDir = 1;
+
+			transform.RotateAround(transform.position, Vector3.forward, rotateDir * rotationSpeed * Time.deltaTime);
         }
+
+		// Normalizes angle to 0 degrees to 360 degrees
+		private float normalizeAngle(float angle){
+			angle = angle % 360;
+			if (angle < 0) {
+				angle += 360;
+			}
+			return angle;
+		}
     }
 }
