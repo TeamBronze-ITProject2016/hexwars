@@ -13,7 +13,8 @@ namespace TeamBronze.HexWars
 			Debug.Log (collision.gameObject.tag);
 			if (collision.collider.gameObject.tag == "Triangle")
             {
-				TestNewPartAdder partAdder = GameObject.FindGameObjectWithTag ("PartAdder").GetComponent<TestNewPartAdder> ();
+                /*
+				PartAdder partAdder = GameObject.FindGameObjectWithTag ("PartAdder").GetComponent<PartAdder> ();
 				List<GameObject> list = partAdder.findDestroyedObjects(gameObject);
            
 				foreach (GameObject obj in list)
@@ -21,7 +22,6 @@ namespace TeamBronze.HexWars
 					try{
 						foreach (KeyValuePair<int, GameObject> entry in obj.GetComponent<HexagonData>().childDict) {
 								if (entry.Value.tag == "Hexagon" || entry.Value.tag == "Player" || entry.Value.tag == "LocalPlayer") {
-									Debug.Log ("Keyrem = " + entry.Key);
 									entry.Value.GetComponent<HexagonData>().childDict.Remove(partAdder.getOppositePos(entry.Key));
 								}
 							}
@@ -35,6 +35,7 @@ namespace TeamBronze.HexWars
 					}catch{
 					}
 				}
+                */
             }
         }
     }
