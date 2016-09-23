@@ -41,6 +41,15 @@ namespace TeamBronze.HexWars
         {
             if(playerObj == null)
                 playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
+                if (playerObj == null) return;
+                GameObject a = AddHexagon(playerObj.gameObject, 0);
+						a = AddHexagon(a, 0);
+						a = AddHexagon(a, 0);
+						a = AddHexagon(a, 0);
+						a = AddHexagon(a, 0);
+						a = AddHexagon(a, 0);
+						a = AddHexagon(a, 0);
+						a = AddHexagon(a, 0);
         }
 
         public void hexagonSetup()
@@ -61,7 +70,7 @@ namespace TeamBronze.HexWars
             else {
                 //Debug.Log("GENPOS " + count);
                 AddHexagon(playerObj, count);
-                count += 1; 
+                count += 1;
             }
 		}
 
@@ -75,7 +84,7 @@ namespace TeamBronze.HexWars
         {
 			if (parent.GetComponent<HexagonData>().childDict.ContainsKey(position))
 				return null;
-			
+
             Vector3 pos = parent.transform.position;
             // Get position of where to add part
 			float dist = Vector3.Distance (pos, pos + hexEdgeOffsetsWorld [position]);
@@ -113,7 +122,7 @@ namespace TeamBronze.HexWars
 				//Debug.Log ("ALREADY ADDED");
 				return null;
 			}
-			
+
 			Vector3 pos = parent.transform.position;
 			// Get position of where to add part
 			float dist = Vector3.Distance (pos, pos + hexEdgeOffsetsWorld [position]);
@@ -145,7 +154,7 @@ namespace TeamBronze.HexWars
         }
 
         // Search all objects remaining to see if a path from player to object is present
-        // If path is not present, object should be destoryed  
+        // If path is not present, object should be destoryed
         public List<GameObject> findDestroyedObjects(GameObject destroyedObj)
         {
             List<GameObject> destroyedObjects = new List<GameObject>();
@@ -227,7 +236,7 @@ namespace TeamBronze.HexWars
             }
             return;
         }
-        
+
         // Gets position using angle from two vectors
         private int getPosFromAngle(Vector3 posOrigin, Vector3 posNew)
         {

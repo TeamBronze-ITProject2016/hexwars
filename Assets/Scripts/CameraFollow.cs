@@ -17,9 +17,9 @@ namespace TeamBronze.HexWars
             Debug.Log("CameraFollow: Initialising....");
 
             /* TODO: Check if attached to local player */
-            //if(photonView.isMine) {
+            if(photonView.isMine) {
                 mainCamera = Camera.main;
-            //}
+            }
         }
 
         void LateUpdate()
