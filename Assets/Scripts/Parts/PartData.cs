@@ -76,13 +76,13 @@ namespace TeamBronze.HexWars
             return val;
         }
 
-        /*public List<Part?> getParts()
+        public List<Part?> getParts()
         {
             List<Part?> items = new List<Part?>();
             items.AddRange(dataTable.Values);
 
             return items;
-        }*/
+        }
 
         public List<AxialCoordinate> getEmptyNeighbors(AxialCoordinate location)
         {
@@ -112,21 +112,63 @@ namespace TeamBronze.HexWars
             return full;
         }
 
+        public List<AxialCoordinate> getFullHexNeighbors(AxialCoordinate location)
+        {
+            List<AxialCoordinate> full = new List<AxialCoordinate>();
+
+            foreach (AxialCoordinate direction in directions)
+            {
+                AxialCoordinate neighbor = new AxialCoordinate
+                { x = location.x + direction.x, y = location.y + direction.y };
+                if (getPart(neighbor) != null && getPart(neighbor).Value.type != -1)
+                    full.Add(neighbor);
+            }
+
+            return full;
+        }
+
         public int removePart(AxialCoordinate location)
         {
             // Remove a part, return the type of the part that was removed
             int type = dataTable[location].Value.type;
 
-            if (location == player)
-            {
-                // Player is dead!
-                dataTable = new Dictionary<AxialCoordinate, Part?>();
-                return 0;
-            }
-
             dataTable[location] = null;
 
             return type;
+        }
+
+        public AxialCoordinate? getLocation(GameObject partObject)
+        {
+            // Given a GameObject, return the location of that GameObject
+
+            foreach (KeyValuePair<AxialCoordinate, Part?> part in dataTable)
+                if (part.Value != null)
+                {
+                    //Debug.Log("Comparing " + partObject.transform.position + " to " + ((Part)part.Value).shape.transform.position);
+                    if (((Part)part.Value).shape == partObject)
+                        return part.Key;
+                }
+
+            return null;
+        }
+
+        public List<AxialCoordinate> findDestroyedPartLocations(AxialCoordinate destroyedPartLocation)
+        {
+            List<AxialCoordinate> destroyedLocations = new List<AxialCoordinate>();
+
+            // Temporarily destroy the part
+            Part? tempPart = dataTable[destroyedPartLocation];
+            removePart(destroyedPartLocation);
+
+            // Search all parts to see if path is present
+            foreach (AxialCoordinate partLocation in dataTable.Keys)
+                if (!pathExistsToPlayer(partLocation))
+                    destroyedLocations.Add(partLocation);
+
+            // Restore the destroyed part
+            addPart(destroyedPartLocation, tempPart);
+
+            return destroyedLocations;
         }
 
         private bool pathExistsToPlayer(AxialCoordinate location)

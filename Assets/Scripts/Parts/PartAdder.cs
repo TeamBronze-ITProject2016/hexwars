@@ -13,7 +13,7 @@ namespace TeamBronze.HexWars
         // Distance of hexagon parts from each other
         public float size = 1.23f;
 
-        private PartData hexData = new PartData();
+        public PartData hexData = new PartData();
 
         private Part player;
         private AxialCoordinate playerLocation = new AxialCoordinate { x = 0, y = 0};
@@ -31,15 +31,15 @@ namespace TeamBronze.HexWars
                 hexData.addPart(playerLocation, player);
             }
 
-            addPart(new AxialCoordinate { x = 1, y = 0 }, hexagonPart, 0);
-            addPart(new AxialCoordinate { x = 0, y = 1 }, hexagonPart, 0);
-            addPart(new AxialCoordinate { x = -1, y = 1 }, hexagonPart, 0);
-            addPart(new AxialCoordinate { x = -1, y = 0 }, hexagonPart, 0);
-            addPart(new AxialCoordinate { x = 0, y = -1 }, hexagonPart, 0);
-            addPart(new AxialCoordinate { x = 1, y = -1 }, hexagonPart, 0);
+            addPart(new AxialCoordinate { x = 1, y = 0 }, trianglePart, -1);
+            addPart(new AxialCoordinate { x = 0, y = 1 }, trianglePart, -1);
+            addPart(new AxialCoordinate { x = -1, y = 1 }, trianglePart, -1);
+            addPart(new AxialCoordinate { x = -1, y = 0 }, trianglePart, -1);
+            addPart(new AxialCoordinate { x = 0, y = -1 }, trianglePart, -1);
+            addPart(new AxialCoordinate { x = 1, y = -1 }, trianglePart, -1);
         }
 
-        void addPart(AxialCoordinate location, GameObject partType, int type)
+        public void addPart(AxialCoordinate location, GameObject partType, int type)
         {
             // NOTE: type = 1 if player part. type = 0 if hexagon part. type = -1 if triangle part
             // Add a part to both the PartData, and the PhotonNetwork using Instantiate
@@ -61,6 +61,12 @@ namespace TeamBronze.HexWars
 
         }
 
+        public void removePart(AxialCoordinate location)
+        {
+            hexData.removePart(location);
+            PhotonNetwork.Destroy(((Part)hexData.getPart(location)).shape);
+        }
+
         private Vector3 axialToPixel(AxialCoordinate location)
         {
             // Convert the axial position of the location to a pixel location
@@ -76,7 +82,7 @@ namespace TeamBronze.HexWars
         {
             // Convert an axial location to the rotation that that GameObject should be at
             // Step 1: Find all neighboring GameObjects
-            List<AxialCoordinate> neighbors = hexData.getFullNeighbors(location);
+            List<AxialCoordinate> neighbors = hexData.getFullHexNeighbors(location);
 
             // Step 2: Pick the neighbor with the x+y value closest to 0 as the one to rotate to
             AxialCoordinate lowestNeighbor = new AxialCoordinate { x = int.MaxValue/3, y = int.MaxValue/3 };
@@ -88,23 +94,21 @@ namespace TeamBronze.HexWars
             //XXX: I couldn't think of a way to do this except to hard-code the different configurations
             //TODO: This isn't working =( Test by adding 6 triangles around player
             AxialCoordinate neighborNormal = new AxialCoordinate { x = location.x - lowestNeighbor.x, y = location.y - lowestNeighbor.y };
-            Debug.Log("Normal: " + neighborNormal.x + ", " + neighborNormal.y);
             int rotation = 0;
-            if (neighborNormal.x == 0)
-                if (neighborNormal.y == -1)
-                    rotation = 30;
-                else
-                    rotation = 210;
-            else if (neighborNormal.x == 1)
-                if (neighborNormal.y == -1)
-                    rotation = 330;
-                else
-                    rotation = 270;
+            Debug.Log("Normal: " + neighborNormal.x + ", " + neighborNormal.y);
+
+            if (neighborNormal.x == -1 && neighborNormal.y == 0)
+                rotation = 90;
+            else if (neighborNormal.x == -1 && neighborNormal.y == 1)
+                rotation = 30;
+            else if (neighborNormal.x == 0 && neighborNormal.y == 1)
+                rotation = 330;
+            else if (neighborNormal.x == 1 && neighborNormal.y == -1)
+                rotation = 210;
+            else if (neighborNormal.x == 1 && neighborNormal.y == 0)
+                rotation = 270;
             else
-                if (neighborNormal.y == 0)
-                    rotation = 90;
-                else
-                    rotation = 150;
+                rotation = 150;
 
             return Quaternion.Euler(0, 0, rotation);
         }
