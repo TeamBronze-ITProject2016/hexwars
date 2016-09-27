@@ -11,7 +11,8 @@ namespace TeamBronze.HexWars
 {
     public class Player : Photon.PunBehaviour
     {
-		public float minRot;
+        [Tooltip("Required rotation in order for the player to actually begin rotating")]
+		public float rotationThreshold;
 
         [Tooltip("Forward acceleration of the player")]
         public float acceleration;
@@ -77,7 +78,7 @@ namespace TeamBronze.HexWars
 
 			int rotateDir;
 			// Don't rotate if within minimum threshold
-			if (rightRotateAmount < minRot || rightRotateAmount > 360 - minRot)
+			if (rightRotateAmount < rotationThreshold || rightRotateAmount > 360 - rotationThreshold)
 				rotateDir = 0;
 			// Rotate Left
 			else if (rightRotateAmount > 180f)
