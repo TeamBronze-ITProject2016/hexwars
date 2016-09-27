@@ -44,7 +44,13 @@ namespace TeamBronze.HexWars
                 playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
                 if (playerObj == null) return;
                 GameObject a = AddHexagon(playerObj.gameObject, 0);
-                AddTriangle(a, 0);
+				a = AddHexagon(a, 0);
+				a = AddHexagon(a, 0);
+				a = AddHexagon(a, 0);
+				a = AddHexagon(a, 0);
+				a = AddHexagon(a, 0);
+				a = AddHexagon(a, 0);
+				a = AddHexagon(a, 0);
             }
         }
 
