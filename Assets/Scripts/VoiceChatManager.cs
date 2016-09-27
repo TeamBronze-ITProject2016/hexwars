@@ -20,16 +20,20 @@ namespace TeamBronze.HexWars
         private GameObject[] players;
 
         // Use this for initialization
-        void Start()
-        {
+        void Start(){
             voiceRecorder = GetComponent<PhotonVoiceRecorder>();
             voiceSpeaker = GetComponent<PhotonVoiceSpeaker>();
             voiceRecorder.Transmit = enabledByDefault;
+
+            EventManager.registerListener("voiceEnable", voiceEnable);
+            EventManager.registerListener("voiceDisable", voiceDisable);
         }
 
         // Update is called once per frame
         void Update()
         {
+            return;
+
             if (localPlayer == null)
             {
                 localPlayer = GameObject.FindGameObjectWithTag("LocalPlayer");
@@ -63,13 +67,15 @@ namespace TeamBronze.HexWars
             }
         }
 
-        public void Enable()
+        public void voiceEnable()
         {
+            Debug.Log("voiceEnable()");
             voiceRecorder.Transmit = true;
         }
 
-        public void Disable()
+        public void voiceDisable()
         {
+            Debug.Log("voiceDisable()");
             voiceRecorder.Transmit = false;
         }
     }
