@@ -16,23 +16,23 @@ public class EventManager : MonoBehaviour {
     /*Maps string representations of an event to the corresponding event object*/
     private static Dictionary<string, UnityEvent> eventDict = null;
 
-	/*Register an event listener, creating the event if it does not exist*/
-    public static void registerListener(string eventname, UnityAction listener){
+    /*Register an event listener, creating the event if it does not exist*/
+    public static void registerListener(string eventname, UnityAction listener) {
         if (eventDict == null)
-            eventDict = new Dictionary<string, UnityEvent>(); 
+            eventDict = new Dictionary<string, UnityEvent>();
 
         UnityEvent curEvent = null;
 
-        if (!eventDict.ContainsKey(eventname)){
+        if (!eventDict.ContainsKey(eventname)) {
             curEvent = new UnityEvent();
             eventDict[eventname] = curEvent;
-        }else{
+        } else {
             curEvent = eventDict[eventname];
         }
 
         curEvent.AddListener(listener);
 
-        if (DEBUG_EVENTMANAGER){
+        if (DEBUG_EVENTMANAGER) {
             Debug.Log("Added listener for event " + eventname);
         }
     }
@@ -42,7 +42,7 @@ public class EventManager : MonoBehaviour {
         if (eventDict == null)
             eventDict = new Dictionary<string, UnityEvent>();
 
-        if (!eventDict.ContainsKey(eventname)){
+        if (!eventDict.ContainsKey(eventname)) {
             Debug.LogWarning("EventManager: attempted to deregister from nonexistent event '" + eventname + "'");
             return;
         }
@@ -50,17 +50,17 @@ public class EventManager : MonoBehaviour {
         UnityEvent curEvent = eventDict[eventname];
         curEvent.RemoveListener(listener);
 
-        if (DEBUG_EVENTMANAGER){
+        if (DEBUG_EVENTMANAGER) {
             Debug.Log("Removed listener for event " + eventname);
         }
     }
 
     /*Trigger the given event*/
-    public static void triggerEvent(string eventname){
+    public static void triggerEvent(string eventname) {
         if (eventDict == null)
             eventDict = new Dictionary<string, UnityEvent>();
 
-        if (!eventDict.ContainsKey(eventname)){
+        if (!eventDict.ContainsKey(eventname)) {
             Debug.LogWarning("EventManager: nonexistent event '" + eventname + "' triggered!");
             return;
         }
@@ -68,7 +68,7 @@ public class EventManager : MonoBehaviour {
         UnityEvent curEvent = eventDict[eventname];
         curEvent.Invoke();
 
-        if (DEBUG_EVENTMANAGER){
+        if (DEBUG_EVENTMANAGER) {
             Debug.Log("Triggered event " + eventname);
         }
     }

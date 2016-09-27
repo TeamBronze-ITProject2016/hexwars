@@ -29,15 +29,23 @@ namespace TeamBronze.HexWars
         /*GUI Manager*/
         GUIManager GUI = null;
 
+        bool inReplay = false;
+
         /*Initialise*/
         void Start(){
             /*Find GUIManager*/
             GUI = FindObjectOfType<GUIManager>();
             Debug.Assert(GUI != null);
+
+            EventManager.registerListener("replayStart", replayStart);
+            EventManager.registerListener("replayStop", replayStop);
         }
 
         public bool IsActive(){
             lastMove = new Vector2(0.0f, 0.0f);
+
+            if (inReplay)
+                return false;
 
             /* Mouse */
             if (inputType == InputType.Mouse) {
@@ -103,6 +111,15 @@ namespace TeamBronze.HexWars
             unit.Normalize();
             unit.x *= -1.0f;
             return unit;
+        }
+
+        /*Replay start/stop event callbacks*/
+        public void replayStart() {
+            inReplay = true;
+        }
+
+        public void replayStop() {
+            inReplay = false;
         }
     }
 }
