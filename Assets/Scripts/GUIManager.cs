@@ -33,9 +33,12 @@ namespace TeamBronze.HexWars
         private AudioClip elementSelectedClip;
         private float guiAudioVolume = 1.0f;
 
+        /*Voice chat*/
+        private bool voiceLast = false;
+
         /*Classes needed to draw GUI.*/
-        private ReplayManager replayManager = null;
-        private InputManager inputManager = null;
+        private ReplayManager replayManager;
+        private InputManager inputManager;
 
         /*Replay timer data*/
         private Vector2 replayTimerOffset = new Vector2(1.0f, 1.0f);
@@ -84,7 +87,6 @@ namespace TeamBronze.HexWars
             elementSelectedClip = (AudioClip)Resources.Load("Audio/Blop-Mark_DiAngelo-79054334");
             Debug.Assert(GUIAudioSource);
             Debug.Assert(elementSelectedClip);
-     
         }
         
         /*Draw GUI*/
@@ -93,13 +95,24 @@ namespace TeamBronze.HexWars
             switch (state) {
             /*In-Game*/
             case GUIState.InGame:
-                /*Voice chat button*/
+                /*Voice chat button and events*/
                 float btnWidth = Screen.width * GUI_BUTTON_WIDTHFACTOR;
                 float btnHeight = Screen.width * GUI_BUTTON_HEIGHTFACTOR;
+                bool voiceThis = false;
 
                 if(GUI.RepeatButton(new Rect(0.0f, 0.0f, btnWidth, btnHeight), "Voice Chat")){
-                    //This is executed as long as the voice chat button is held down.
-                    Debug.Log("Voice Chat button held!");
+                    voiceThis = true;
+                    if (!voiceLast){
+                            voiceLast = true;
+                            EventManager.triggerEvent("voiceEnable");
+                    }
+                }
+
+                /*If we are not holding the voice chat button this frame and we were
+                holding it last frame, we have released it - trigger event*/
+                if(!voiceThis && voiceLast) {
+                        voiceLast = false;
+                        EventManager.triggerEvent("voiceDisable");
                 }
 
                 /*In-Game menu open button*/
@@ -108,7 +121,6 @@ namespace TeamBronze.HexWars
                     state = GUIState.InGameMenu;
                     onElementSelected();
                 }
-
 
                 /*Draw replay timer if we are playing a replay*/
                 if (replayManager.isPlaying()) {
@@ -169,6 +181,22 @@ namespace TeamBronze.HexWars
                 yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
                 if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 3")) {
                     Debug.Log("Option 3 Pressed.");
+                    onElementSelected();
+                }
+
+                /*Option 4*/
+                yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
+                if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 4"))
+                {
+                    Debug.Log("Option 4 Pressed.");
+                    onElementSelected();
+                }
+
+                /*Option 5*/
+                yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
+                if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Disconnect"))
+                {
+                    EventManager.triggerEvent("disconnect");
                     onElementSelected();
                 }
                 break;
