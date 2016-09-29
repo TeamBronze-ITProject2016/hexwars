@@ -25,6 +25,11 @@ namespace TeamBronze.HexWars
 
         void connectPartAdder()
         {
+            // Added for testing position values
+            try {Debug.Log(hexData.dataTable[new AxialCoordinate { x = 1, y = 0 }].Value.shape.transform.position);}
+            catch{ }
+            
+
             if (player.shape == null)
             {
                 player = new Part { shape = GameObject.FindGameObjectWithTag("LocalPlayer"), type = 1 };
