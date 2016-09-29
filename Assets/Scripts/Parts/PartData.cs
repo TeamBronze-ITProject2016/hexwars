@@ -170,8 +170,23 @@ namespace TeamBronze.HexWars
         private bool pathExistsToPlayer(AxialCoordinate location)
         {
             // Given a location, find a path that exists from that location back to the player
-            // TODO
-            return true;
+
+            List<AxialCoordinate> visited = new List<AxialCoordinate>();
+            List<AxialCoordinate> unvisited = new List<AxialCoordinate>();
+            visited.Add(location);
+            unvisited.AddRange(getFullHexNeighbors(location));
+
+            while(!visited.Contains(player) && unvisited.Count > 0)
+            {
+                AxialCoordinate nodeToExpand = unvisited[0];
+                unvisited.RemoveAt(0);
+                visited.Add(nodeToExpand);
+                unvisited.AddRange(getFullHexNeighbors(nodeToExpand));
+            }
+
+            if (visited.Contains(player)) return true;
+
+            return false;
         }
     }
 }
