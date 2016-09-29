@@ -34,6 +34,7 @@ namespace TeamBronze.HexWars
             rb = GetComponent<Rigidbody2D>();
             inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
             partList.Add(this.gameObject);
+            ReplayManager.registerGameObject(this.gameObject);
         }
 
         /*Called once per frame*/

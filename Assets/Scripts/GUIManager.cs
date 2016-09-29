@@ -14,8 +14,7 @@ License: https://creativecommons.org/licenses/by/3.0/au/legalcode */
  * - Merge all buttons and gui elements into this class
  */
 
-namespace TeamBronze.HexWars
-{
+namespace TeamBronze.HexWars {
     /*Handles GUI drawing.*/
     public class GUIManager : MonoBehaviour {
 
@@ -37,7 +36,6 @@ namespace TeamBronze.HexWars
         private bool voiceLast = false;
 
         /*Classes needed to draw GUI.*/
-        private ReplayManager replayManager;
         private InputManager inputManager;
 
         /*Replay timer data*/
@@ -67,15 +65,11 @@ namespace TeamBronze.HexWars
         private const float INGAMEMENU_MENUITEM_SPACE_FACTOR = 0.05f;
 
         /*Initialise*/
-        void Start () {
+        void Start() {
             /*TODO: fix this - better method?*/
-            replayManager = FindObjectOfType<ReplayManager>();
             inputManager = FindObjectOfType<InputManager>();
 
-            if (!replayManager) 
-                Debug.LogError("GUIManager::Start() - Could not find replayManager!");
-
-            if (!inputManager) 
+            if (!inputManager)
                 Debug.LogError("GUIManager::Start() - Could not find inputManager!");
 
             /*Load textures. Should use LoadAll in future.*/
@@ -88,129 +82,126 @@ namespace TeamBronze.HexWars
             Debug.Assert(GUIAudioSource);
             Debug.Assert(elementSelectedClip);
         }
-        
+
         /*Draw GUI*/
-        void OnGUI () {
+        void OnGUI() {
 
             switch (state) {
-            /*In-Game*/
-            case GUIState.InGame:
-                /*Voice chat button and events*/
-                float btnWidth = Screen.width * GUI_BUTTON_WIDTHFACTOR;
-                float btnHeight = Screen.width * GUI_BUTTON_HEIGHTFACTOR;
-                bool voiceThis = false;
+                /*In-Game*/
+                case GUIState.InGame:
+                    /*Voice chat button and events*/
+                    float btnWidth = Screen.width * GUI_BUTTON_WIDTHFACTOR;
+                    float btnHeight = Screen.width * GUI_BUTTON_HEIGHTFACTOR;
+                    bool voiceThis = false;
 
-                if(GUI.RepeatButton(new Rect(0.0f, 0.0f, btnWidth, btnHeight), "Voice Chat")){
-                    voiceThis = true;
-                    if (!voiceLast){
+                    if (GUI.RepeatButton(new Rect(0.0f, 0.0f, btnWidth, btnHeight), "Voice Chat")) {
+                        voiceThis = true;
+                        if (!voiceLast) {
                             voiceLast = true;
                             EventManager.triggerEvent("voiceEnable");
+                        }
                     }
-                }
 
-                /*If we are not holding the voice chat button this frame and we were
-                holding it last frame, we have released it - trigger event*/
-                if(!voiceThis && voiceLast) {
+                    /*If we are not holding the voice chat button this frame and we were
+                    holding it last frame, we have released it - trigger event*/
+                    if (!voiceThis && voiceLast) {
                         voiceLast = false;
                         EventManager.triggerEvent("voiceDisable");
-                }
+                    }
 
-                /*In-Game menu open button*/
-                if (GUI.Button(new Rect(Screen.width - btnWidth, 0.0f, btnWidth, btnHeight), "Menu")) {
-                    Debug.Log("In-Game menu open button pressed");
-                    state = GUIState.InGameMenu;
-                    onElementSelected();
-                }
+                    /*In-Game menu open button*/
+                    if (GUI.Button(new Rect(Screen.width - btnWidth, 0.0f, btnWidth, btnHeight), "Menu")) {
+                        Debug.Log("In-Game menu open button pressed");
+                        state = GUIState.InGameMenu;
+                        onElementSelected();
+                    }
 
-                /*Draw replay timer if we are playing a replay*/
-                if (replayManager.isPlaying()) {
-                    float timerTime = replayManager.getPlaybackTime();
-                    string timerStr = string.Format("Replay: {0}", timerTime);
-                    GUI.color = replayTimerColor;
-                    GUI.Label(new Rect(replayTimerOffset.x, replayTimerOffset.y, 128.0f, 32.0f), timerStr);
-                }
+                    /*Draw replay timer if we are playing a replay*/
+                    if (ReplayManager.isPlaying()) {
+                        float timerTime = ReplayManager.getPlaybackTime();
+                        string timerStr = string.Format("Replay: {0}", timerTime);
+                        GUI.color = replayTimerColor;
+                        GUI.Label(new Rect(replayTimerOffset.x, replayTimerOffset.y, 128.0f, 32.0f), timerStr);
+                    }
 
-                /*Draw Joystick*/
-                if (joystickEnabled)
-                {
-                    joystickOff = inputManager.lastMoveVector() * joystickMoveRadius;
-                    GUI.color = Color.white;
-                    GUI.DrawTexture(new Rect(0.0f, Screen.height -
-                        JOYSTICK_OUTER_RADIUS, JOYSTICK_OUTER_RADIUS,
-                        JOYSTICK_OUTER_RADIUS), joystickOuter);
-                    GUI.DrawTexture(new Rect(JOYSTICK_OUTER_RADIUS / 2.0f - JOYSTICK_INNER_RADIUS / 2.0f + joystickOff.x, Screen.height -
-                        JOYSTICK_OUTER_RADIUS / 2.0f - JOYSTICK_INNER_RADIUS / 2.0f + joystickOff.y, JOYSTICK_INNER_RADIUS,
-                        JOYSTICK_INNER_RADIUS), joystickInner);
-                }
-                break;
+                    /*Draw Joystick*/
+                    if (joystickEnabled) {
+                        joystickOff = inputManager.lastMoveVector() * joystickMoveRadius;
+                        GUI.color = Color.white;
+                        GUI.DrawTexture(new Rect(0.0f, Screen.height -
+                            JOYSTICK_OUTER_RADIUS, JOYSTICK_OUTER_RADIUS,
+                            JOYSTICK_OUTER_RADIUS), joystickOuter);
+                        GUI.DrawTexture(new Rect(JOYSTICK_OUTER_RADIUS / 2.0f - JOYSTICK_INNER_RADIUS / 2.0f + joystickOff.x, Screen.height -
+                            JOYSTICK_OUTER_RADIUS / 2.0f - JOYSTICK_INNER_RADIUS / 2.0f + joystickOff.y, JOYSTICK_INNER_RADIUS,
+                            JOYSTICK_INNER_RADIUS), joystickInner);
+                    }
+                    break;
 
-            /*In-Game Menu*/
-            case GUIState.InGameMenu:
-                float width = Screen.width*INGAMEMENU_WIDTH_FACTOR;
-                float height = Screen.height*INGAMEMENU_HEIGHT_FACTOR;
-                float xOff  = (Screen.width - width)/2.0f;
-                float yOff = (Screen.height - height)/2.0f;
-                GUI.Box(new Rect(xOff, yOff, width, height), "In-Game Menu");
+                /*In-Game Menu*/
+                case GUIState.InGameMenu:
+                    float width = Screen.width * INGAMEMENU_WIDTH_FACTOR;
+                    float height = Screen.height * INGAMEMENU_HEIGHT_FACTOR;
+                    float xOff = (Screen.width - width) / 2.0f;
+                    float yOff = (Screen.height - height) / 2.0f;
+                    GUI.Box(new Rect(xOff, yOff, width, height), "In-Game Menu");
 
-                float menuItemHeight = height*INGAMEMENU_MENUITEM_HEIGHT_FACTOR;
-                float menuItemWidth = width*INGAMEMENU_MENUITEM_WIDTH_FACTOR;
-                float menuItemOffsetX = (width - menuItemWidth)/2.0f;
+                    float menuItemHeight = height * INGAMEMENU_MENUITEM_HEIGHT_FACTOR;
+                    float menuItemWidth = width * INGAMEMENU_MENUITEM_WIDTH_FACTOR;
+                    float menuItemOffsetX = (width - menuItemWidth) / 2.0f;
 
-                /*Close Button, top right. Sets state to 'in-game' when pressed.*/
-                if(GUI.Button(new Rect(xOff + width - width*INGAMEMENU_CLOSEBTN_WIDTH_FACTOR, yOff,
-                    width*INGAMEMENU_CLOSEBTN_WIDTH_FACTOR, height*INGAMEMENU_MENUITEM_HEIGHT_FACTOR), "X")){
+                    /*Close Button, top right. Sets state to 'in-game' when pressed.*/
+                    if (GUI.Button(new Rect(xOff + width - width * INGAMEMENU_CLOSEBTN_WIDTH_FACTOR, yOff,
+                        width * INGAMEMENU_CLOSEBTN_WIDTH_FACTOR, height * INGAMEMENU_MENUITEM_HEIGHT_FACTOR), "X")) {
+                        state = GUIState.InGame;
+                        onElementSelected();
+                    }
+
+                    /*Option 1*/
+                    yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
+                    if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 1")) {
+                        Debug.Log("Option 1 Pressed.");
+                        onElementSelected();
+                    }
+
+                    /*Option 2*/
+                    yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
+                    if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 2")) {
+                        Debug.Log("Option 2 Pressed.");
+                        onElementSelected();
+                    }
+
+                    /*Option 3*/
+                    yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
+                    if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 3")) {
+                        Debug.Log("Option 3 Pressed.");
+                        onElementSelected();
+                    }
+
+                    /*Option 4*/
+                    yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
+                    if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 4")) {
+                        Debug.Log("Option 4 Pressed.");
+                        onElementSelected();
+                    }
+
+                    /*Option 5*/
+                    yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
+                    if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Disconnect")) {
+                        EventManager.triggerEvent("disconnect");
+                        onElementSelected();
+                    }
+                    break;
+
+                default:
+                    Debug.LogWarning("GUIManager::OnGUI(): Unrecognised state!");
                     state = GUIState.InGame;
-                    onElementSelected();
-                }
-
-                /*Option 1*/
-                yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
-                if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 1")) {
-                    Debug.Log("Option 1 Pressed.");
-                    onElementSelected();
-                }
-
-                /*Option 2*/
-                yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
-                if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 2")) {
-                    Debug.Log("Option 2 Pressed.");
-                    onElementSelected();
-                }
-
-                /*Option 3*/
-                yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
-                if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 3")) {
-                    Debug.Log("Option 3 Pressed.");
-                    onElementSelected();
-                }
-
-                /*Option 4*/
-                yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
-                if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 4"))
-                {
-                    Debug.Log("Option 4 Pressed.");
-                    onElementSelected();
-                }
-
-                /*Option 5*/
-                yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
-                if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Disconnect"))
-                {
-                    EventManager.triggerEvent("disconnect");
-                    onElementSelected();
-                }
-                break;
-
-            default:
-                Debug.LogWarning("GUIManager::OnGUI(): Unrecognised state!");
-                state = GUIState.InGame;
-                break;
+                    break;
             }
         }
 
         /*Should be called after any element has been selected.*/
-        private void onElementSelected(){
-            Debug.Log("Playing element selected sound effect"); 
+        private void onElementSelected() {
+            Debug.Log("Playing element selected sound effect");
             GUIAudioSource.PlayOneShot(elementSelectedClip, guiAudioVolume);
         }
 
@@ -246,8 +237,7 @@ namespace TeamBronze.HexWars
 
         public bool isPointerOverGUIElement(Vector2 pointer) {
             /*Check all the GUI elements visible in each state.*/
-            switch (state)
-            {
+            switch (state) {
                 case GUIState.InGame:
                     if (isPointerOverMenuBtn(pointer) || isPointerOverVoiceBtn(pointer))
                         return true;
