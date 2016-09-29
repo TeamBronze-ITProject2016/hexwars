@@ -17,12 +17,9 @@ namespace TeamBronze.HexWars
                 if (locationOfObject != null) // If null, something's wrong
                 {
                     List<AxialCoordinate> listToDestroy = partAdder.hexData.findDestroyedPartLocations((AxialCoordinate)locationOfObject);
-                    Debug.Log("listToDestroyXXX" + listToDestroy);
+                    // Error here, for some reason listToDestroy isn't returning the right list of locations that need to be destroyed
                     foreach (AxialCoordinate location in listToDestroy)
-                    {
-                        Debug.Log("YAAAAAAAAAS");
                         partAdder.removePart(location);
-                    }
                 }
             }
         }
