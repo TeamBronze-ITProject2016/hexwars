@@ -31,12 +31,12 @@ namespace TeamBronze.HexWars
                 hexData.addPart(playerLocation, player);
             }
 
-            addPart(new AxialCoordinate { x = 1, y = 0 }, trianglePart, -1);
-            addPart(new AxialCoordinate { x = 0, y = 1 }, trianglePart, -1);
-            addPart(new AxialCoordinate { x = -1, y = 1 }, trianglePart, -1);
-            addPart(new AxialCoordinate { x = -1, y = 0 }, trianglePart, -1);
-            addPart(new AxialCoordinate { x = 0, y = -1 }, trianglePart, -1);
-            addPart(new AxialCoordinate { x = 1, y = -1 }, trianglePart, -1);
+            addPart(new AxialCoordinate { x = 1, y = 0 }, hexagonPart, 0);
+            addPart(new AxialCoordinate { x = 0, y = 1 }, hexagonPart, 0);
+            addPart(new AxialCoordinate { x = -1, y = 1 }, hexagonPart, 0);
+            addPart(new AxialCoordinate { x = -1, y = 0 }, hexagonPart, 0);
+            addPart(new AxialCoordinate { x = 0, y = -1 }, hexagonPart, 0);
+            addPart(new AxialCoordinate { x = 1, y = -1 }, hexagonPart, 0);
         }
 
         public void addPart(AxialCoordinate location, GameObject partType, int type)
@@ -55,7 +55,7 @@ namespace TeamBronze.HexWars
 
                 // Add the part as a child of the player hexagon
                 newPart.transform.parent = player.shape.transform;
-                Part part = new Part {shape=partType, type=type};
+                Part part = new Part {shape=newPart, type=type};
                 hexData.addPart(location, part);
             }
 

@@ -97,21 +97,6 @@ namespace TeamBronze.HexWars
             return empty;
         }
 
-        public List<AxialCoordinate> getFullNeighbors(AxialCoordinate location)
-        {
-            List<AxialCoordinate> full = new List<AxialCoordinate>();
-            
-            foreach (AxialCoordinate direction in directions)
-            {
-                AxialCoordinate neighbor = new AxialCoordinate
-                { x = location.x + direction.x, y = location.y + direction.y };
-                if (getPart(neighbor) != null)
-                    full.Add(neighbor);
-            }
-
-            return full;
-        }
-
         public List<AxialCoordinate> getFullHexNeighbors(AxialCoordinate location)
         {
             List<AxialCoordinate> full = new List<AxialCoordinate>();
@@ -137,19 +122,26 @@ namespace TeamBronze.HexWars
             return type;
         }
 
-        public AxialCoordinate? getLocation(GameObject partObject)
+        public AxialCoordinate? getLocation(Vector3 location)
         {
-            // Given a GameObject, return the location of that GameObject
+            // Given a pixel corodinate, return the AxialCoordinate location of the closest part
+
+            float minDistance = 100f;
+            AxialCoordinate? minCoordinate = null;
+
+            Vector3 playerPos = getPart(player).Value.shape.transform.position;
 
             foreach (KeyValuePair<AxialCoordinate, Part?> part in dataTable)
-                if (part.Value != null)
+            {
+                float distance = Vector3.Distance(location, part.Value.Value.shape.transform.position);
+                if (distance < minDistance)
                 {
-                    //Debug.Log("Comparing " + partObject.transform.position + " to " + ((Part)part.Value).shape.transform.position);
-                    if (((Part)part.Value).shape == partObject)
-                        return part.Key;
+                    minDistance = distance;
+                    minCoordinate = part.Key;
                 }
-
-            return null;
+            }
+            
+            return minCoordinate;
         }
 
         public List<AxialCoordinate> findDestroyedPartLocations(AxialCoordinate destroyedPartLocation)
