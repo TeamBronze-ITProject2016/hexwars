@@ -25,6 +25,16 @@ namespace TeamBronze.HexWars
 
         void connectPartAdder()
         {
+            try
+            {
+                Debug.Log(hexData.dataTable[new AxialCoordinate { x = 1, y = 0 }].Value.shape.transform.position);
+            }
+            catch
+            {
+
+            }
+            
+
             if (player.shape == null)
             {
                 player = new Part { shape = GameObject.FindGameObjectWithTag("LocalPlayer"), type = 1 };
@@ -55,7 +65,7 @@ namespace TeamBronze.HexWars
 
                 // Add the part as a child of the player hexagon
                 newPart.transform.parent = player.shape.transform;
-                Part part = new Part {shape=partType, type=type};
+                Part part = new Part {shape=newPart, type=type};
                 hexData.addPart(location, part);
             }
 
