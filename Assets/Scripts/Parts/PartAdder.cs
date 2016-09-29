@@ -92,7 +92,6 @@ namespace TeamBronze.HexWars
 
             //Step 3: Rotate to that neighbor
             //XXX: I couldn't think of a way to do this except to hard-code the different configurations
-            //TODO: This isn't working =( Test by adding 6 triangles around player
             AxialCoordinate neighborNormal = new AxialCoordinate { x = location.x - lowestNeighbor.x, y = location.y - lowestNeighbor.y };
             int rotation = 0;
 
