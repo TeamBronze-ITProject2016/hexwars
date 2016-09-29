@@ -20,7 +20,7 @@ namespace TeamBronze.HexWars
         
         void Start()
         {
-            InvokeRepeating("connectPartAdder", 2.0f, 2.0f);
+            InvokeRepeating("connectPartAdder", 0.2f, 1.0f);
         }
 
         void connectPartAdder()
@@ -29,14 +29,14 @@ namespace TeamBronze.HexWars
             {
                 player = new Part { shape = GameObject.FindGameObjectWithTag("LocalPlayer"), type = 1 };
                 hexData.addPart(playerLocation, player);
-            }
 
-            addPart(new AxialCoordinate { x = 1, y = 0 }, hexagonPart, 0);
-            addPart(new AxialCoordinate { x = 0, y = 1 }, hexagonPart, 0);
-            addPart(new AxialCoordinate { x = -1, y = 1 }, hexagonPart, 0);
-            addPart(new AxialCoordinate { x = -1, y = 0 }, hexagonPart, 0);
-            addPart(new AxialCoordinate { x = 0, y = -1 }, hexagonPart, 0);
-            addPart(new AxialCoordinate { x = 1, y = -1 }, hexagonPart, 0);
+                addPart(new AxialCoordinate { x = 1, y = 0 }, hexagonPart, 0);
+                addPart(new AxialCoordinate { x = 0, y = 1 }, hexagonPart, 0);
+                addPart(new AxialCoordinate { x = -1, y = 1 }, hexagonPart, 0);
+                addPart(new AxialCoordinate { x = -1, y = 0 }, hexagonPart, 0);
+                addPart(new AxialCoordinate { x = 0, y = -1 }, hexagonPart, 0);
+                addPart(new AxialCoordinate { x = 1, y = -1 }, hexagonPart, 0);
+            }
         }
 
         public void addPart(AxialCoordinate location, GameObject partType, int type)
@@ -84,7 +84,7 @@ namespace TeamBronze.HexWars
             // Step 1: Find all neighboring GameObjects
             List<AxialCoordinate> neighbors = hexData.getFullHexNeighbors(location);
 
-            // Step 2: Pick the neighbor with the x+y value closest to 0 as the one to rotate to
+            // Step 2: Pick the neighbor with the x+y value closest to 0 as the one to rotate to. This ensures that the part is always facing outwards
             AxialCoordinate lowestNeighbor = new AxialCoordinate { x = int.MaxValue/3, y = int.MaxValue/3 };
             foreach (AxialCoordinate neighbor in neighbors)
                 if (neighbor.x + neighbor.y < lowestNeighbor.x + lowestNeighbor.y)

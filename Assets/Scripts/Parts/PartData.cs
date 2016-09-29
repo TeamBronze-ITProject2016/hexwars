@@ -133,11 +133,14 @@ namespace TeamBronze.HexWars
 
             foreach (KeyValuePair<AxialCoordinate, Part?> part in dataTable)
             {
-                float distance = Vector3.Distance(location, part.Value.Value.shape.transform.position);
-                if (distance < minDistance)
+                if(part.Value != null)
                 {
-                    minDistance = distance;
-                    minCoordinate = part.Key;
+                    float distance = Vector3.Distance(location, part.Value.Value.shape.transform.position);
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        minCoordinate = part.Key;
+                    }
                 }
             }
             
