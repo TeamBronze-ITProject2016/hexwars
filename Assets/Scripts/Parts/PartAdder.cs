@@ -25,11 +25,6 @@ namespace TeamBronze.HexWars
 
         void connectPartAdder()
         {
-            // Added for testing position values
-            try {Debug.Log(hexData.dataTable[new AxialCoordinate { x = 1, y = 0 }].Value.shape.transform.position);}
-            catch{ }
-            
-
             if (player.shape == null)
             {
                 player = new Part { shape = GameObject.FindGameObjectWithTag("LocalPlayer"), type = 1 };
@@ -68,8 +63,8 @@ namespace TeamBronze.HexWars
 
         public void removePart(AxialCoordinate location)
         {
-            hexData.removePart(location);
             PhotonNetwork.Destroy(((Part)hexData.getPart(location)).shape);
+            hexData.removePart(location);
         }
 
         private Vector3 axialToPixel(AxialCoordinate location)
@@ -100,7 +95,6 @@ namespace TeamBronze.HexWars
             //TODO: This isn't working =( Test by adding 6 triangles around player
             AxialCoordinate neighborNormal = new AxialCoordinate { x = location.x - lowestNeighbor.x, y = location.y - lowestNeighbor.y };
             int rotation = 0;
-            Debug.Log("Normal: " + neighborNormal.x + ", " + neighborNormal.y);
 
             if (neighborNormal.x == -1 && neighborNormal.y == 0)
                 rotation = 90;

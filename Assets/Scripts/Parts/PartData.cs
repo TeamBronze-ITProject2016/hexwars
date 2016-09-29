@@ -159,6 +159,7 @@ namespace TeamBronze.HexWars
 
             // Restore the destroyed part
             addPart(destroyedPartLocation, tempPart);
+            destroyedLocations.Add(destroyedPartLocation);
 
             return destroyedLocations;
         }
