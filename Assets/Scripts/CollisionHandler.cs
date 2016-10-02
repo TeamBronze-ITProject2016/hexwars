@@ -16,6 +16,9 @@ namespace TeamBronze.HexWars
                 
                 List<AxialCoordinate> listToDestroy = partAdder.hexData.findDestroyedPartLocations((AxialCoordinate)locationOfObject);
 
+                // Update score/points for attacking player
+                collision.collider.gameObject.transform.parent.GetComponent<PointScoreHandler>().update(listToDestroy);
+
                 foreach (AxialCoordinate location in listToDestroy)
                     partAdder.removePart(location);
             }

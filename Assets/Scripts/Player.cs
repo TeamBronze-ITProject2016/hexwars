@@ -25,6 +25,9 @@ namespace TeamBronze.HexWars
 
         public ArrayList partList = new ArrayList();
 
+        public int score;
+        public int points;
+
         /*Initialise*/
         void Start()
         {
