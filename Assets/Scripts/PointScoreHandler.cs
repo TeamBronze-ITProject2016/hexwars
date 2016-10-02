@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 
 namespace TeamBronze.HexWars
 {
@@ -28,19 +28,31 @@ namespace TeamBronze.HexWars
                 {
                     player.GetComponent<Player>().score += scoreDestoryTriangle;
                     player.GetComponent<Player>().points += pointsDestoryTriangle;
+                    updateServerScore(player);
                 }
                 else if (obj.tag == "Hexagon")
                 {
                     player.GetComponent<Player>().score += scoreDestroyHexagon;
                     player.GetComponent<Player>().points += pointsDestroyHexagon;
+                    updateServerScore(player);
                 }
                 else if (obj.tag == "Player")
                 {
                     player.GetComponent<Player>().score += scoreDestroyPlayer;
                     player.GetComponent<Player>().points += pointsDestroyPlayer;
-
+                    updateServerScore(player);
                 }
             }
+        }
+
+        // Updates server with current score
+        public void updateServerScore(Player player)
+        {
+            string url = "http://128.199.229.64/hexwars/";
+            string name = PhotonNetwork.player.name + "/";
+            string score = player.score.ToString();
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + name + score);
         }
     }
 }
