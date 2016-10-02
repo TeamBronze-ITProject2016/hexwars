@@ -43,11 +43,8 @@ namespace TeamBronze.HexWars
             else
                 t = interval;
 
-            if(PhotonNetwork.isMasterClient)
-                if(GameObject.FindGameObjectsWithTag("DestructibleObject").Length < max)
-                {
-                    PhotonNetwork.InstantiateSceneObject(destructibleObjectPrefab.name, GetSpawnPos(), Quaternion.identity, 0, null);
-                }
+            if(PhotonNetwork.isMasterClient && GameObject.FindGameObjectsWithTag("DestructibleObject").Length < max)
+                PhotonNetwork.InstantiateSceneObject(destructibleObjectPrefab.name, GetSpawnPos(), Quaternion.identity, 0, null);
         }
 
         Vector3 GetSpawnPos()
