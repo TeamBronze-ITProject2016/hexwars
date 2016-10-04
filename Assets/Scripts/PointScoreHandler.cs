@@ -53,6 +53,8 @@ namespace TeamBronze.HexWars
             string score = player.score.ToString();
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + name + score);
+
+			Debug.Log ("update");
         }
     }
 }

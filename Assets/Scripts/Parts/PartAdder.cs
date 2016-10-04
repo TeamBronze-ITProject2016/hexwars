@@ -30,12 +30,20 @@ namespace TeamBronze.HexWars
                 player = new Part { shape = GameObject.FindGameObjectWithTag("LocalPlayer"), type = 1 };
                 hexData.addPart(playerLocation, player);
 
-                addPart(new AxialCoordinate { x = 1, y = 0 }, hexagonPart, 0);
-                addPart(new AxialCoordinate { x = 0, y = 1 }, hexagonPart, 0);
-                addPart(new AxialCoordinate { x = -1, y = 1 }, hexagonPart, 0);
-                addPart(new AxialCoordinate { x = -1, y = 0 }, hexagonPart, 0);
-                addPart(new AxialCoordinate { x = 0, y = -1 }, hexagonPart, 0);
-                addPart(new AxialCoordinate { x = 1, y = -1 }, hexagonPart, 0);
+				addPart(new AxialCoordinate { x = 1, y = 0 }, trianglePart, -1);
+				addPart(new AxialCoordinate { x = 0, y = 1 }, trianglePart, -1);
+				addPart(new AxialCoordinate { x = -1, y = 1 }, trianglePart, -1);
+				addPart(new AxialCoordinate { x = -1, y = 0 }, trianglePart, -1);
+				addPart(new AxialCoordinate { x = 0, y = -1 }, trianglePart, -1);
+				addPart(new AxialCoordinate { x = 1, y = -1 }, trianglePart, -1);
+
+				//addPart(new AxialCoordinate { x = 1, y = 0 }, hexagonPart, -0);
+				//addPart(new AxialCoordinate { x = 0, y = 1 }, hexagonPart, -0);
+				//addPart(new AxialCoordinate { x = -1, y = 1 }, hexagonPart, -0);
+				//addPart(new AxialCoordinate { x = -1, y = 0 }, hexagonPart, -0);
+				//addPart(new AxialCoordinate { x = 0, y = -1 }, hexagonPart, -0);
+				//addPart(new AxialCoordinate { x = 1, y = -1 }, hexagonPart, 0);
+
             }
         }
 
