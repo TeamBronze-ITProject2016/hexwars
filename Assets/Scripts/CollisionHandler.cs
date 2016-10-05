@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace TeamBronze.HexWars
 {
@@ -19,7 +22,14 @@ namespace TeamBronze.HexWars
                 List<AxialCoordinate> listToDestroy = partAdder.hexData.findDestroyedPartLocations((AxialCoordinate)locationOfObject);
 
                 // Update score/points for attacking player
-                collision.collider.gameObject.transform.parent.GetComponent<PointScoreHandler>().update(listToDestroy);
+                PhotonView attackingView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);
+
+                var binFormatter = new BinaryFormatter();
+                var mStream = new MemoryStream();
+                binFormatter.Serialize(mStream, listToDestroy);
+                var data = Convert.ToBase64String(mStream.GetBuffer());
+
+                attackingView.RPC("updateListServer", PhotonPlayer.Find(attackingView.owner.ID), data);
 
                 foreach (AxialCoordinate location in listToDestroy)
                     partAdder.removePart(location);
