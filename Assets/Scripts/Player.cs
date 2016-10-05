@@ -21,7 +21,7 @@ namespace TeamBronze.HexWars
         [Tooltip("Rotation speed of the player (constant rate)")]
         public float rotationSpeed;
 
-        private Rigidbody2D rb;
+        public Rigidbody2D rb;
         private InputManager inputManager; /* Need to fix namespaces */
 
         public ArrayList partList = new ArrayList();

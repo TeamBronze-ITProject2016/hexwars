@@ -9,13 +9,11 @@ namespace TeamBronze.HexWars
         {
             if (collision.collider.gameObject.tag == "Triangle")
             {
-                /* TODO: Add points to player */
                 PhotonNetwork.Destroy(gameObject);
 
-                // Update score/points for attacking player
-                //collision.collider.gameObject.transform.parent.gameObject.GetComponent<Player>().updateDestructable();
+                // Update points for attacking player
                 PhotonView attackingView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);
-                attackingView.RPC("updateDestructableServer", PhotonPlayer.Find(attackingView.owner.ID));
+                attackingView.RPC("updateLocalPointsDestructable", PhotonPlayer.Find(attackingView.owner.ID));
             }
         }
     }

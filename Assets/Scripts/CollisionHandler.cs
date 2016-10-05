@@ -24,12 +24,19 @@ namespace TeamBronze.HexWars
                 // Update score/points for attacking player
                 PhotonView attackingView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);
 
+                // Convert list to string data stream, as Photon cannot serialize lists
                 var binFormatter = new BinaryFormatter();
                 var mStream = new MemoryStream();
                 binFormatter.Serialize(mStream, listToDestroy);
                 var data = Convert.ToBase64String(mStream.GetBuffer());
 
-                attackingView.RPC("updateListServer", PhotonPlayer.Find(attackingView.owner.ID), data);
+                // Send data to attacking player using RPC call
+                attackingView.RPC("updateLocalPointsList", PhotonPlayer.Find(attackingView.owner.ID), data);
+
+                /* TODO: Decide whether to do this locally or through server */
+                // Update score for destroyed player
+                // PhotonView destroyedView = PhotonView.Get(this);
+                // destroyedView.RPC("updateServerScore", PhotonPlayer.Find(destroyedView.owner.ID));
 
                 foreach (AxialCoordinate location in listToDestroy)
                     partAdder.removePart(location);
