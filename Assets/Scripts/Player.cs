@@ -23,8 +23,6 @@ namespace TeamBronze.HexWars
         private Rigidbody2D rb;
         private InputManager inputManager; /* Need to fix namespaces */
 
-        public ArrayList partList = new ArrayList();
-
         public int score = 0;
         public int points = 0;
 
@@ -36,7 +34,6 @@ namespace TeamBronze.HexWars
 			}
             rb = GetComponent<Rigidbody2D>();
             inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
-            partList.Add(this.gameObject);
             ReplayManager.registerGameObject(this.gameObject);
         }
 
