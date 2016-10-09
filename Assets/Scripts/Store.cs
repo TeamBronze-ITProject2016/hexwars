@@ -44,7 +44,7 @@ namespace TeamBronze.HexWars
             // If user clicks on a part of the screen, attach a hexagon to the closest part of that player
             if (!inputManager.IsActive()) return;
 
-            Vector2 pos = inputManager.lastMoveVector();
+            Vector2 pos = -inputManager.lastMoveVector();
 
             partAdder.addPart(pos, "Hexagon");
 
