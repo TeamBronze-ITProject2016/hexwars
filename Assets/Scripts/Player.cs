@@ -70,8 +70,9 @@ namespace TeamBronze.HexWars
                 Vector2 coordinate = inputManager.GetPos();
                 RotateToPoint(coordinate);
                 MoveForward();
-                KeepInBoundary();
             }
+
+            KeepInBoundary();
         } 
 
         /* Apply a forward force to the hexagon. */
