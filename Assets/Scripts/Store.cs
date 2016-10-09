@@ -14,8 +14,6 @@ namespace TeamBronze.HexWars
         public GameObject hexagonStore;
         public GameObject triangleStore;
 
-        public bool isStoreActive = true;
-
         void Start()
         {
             StartCoroutine(LateStart());
@@ -32,7 +30,8 @@ namespace TeamBronze.HexWars
         // Update is called once per frame
         void Update()
         {
-            if (isStoreActive) storeActive();
+            if(player.GetComponent<Player>().points > 50)
+                storeActive();
         }
 
         void storeActive()
@@ -47,8 +46,6 @@ namespace TeamBronze.HexWars
             Vector2 pos = -inputManager.lastMoveVector();
 
             partAdder.addPart(pos, "Hexagon");
-
-            isStoreActive = false;
         }
     }
 }

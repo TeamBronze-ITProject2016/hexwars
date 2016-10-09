@@ -29,27 +29,7 @@ namespace TeamBronze.HexWars
             {
                 player = new Part { shape = GameObject.FindGameObjectWithTag("LocalPlayer"), type = 1 };
                 hexData.addPart(playerLocation, player);
-                int rand = Random.Range(0, 2);
-                if (rand == 1)
-                {
-                    addPart(new AxialCoordinate { x = 1, y = 0 }, "Triangle");
-                    addPart(new AxialCoordinate { x = 0, y = 1 }, "Triangle");
-                    addPart(new AxialCoordinate { x = -1, y = 1 }, "Triangle");
-                    addPart(new AxialCoordinate { x = -1, y = 0 }, "Triangle");
-                    addPart(new AxialCoordinate { x = 0, y = -1 }, "Triangle");
-                    addPart(new AxialCoordinate { x = 1, y = -1 }, "Triangle");
-                }
-                else
-                {
-
-                    addPart(new AxialCoordinate { x = 1, y = 0 }, "Hexagon");
-                    addPart(new AxialCoordinate { x = 0, y = 1 }, "Hexagon");
-                    addPart(new AxialCoordinate { x = -1, y = 1 }, "Hexagon");
-                    addPart(new AxialCoordinate { x = -1, y = 0 }, "Hexagon");
-                    addPart(new AxialCoordinate { x = 0, y = -1 }, "Hexagon");
-                    addPart(new AxialCoordinate { x = 1, y = -1 }, "Hexagon");
-                }
-
+                addPart(new AxialCoordinate { x = 1, y = 0 }, "Triangle");
             }
         }
 
@@ -100,52 +80,11 @@ namespace TeamBronze.HexWars
 
         public void addPart(Vector3 location, string part)
         {
-            // NOTE: type = 1 if player part. type = 0 if hexagon part. type = -1 if triangle part
-            // Add a part to both the PartData, and the PhotonNetwork using Instantiate
-
-            GameObject partType;
-            int type;
-
-            if (part == "Hexagon")
-            {
-                partType = hexagonPart;
-                type = 0;
-            }
-            else if (part == "Triangle")
-            {
-                partType = trianglePart;
-                type = -1;
-            }
-            else if (part == "Player")
-            {
-                partType = hexagonPart;
-                type = 1;
-            }
-            else
-            {
-                Debug.LogError("Unknown part added: " + part);
-                return;
-            }
-
             // Do a search for the hexagon closest to location with at least one open slot
             AxialCoordinate newLocation = hexData.getLocation(location);
             newLocation = hexData.getEmptyNeighbors(newLocation)[0];
 
-            if (hexData.checkPart(newLocation))
-            {
-                // Only add axial rotation if the part is a triangle
-                Quaternion rotation = player.shape.transform.rotation;
-                if (type == -1)
-                    rotation *= axialToRotation(newLocation);
-
-                // Instantiate a new part
-                GameObject newPart = PhotonNetwork.Instantiate(partType.name, axialToPixel(newLocation), rotation, 0);
-
-                // Add the part as a child of the player hexagon
-                newPart.transform.parent = player.shape.transform;
-                Part addedPart = new Part { shape = newPart, type = type };
-                hexData.addPart(newLocation, addedPart);
-            }
+            addPart(newLocation, part);
         }
 
         public void removePart(AxialCoordinate location)
