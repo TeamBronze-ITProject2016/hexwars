@@ -8,6 +8,7 @@ namespace TeamBronze.HexWars
     using UnityEngine;
     using System.Collections;
     using System.Collections.Generic;
+    using System;
 
     public struct Part
     {
@@ -15,6 +16,7 @@ namespace TeamBronze.HexWars
         public int type;
     }
 
+    [Serializable]
     public struct AxialCoordinate
     {
         public int x;

@@ -16,7 +16,7 @@ namespace TeamBronze.HexWars
         public PartData hexData = new PartData();
 
         private Part player;
-        private AxialCoordinate playerLocation = new AxialCoordinate { x = 0, y = 0};
+        private AxialCoordinate playerLocation = new AxialCoordinate { x = 0, y = 0 };
         
         void Start()
         {
@@ -29,8 +29,26 @@ namespace TeamBronze.HexWars
             {
                 player = new Part { shape = GameObject.FindGameObjectWithTag("LocalPlayer"), type = 1 };
                 hexData.addPart(playerLocation, player);
+                int rand = Random.Range(0, 2);
+                if (rand == 1)
+                {
+                    addPart(new AxialCoordinate { x = 1, y = 0 }, trianglePart, -1);
+                    addPart(new AxialCoordinate { x = 0, y = 1 }, trianglePart, -1);
+                    addPart(new AxialCoordinate { x = -1, y = 1 }, trianglePart, -1);
+                    addPart(new AxialCoordinate { x = -1, y = 0 }, trianglePart, -1);
+                    addPart(new AxialCoordinate { x = 0, y = -1 }, trianglePart, -1);
+                    addPart(new AxialCoordinate { x = 1, y = -1 }, trianglePart, -1);
+                }
+                else
+                {
 
-				addPart(new AxialCoordinate { x = -1, y = 0 }, trianglePart, -1);
+                    addPart(new AxialCoordinate { x = 1, y = 0 }, hexagonPart, -0);
+                    addPart(new AxialCoordinate { x = 0, y = 1 }, hexagonPart, -0);
+                    addPart(new AxialCoordinate { x = -1, y = 1 }, hexagonPart, -0);
+                    addPart(new AxialCoordinate { x = -1, y = 0 }, hexagonPart, -0);
+                    addPart(new AxialCoordinate { x = 0, y = -1 }, hexagonPart, -0);
+                    addPart(new AxialCoordinate { x = 1, y = -1 }, hexagonPart, 0);
+                }
 
             }
         }
@@ -153,9 +171,12 @@ namespace TeamBronze.HexWars
         }
 
         public void removePart(AxialCoordinate location)
-        {
-            PhotonNetwork.Destroy(((Part)hexData.getPart(location)).shape);
-            hexData.removePart(location);
+		{
+			PhotonView destroyedObject = PhotonView.Get(hexData.getPart(location).Value.shape);
+			hexData.removePart(location);
+			destroyedObject.RPC ("PunFadeOut", PhotonTargets.All);
+
+            //PhotonNetwork.Destroy(((Part)hexData.getPart(location)).shape);
         }
 
         private Vector3 axialToPixel(AxialCoordinate location)
