@@ -28,7 +28,7 @@ namespace TeamBronze.HexWars
         public Vector2 maxBound = new Vector2(50.0f, 50.0f);
 
         public Rigidbody2D rb;
-        public int points;
+        public int points = 0;
 
         private InputManager inputManager; /* Need to fix namespaces */
 
