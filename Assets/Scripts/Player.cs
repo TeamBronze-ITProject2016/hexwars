@@ -6,6 +6,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace TeamBronze.HexWars
 {
@@ -26,8 +27,8 @@ namespace TeamBronze.HexWars
         [Tooltip("The maximum x and y positions that the player is allowed to be at")]
         public Vector2 maxBound = new Vector2(50.0f, 50.0f);
 
-        // Public in order to get mass
         public Rigidbody2D rb;
+        public int points;
 
         private InputManager inputManager; /* Need to fix namespaces */
 
