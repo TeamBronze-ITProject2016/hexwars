@@ -26,7 +26,9 @@ namespace TeamBronze.HexWars
         [Tooltip("The maximum x and y positions that the player is allowed to be at")]
         public Vector2 maxBound = new Vector2(50.0f, 50.0f);
 
-        private Rigidbody2D rb;
+        // Public in order to get mass
+        public Rigidbody2D rb;
+
         private InputManager inputManager; /* Need to fix namespaces */
 
         public ArrayList partList = new ArrayList();
