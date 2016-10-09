@@ -16,7 +16,7 @@ namespace TeamBronze.HexWars
         public PartData hexData = new PartData();
 
         private Part player;
-        private AxialCoordinate playerLocation = new AxialCoordinate { x = 0, y = 0};
+        private AxialCoordinate playerLocation = new AxialCoordinate { x = 0, y = 0 };
         
         void Start()
         {
@@ -76,9 +76,12 @@ namespace TeamBronze.HexWars
         }
 
         public void removePart(AxialCoordinate location)
-        {
-            PhotonNetwork.Destroy(((Part)hexData.getPart(location)).shape);
-            hexData.removePart(location);
+		{
+			PhotonView destroyedObject = PhotonView.Get(hexData.getPart(location).Value.shape);
+			hexData.removePart(location);
+			destroyedObject.RPC ("PunFadeOut", PhotonTargets.All);
+
+            //PhotonNetwork.Destroy(((Part)hexData.getPart(location)).shape);
         }
 
         private Vector3 axialToPixel(AxialCoordinate location)
