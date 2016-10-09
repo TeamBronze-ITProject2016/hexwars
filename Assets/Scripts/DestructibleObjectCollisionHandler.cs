@@ -7,8 +7,14 @@ namespace TeamBronze.HexWars
     {
         void OnCollisionEnter2D(Collision2D collision)
         {
-            /* TODO: Add points to player */
-            PhotonNetwork.Destroy(gameObject);
+            if (collision.collider.gameObject.tag == "Triangle")
+            {
+                PhotonNetwork.Destroy(gameObject);
+
+                // Update points for attacking player
+                PhotonView attackingView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);
+                attackingView.RPC("updateLocalPointsDestructable", PhotonPlayer.Find(attackingView.owner.ID));
+            }
         }
     }
 }
