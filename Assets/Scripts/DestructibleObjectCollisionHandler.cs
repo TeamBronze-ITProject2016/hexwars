@@ -9,7 +9,8 @@ namespace TeamBronze.HexWars
         {
             if (collision.collider.gameObject.tag == "Triangle")
             {
-                PhotonNetwork.Destroy(gameObject);
+				PhotonView destroyedObject = PhotonView.Get (gameObject);
+				destroyedObject.RPC ("PunFadeOut", PhotonTargets.All);
 
                 // Update points for attacking player
                 PhotonView attackingView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);
