@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/**
+ * Logic taken from Itsa from Unity3D forums
+ * http://answers.unity3d.com/questions/716086/spin-a-2d-object-with-mouse-drag.html
+ **/
+
 public class SpinLogic : MonoBehaviour {
 
 	float deltaRotation;
 	float previousRotation;
 	float currentRotation;
-
-	public float rotationSpeed = 0.5f;
+	public float maxRotateSpeed = 50f;
 
 	// Use this for initialization
 	void Start () 
@@ -26,7 +30,13 @@ public class SpinLogic : MonoBehaviour {
 			else if(Input.GetMouseButton(0))
 			{
 				currentRotation = angleBetweenPoints( gameObject.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition) );
-				deltaRotation = rotationSpeed * Mathf.DeltaAngle( currentRotation, previousRotation );
+				deltaRotation = Mathf.DeltaAngle( currentRotation, previousRotation );
+				if (deltaRotation > maxRotateSpeed) {
+					deltaRotation = maxRotateSpeed;
+				}
+				if (deltaRotation < -maxRotateSpeed) {
+					deltaRotation = -maxRotateSpeed;
+				}
 				previousRotation = currentRotation;
 				gameObject.transform.Rotate(Vector3.back, deltaRotation);
 			}
