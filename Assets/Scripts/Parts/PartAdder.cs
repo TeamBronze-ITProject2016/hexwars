@@ -32,22 +32,22 @@ namespace TeamBronze.HexWars
                 int rand = Random.Range(0, 2);
                 if (rand == 1)
                 {
-                    addPart(new AxialCoordinate { x = 1, y = 0 }, trianglePart, -1);
-                    addPart(new AxialCoordinate { x = 0, y = 1 }, trianglePart, -1);
-                    addPart(new AxialCoordinate { x = -1, y = 1 }, trianglePart, -1);
-                    addPart(new AxialCoordinate { x = -1, y = 0 }, trianglePart, -1);
-                    addPart(new AxialCoordinate { x = 0, y = -1 }, trianglePart, -1);
-                    addPart(new AxialCoordinate { x = 1, y = -1 }, trianglePart, -1);
+                    addPart(new AxialCoordinate { x = 1, y = 0 }, "Triangle");
+                    addPart(new AxialCoordinate { x = 0, y = 1 }, "Triangle");
+                    addPart(new AxialCoordinate { x = -1, y = 1 }, "Triangle");
+                    addPart(new AxialCoordinate { x = -1, y = 0 }, "Triangle");
+                    addPart(new AxialCoordinate { x = 0, y = -1 }, "Triangle");
+                    addPart(new AxialCoordinate { x = 1, y = -1 }, "Triangle");
                 }
                 else
                 {
 
-                    addPart(new AxialCoordinate { x = 1, y = 0 }, hexagonPart, -0);
-                    addPart(new AxialCoordinate { x = 0, y = 1 }, hexagonPart, -0);
-                    addPart(new AxialCoordinate { x = -1, y = 1 }, hexagonPart, -0);
-                    addPart(new AxialCoordinate { x = -1, y = 0 }, hexagonPart, -0);
-                    addPart(new AxialCoordinate { x = 0, y = -1 }, hexagonPart, -0);
-                    addPart(new AxialCoordinate { x = 1, y = -1 }, hexagonPart, 0);
+                    addPart(new AxialCoordinate { x = 1, y = 0 }, "Hexagon");
+                    addPart(new AxialCoordinate { x = 0, y = 1 }, "Hexagon");
+                    addPart(new AxialCoordinate { x = -1, y = 1 }, "Hexagon");
+                    addPart(new AxialCoordinate { x = -1, y = 0 }, "Hexagon");
+                    addPart(new AxialCoordinate { x = 0, y = -1 }, "Hexagon");
+                    addPart(new AxialCoordinate { x = 1, y = -1 }, "Hexagon");
                 }
 
             }
