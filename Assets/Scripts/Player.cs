@@ -29,6 +29,11 @@ namespace TeamBronze.HexWars
         public int score = 0;
         public int points = 0;
 
+		public float angle;
+
+		[Tooltip("0: Touch to move, 1: Joystick, drag to rotate")]
+		public int controlMode = 1;
+
         /*Initialise*/
         void Start()
         {
@@ -57,9 +62,13 @@ namespace TeamBronze.HexWars
 
             if (inputManager.IsActive())
             {
-                Vector2 coordinate = inputManager.GetPos();
-                RotateToPoint(coordinate);
-                MoveForward();
+				if (controlMode == 0) {
+					Vector2 coordinate = inputManager.GetPos ();
+					RotateToPoint (coordinate);
+					MoveForward ();
+				} if (controlMode ==1) {
+					gameObject.GetComponent<SpinLogic> ().spinUpdate ();
+				}
             }
         } 
 
