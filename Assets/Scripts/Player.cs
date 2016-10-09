@@ -21,12 +21,21 @@ namespace TeamBronze.HexWars
         [Tooltip("Rotation speed of the player (constant rate)")]
         public float rotationSpeed;
 
+        [Tooltip("The minimum x and y positions that the player is allowed to be at")]
+        public Vector2 minBound = new Vector2(-50.0f, -50.0f);
+
+        [Tooltip("The maximum x and y positions that the player is allowed to be at")]
+        public Vector2 maxBound = new Vector2(50.0f, 50.0f);
+
+        [HideInInspector]
         public Rigidbody2D rb;
-        private InputManager inputManager; /* Need to fix namespaces */
 
-        public int score = 0;
+        [HideInInspector]
         public int points = 0;
+        public int score = 0;
 
+        private InputManager inputManager; /* Need to fix namespaces */
+        
 		public float angle;
 
 		[Tooltip("0: Touch to move, 1: Joystick, drag to rotate")]
@@ -35,9 +44,11 @@ namespace TeamBronze.HexWars
         /*Initialise*/
         void Start()
         {
-			if (photonView.isMine) {
+			if (photonView.isMine)
+            {
 				gameObject.tag = "LocalPlayer";
 			}
+
             rb = GetComponent<Rigidbody2D>();
             inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
             ReplayManager.registerGameObject(this.gameObject);
@@ -99,6 +110,21 @@ namespace TeamBronze.HexWars
 				rotateDir = 1;
 
 			transform.RotateAround(transform.position, Vector3.forward, rotateDir * rotationSpeed * Time.deltaTime);
+        }
+
+        void KeepInBoundary()
+        {
+            if (transform.position.x < minBound.x)
+                transform.position = new Vector2(minBound.x, transform.position.y);
+
+            if (transform.position.y < minBound.y)
+                transform.position = new Vector2(transform.position.x, minBound.y);
+
+            if (transform.position.x > maxBound.x)
+                transform.position = new Vector2(maxBound.x, transform.position.y);
+
+            if (transform.position.y > maxBound.y)
+                transform.position = new Vector2(transform.position.x, maxBound.y);
         }
 
 		// Normalizes angle to 0 degrees to 360 degrees
