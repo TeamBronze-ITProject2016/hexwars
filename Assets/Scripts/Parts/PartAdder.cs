@@ -53,28 +53,6 @@ namespace TeamBronze.HexWars
             }
         }
 
-        public void addPart(AxialCoordinate location, GameObject partType, int type)
-        {
-            // NOTE: type = 1 if player part. type = 0 if hexagon part. type = -1 if triangle part
-            // Add a part to both the PartData, and the PhotonNetwork using Instantiate
-            if(hexData.checkPart(location))
-            {
-                // Only add axial rotation if the part is a triangle
-                Quaternion rotation = player.shape.transform.rotation;
-                if (type == -1)
-                    rotation *= axialToRotation(location);
-
-                // Instantiate a new part
-                GameObject newPart = PhotonNetwork.Instantiate(partType.name, axialToPixel(location), rotation, 0);
-
-                // Add the part as a child of the player hexagon
-                newPart.transform.parent = player.shape.transform;
-                Part part = new Part {shape=newPart, type=type};
-                hexData.addPart(location, part);
-            }
-
-        }
-
         public void addPart(AxialCoordinate location, string part)
         {
             // NOTE: type = 1 if player part. type = 0 if hexagon part. type = -1 if triangle part
