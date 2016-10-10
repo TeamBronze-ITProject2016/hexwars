@@ -70,16 +70,7 @@ namespace TeamBronze.HexWars
 
             if (inputManager.IsActive())
             {
-                if (controlMode == 0)
-                {
-                    Vector2 coordinate = inputManager.GetPos();
-                    RotateToPoint(coordinate);
-                    MoveForward();
-                }
-                if (controlMode == 1)
-                {
-                    gameObject.GetComponent<SpinLogic>().spinUpdate();
-                }
+                gameObject.GetComponent<SpinLogic>().spinUpdate();
             }
 
             KeepInBoundary();

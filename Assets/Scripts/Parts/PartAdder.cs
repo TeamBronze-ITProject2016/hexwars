@@ -29,7 +29,7 @@ namespace TeamBronze.HexWars
             {
                 player = new Part { shape = GameObject.FindGameObjectWithTag("LocalPlayer"), type = 1 };
                 hexData.addPart(playerLocation, player);
-                addPart(new AxialCoordinate { x = 1, y = 0 }, "Triangle");
+                addPart(new AxialCoordinate { x = -1, y = 0 }, "Triangle");
             }
         }
 
