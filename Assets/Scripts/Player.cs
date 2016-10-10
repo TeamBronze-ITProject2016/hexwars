@@ -66,7 +66,9 @@ namespace TeamBronze.HexWars
 
             if (inputManager.IsActive())
             {
-                gameObject.GetComponent<SpinLogic>().spinUpdate();
+                //gameObject.GetComponent<SpinLogic>().spinUpdate();
+                MoveForward();
+                RotateToPoint(inputManager.GetPos());
             }
 
             KeepInBoundary();

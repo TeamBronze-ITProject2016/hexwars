@@ -3,13 +3,13 @@ using System.Collections;
 
 namespace TeamBronze.HexWars
 {
-    public class DestructibleObjectCollisionHandler : MonoBehaviour
+    public class DestructibleObjectCollisionHandler : Photon.MonoBehaviour
     {
         void OnCollisionEnter2D(Collision2D collision)
         {
             if (collision.collider.gameObject.tag == "Triangle")
             {
-				PhotonView destroyedObject = PhotonView.Get (gameObject);
+                PhotonView destroyedObject = photonView;
 				destroyedObject.RPC ("PunFadeOut", PhotonTargets.All);
 
                 // Update points for attacking player
