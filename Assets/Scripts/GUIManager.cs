@@ -34,6 +34,8 @@ namespace TeamBronze.HexWars {
 
         /*Voice chat*/
         private bool voiceLast = false;
+        private float voiceToggleTime = -1.0f;
+        private const float VOICE_TOGGLE_DELAY = 0.25f;
 
         /*Classes needed to draw GUI.*/
         private InputManager inputManager;
@@ -92,19 +94,15 @@ namespace TeamBronze.HexWars {
                     /*Voice chat button and events*/
                     float btnWidth = Screen.width * GUI_BUTTON_WIDTHFACTOR;
                     float btnHeight = Screen.width * GUI_BUTTON_HEIGHTFACTOR;
-                    bool voiceThis = false;
 
                     if (GUI.RepeatButton(new Rect(0.0f, 0.0f, btnWidth, btnHeight), "Voice Chat")) {
-                        voiceThis = true;
+                        voiceToggleTime = Time.time;
+
                         if (!voiceLast) {
                             voiceLast = true;
                             EventManager.triggerEvent("voiceEnable");
                         }
-                    }
-
-                    /*If we are not holding the voice chat button this frame and we were
-                    holding it last frame, we have released it - trigger event*/
-                    if (!voiceThis && voiceLast) {
+                    } else if (voiceLast && Time.time - voiceToggleTime > VOICE_TOGGLE_DELAY){
                         voiceLast = false;
                         EventManager.triggerEvent("voiceDisable");
                     }
