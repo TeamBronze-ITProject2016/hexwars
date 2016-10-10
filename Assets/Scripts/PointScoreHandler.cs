@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Networking;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+#if UNITY_5_3
 using UnityEngine.Experimental.Networking;
+#else
+using UnityEngine.Networking;
+#endif
 
 namespace TeamBronze.HexWars
 {
@@ -40,7 +43,7 @@ namespace TeamBronze.HexWars
             var bf = new BinaryFormatter();
             List<AxialCoordinate> listToDestroy = (List<AxialCoordinate>)bf.Deserialize(ins);
 
-            // Score for each object destroyed
+            // Score for each object destoryed
             foreach (AxialCoordinate coord in listToDestroy)
             {
                 GameObject obj = partAdder.hexData.getPart(coord).Value.shape;
