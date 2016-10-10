@@ -44,7 +44,7 @@ namespace TeamBronze.HexWars
             var bf = new BinaryFormatter();
             List<AxialCoordinate> listToDestroy = (List<AxialCoordinate>)bf.Deserialize(ins);
 
-            // Score for each object destoryed
+            // Score for each object destroyed
             foreach (AxialCoordinate coord in listToDestroy)
             {
                 GameObject obj = partAdder.hexData.getPart(coord).Value.shape;
