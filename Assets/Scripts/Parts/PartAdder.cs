@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TeamBronze.HexWars
 {
@@ -78,13 +79,41 @@ namespace TeamBronze.HexWars
 
         }
 
-        public void addPart(Vector3 location, string part)
+        /*public void addPart(Vector3 location, string part)
         {
             // Do a search for the hexagon closest to location with at least one open slot
             AxialCoordinate newLocation = hexData.getLocation(location);
             newLocation = hexData.getEmptyNeighbors(newLocation)[0];
 
             addPart(newLocation, part);
+        }*/
+
+        public void addRandomPart()
+        {
+            // Get a random location
+            foreach (AxialCoordinate location in RandomKeys(hexData.dataTable).Take(1))
+            {
+                List<AxialCoordinate> randLocations = hexData.getEmptyNeighbors(location);
+                System.Random rnd = new System.Random();
+                string part = "Triangle";
+                if (Random.Range(0, 2) == 1)
+                    part = "Hexagon";
+                
+                addPart(randLocations[rnd.Next(rnd.Next(randLocations.Count))], part);
+            }
+
+        }
+
+        // From http://stackoverflow.com/questions/1028136/random-entry-from-dictionary
+        public IEnumerable<TKey> RandomKeys<TKey, TValue>(IDictionary<TKey, TValue> dict)
+        {
+            System.Random rand = new System.Random();
+            List<TKey> keys = Enumerable.ToList(dict.Keys);
+            int size = dict.Count;
+            while (true)
+            {
+                yield return keys[rand.Next(size)];
+            }
         }
 
         public void removePart(AxialCoordinate location)

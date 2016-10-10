@@ -40,12 +40,9 @@ namespace TeamBronze.HexWars
             player.transform.position = Vector3.zero;
             player.transform.rotation = Quaternion.Euler(Vector3.zero);
 
-            // If user clicks on a part of the screen, attach a hexagon to the closest part of that player
-            if (!inputManager.IsActive()) return;
+            partAdder.addRandomPart();
 
-            Vector2 pos = -inputManager.lastMoveVector();
-
-            partAdder.addPart(pos, "Hexagon");
+            player.GetComponent<Player>().points -= 50;
         }
     }
 }
