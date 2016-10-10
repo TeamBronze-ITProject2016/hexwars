@@ -86,6 +86,8 @@ namespace TeamBronze.HexWars
         {
             // Do a search for the hexagon closest to location with at least one open slot
             AxialCoordinate newLocation = hexData.getLocation(location);
+
+            //TODO: Find closest neighbor to vector
             newLocation = hexData.getEmptyNeighbors(newLocation)[0];
 
             addPart(newLocation, part);
