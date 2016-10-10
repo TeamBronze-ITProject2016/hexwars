@@ -36,13 +36,27 @@ namespace TeamBronze.HexWars
                 store.SetActive(true);
         }
 
-        public void storeActive()
+        public void addHexagon()
         {
             // freeze the player until a part has been attached
             player.transform.position = Vector3.zero;
             player.transform.rotation = Quaternion.Euler(Vector3.zero);
 
-            partAdder.addRandomPart();
+            partAdder.addRandomPart("Hexagon");
+
+            player.GetComponent<Player>().points -= 50;
+
+            store.SetActive(false);
+        }
+
+
+        public void addTriangle()
+        {
+            // freeze the player until a part has been attached
+            player.transform.position = Vector3.zero;
+            player.transform.rotation = Quaternion.Euler(Vector3.zero);
+
+            partAdder.addRandomPart("Triangle");
 
             player.GetComponent<Player>().points -= 50;
 

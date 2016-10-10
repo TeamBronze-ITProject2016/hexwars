@@ -92,16 +92,20 @@ namespace TeamBronze.HexWars
             addPart(newLocation, part);
         }*/
 
-        public void addRandomPart()
+        public void addRandomPart(string part="None")
         {
             // Get a random location
             foreach (AxialCoordinate location in RandomKeys(hexData.dataTable).Take(1))
             {
                 List<AxialCoordinate> randLocations = hexData.getEmptyNeighbors(location);
                 System.Random rnd = new System.Random();
-                string part = "Triangle";
-                if (Random.Range(0, 2) == 1)
-                    part = "Hexagon";
+
+                if (part == "None")
+                {
+                    part = "Triangle";
+                    if (Random.Range(0, 2) == 1)
+                        part = "Hexagon";
+                }
 
                 addPart(randLocations[rnd.Next(rnd.Next(randLocations.Count))], part);
             }
