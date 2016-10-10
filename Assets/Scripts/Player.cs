@@ -38,9 +38,6 @@ namespace TeamBronze.HexWars
         
 		public float angle;
 
-		[Tooltip("0: Touch to move, 1: Joystick, drag to rotate")]
-		public int controlMode = 1;
-
         /*Initialise*/
         void Start()
         {
