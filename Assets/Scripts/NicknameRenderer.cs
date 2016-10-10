@@ -19,8 +19,20 @@ namespace TeamBronze.HexWars
             Text textComponent = textObj.AddComponent<Text>();
             textComponent.text = photonView.owner.name;
             textComponent.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-            textComponent.color = Color.black;
+            textComponent.fontSize = 14;
+            textComponent.fontStyle = FontStyle.Bold;
+            textComponent.color = Color.white;
             textComponent.alignment = TextAnchor.MiddleCenter;
+
+            Outline outlineComponent = textObj.AddComponent<Outline>();
+            outlineComponent.effectDistance *= 0.75f;
+            outlineComponent.effectColor = Color.black;
+            outlineComponent.useGraphicAlpha = false;
+
+            Outline outlineComponent2 = textObj.AddComponent<Outline>();
+            outlineComponent2.effectDistance *= 0.75f;
+            outlineComponent2.effectColor = Color.black;
+            outlineComponent2.useGraphicAlpha = false;
         }
 
         void LateUpdate()
