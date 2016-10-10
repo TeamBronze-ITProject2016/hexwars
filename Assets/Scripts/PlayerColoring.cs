@@ -5,10 +5,10 @@ namespace TeamBronze.HexWars
 {
     public class PlayerColoring : Photon.PunBehaviour
     {
-        private Color[] colors;
-
         public Color baseColor = new Color(0.5f, 0.5f, 0.5f);
         public float colorStrength = 0.5f;
+
+        private Color[] colors;
 
         public override void OnPhotonInstantiate(PhotonMessageInfo info)
         {
@@ -24,7 +24,7 @@ namespace TeamBronze.HexWars
 
             int seed = GetSeed(photonView.owner.name);
             System.Random random = new System.Random(seed);
-            Color playerColor = colors[random.Next(colors.Length - 1)];
+            Color playerColor = colors[random.Next(colors.Length)];
             GetComponent<SpriteRenderer>().color = playerColor;
         }
 
