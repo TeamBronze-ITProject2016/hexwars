@@ -17,9 +17,9 @@ namespace TeamBronze.HexWars
 				// Getting part adder class
 				PartAdder partAdder = GameObject.FindGameObjectWithTag ("PartAdder").GetComponent<PartAdder> ();
 				// Gets the axialcoord of the object to destroy
-                AxialCoordinate locationOfObject = partAdder.hexData.getLocation(this.gameObject.transform.position);
+                AxialCoordinate? locationOfObject = partAdder.hexData.getLocation(this.gameObject.transform.position);
 				           
-                List<AxialCoordinate> listToDestroy = partAdder.hexData.findDestroyedPartLocations(locationOfObject);
+                List<AxialCoordinate> listToDestroy = partAdder.hexData.findDestroyedPartLocations((AxialCoordinate)locationOfObject);
 
                 // Update score/points for attacking player
                 PhotonView attackingView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);

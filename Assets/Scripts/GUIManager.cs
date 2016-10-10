@@ -126,7 +126,7 @@ namespace TeamBronze.HexWars {
 
                     /*Draw Joystick*/
                     if (joystickEnabled) {
-                        joystickOff = inputManager.lastMoveVectorUnit() * joystickMoveRadius;
+                        joystickOff = inputManager.lastMoveVector() * joystickMoveRadius;
                         GUI.color = Color.white;
                         GUI.DrawTexture(new Rect(0.0f, Screen.height -
                             JOYSTICK_OUTER_RADIUS, JOYSTICK_OUTER_RADIUS,
