@@ -10,7 +10,7 @@ namespace TeamBronze.HexWars
         // Stores the prefabs for each gameobject part
         public GameObject hexagonPart;
         public GameObject trianglePart;
-        
+
         // Distance of hexagon parts from each other
         public float size = 1.23f;
 
@@ -18,7 +18,7 @@ namespace TeamBronze.HexWars
 
         private Part player;
         private AxialCoordinate playerLocation = new AxialCoordinate { x = 0, y = 0 };
-        
+
         void Start()
         {
             InvokeRepeating("connectPartAdder", 0.2f, 1.0f);
@@ -30,35 +30,41 @@ namespace TeamBronze.HexWars
             {
                 player = new Part { shape = GameObject.FindGameObjectWithTag("LocalPlayer"), type = 1 };
                 hexData.addPart(playerLocation, player);
-                int rand = Random.Range(0, 2);
-                if (rand == 1)
-                {
-                    addPart(new AxialCoordinate { x = 1, y = 0 }, trianglePart, -1);
-                    addPart(new AxialCoordinate { x = 0, y = 1 }, trianglePart, -1);
-                    addPart(new AxialCoordinate { x = -1, y = 1 }, trianglePart, -1);
-                    addPart(new AxialCoordinate { x = -1, y = 0 }, trianglePart, -1);
-                    addPart(new AxialCoordinate { x = 0, y = -1 }, trianglePart, -1);
-                    addPart(new AxialCoordinate { x = 1, y = -1 }, trianglePart, -1);
-                }
-                else
-                {
-
-                    addPart(new AxialCoordinate { x = 1, y = 0 }, hexagonPart, -0);
-                    addPart(new AxialCoordinate { x = 0, y = 1 }, hexagonPart, -0);
-                    addPart(new AxialCoordinate { x = -1, y = 1 }, hexagonPart, -0);
-                    addPart(new AxialCoordinate { x = -1, y = 0 }, hexagonPart, -0);
-                    addPart(new AxialCoordinate { x = 0, y = -1 }, hexagonPart, -0);
-                    addPart(new AxialCoordinate { x = 1, y = -1 }, hexagonPart, 0);
-                }
-
+                addPart(new AxialCoordinate { x = -1, y = 0 }, "Triangle");
             }
         }
 
-        public void addPart(AxialCoordinate location, GameObject partType, int type)
+        public void addPart(AxialCoordinate location, string part)
         {
             // NOTE: type = 1 if player part. type = 0 if hexagon part. type = -1 if triangle part
             // Add a part to both the PartData, and the PhotonNetwork using Instantiate
-            if(hexData.checkPart(location))
+
+            GameObject partType;
+            int type;
+
+            if (part == "Hexagon")
+            {
+                partType = hexagonPart;
+                type = 0;
+            }
+            else if (part == "Triangle")
+            {
+                partType = trianglePart;
+                type = -1;
+            }
+            else if (part == "Player")
+            {
+                partType = hexagonPart;
+                type = 1;
+            }
+            else
+            {
+                Debug.LogError("Unknown part added: " + part);
+                return;
+            }
+
+
+            if (hexData.checkPart(location))
             {
                 // Only add axial rotation if the part is a triangle
                 Quaternion rotation = player.shape.transform.rotation;
@@ -70,12 +76,12 @@ namespace TeamBronze.HexWars
 
                 // Add the part as a child of the player hexagon
                 newPart.transform.parent = player.shape.transform;
-                Part part = new Part {shape=newPart, type=type};
-                hexData.addPart(location, part);
+                Part addedPart = new Part { shape = newPart, type = type };
+                hexData.addPart(location, addedPart);
             }
 
         }
-        
+
         /*public void addPart(Vector3 location, string part)
         {
             // Do a search for the hexagon closest to location with at least one open slot
@@ -95,7 +101,7 @@ namespace TeamBronze.HexWars
                 string part = "Triangle";
                 if (Random.Range(0, 2) == 1)
                     part = "Hexagon";
-                
+
                 addPart(randLocations[rnd.Next(rnd.Next(randLocations.Count))], part);
             }
 
@@ -114,10 +120,10 @@ namespace TeamBronze.HexWars
         }
 
         public void removePart(AxialCoordinate location)
-		{
-			PhotonView destroyedObject = PhotonView.Get(hexData.getPart(location).Value.shape);
-			hexData.removePart(location);
-			destroyedObject.RPC ("PunFadeOut", PhotonTargets.All);
+        {
+            PhotonView destroyedObject = PhotonView.Get(hexData.getPart(location).Value.shape);
+            hexData.removePart(location);
+            destroyedObject.RPC("PunFadeOut", PhotonTargets.All);
 
             //PhotonNetwork.Destroy(((Part)hexData.getPart(location)).shape);
         }
@@ -140,7 +146,7 @@ namespace TeamBronze.HexWars
             List<AxialCoordinate> neighbors = hexData.getFullHexNeighbors(location);
 
             // Step 2: Pick the neighbor with the x+y value closest to 0 as the one to rotate to. This ensures that the part is always facing outwards
-            AxialCoordinate lowestNeighbor = new AxialCoordinate { x = int.MaxValue/3, y = int.MaxValue/3 };
+            AxialCoordinate lowestNeighbor = new AxialCoordinate { x = int.MaxValue / 3, y = int.MaxValue / 3 };
             foreach (AxialCoordinate neighbor in neighbors)
                 if (neighbor.x + neighbor.y < lowestNeighbor.x + lowestNeighbor.y)
                     lowestNeighbor = neighbor;
