@@ -58,6 +58,9 @@ namespace TeamBronze.HexWars
                 Vector2 direction = new Vector2(-(float)Mathf.Cos(angleInRad), -(float)Mathf.Sin(angleInRad));
                 rb.AddForce(direction * startingForce);
                 rb.AddTorque(RandomNegOrPos() * startingTorque);
+
+                if(destructibleObj.GetComponent<PolygonCollider2D>().Cast(Vector2.zero, new RaycastHit2D[1], 0) > 0)
+                    PhotonNetwork.Destroy(destructibleObj);
             }
         }
 
