@@ -41,7 +41,7 @@ namespace TeamBronze.HexWars
 
             GameObject partType;
             int type;
-
+            
             if (part == "Hexagon")
             {
                 partType = hexagonPart;
@@ -62,7 +62,6 @@ namespace TeamBronze.HexWars
                 Debug.LogError("Unknown part added: " + part);
                 return;
             }
-
 
             if (hexData.checkPart(location))
             {

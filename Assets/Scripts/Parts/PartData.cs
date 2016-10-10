@@ -89,6 +89,7 @@ namespace TeamBronze.HexWars
         public List<AxialCoordinate> getEmptyNeighbors(AxialCoordinate location)
         {
             List<AxialCoordinate> empty = new List<AxialCoordinate>();
+            if (getPart(location).Value.type == -1) return empty;
             foreach (AxialCoordinate direction in directions)
             {
                 AxialCoordinate neighbor = new AxialCoordinate
@@ -124,18 +125,16 @@ namespace TeamBronze.HexWars
             return type;
         }
 
-        public AxialCoordinate? getLocation(Vector3 location)
+        public AxialCoordinate getLocation(Vector3 location)
         {
-            // Given a pixel corodinate, return the AxialCoordinate location of the closest part
+            // Given a pixel coordinate, return the AxialCoordinate location of the closest part
 
-            float minDistance = 100f;
-            AxialCoordinate? minCoordinate = null;
-
-            Vector3 playerPos = getPart(player).Value.shape.transform.position;
+            float minDistance = float.MaxValue;
+            AxialCoordinate minCoordinate = player;
 
             foreach (KeyValuePair<AxialCoordinate, Part?> part in dataTable)
             {
-                if(part.Value != null)
+                if (part.Value != null)
                 {
                     float distance = Vector3.Distance(location, part.Value.Value.shape.transform.position);
                     if (distance < minDistance)
@@ -145,7 +144,8 @@ namespace TeamBronze.HexWars
                     }
                 }
             }
-            
+            Debug.Log("min coordinate" + minCoordinate);
+
             return minCoordinate;
         }
 

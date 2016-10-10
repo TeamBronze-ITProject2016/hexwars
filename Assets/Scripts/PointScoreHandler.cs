@@ -1,14 +1,10 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-#if UNITY_5_3
 using UnityEngine.Experimental.Networking;
-#else
-using UnityEngine.Networking;
-#endif
 
 namespace TeamBronze.HexWars
 {
@@ -77,7 +73,6 @@ namespace TeamBronze.HexWars
 
             UnityWebRequest request = UnityWebRequest.Get(url + name + score);
             request.Send();
-
         }
     }
 }
