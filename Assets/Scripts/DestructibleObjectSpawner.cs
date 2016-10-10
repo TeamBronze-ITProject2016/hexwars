@@ -26,8 +26,10 @@ namespace TeamBronze.HexWars
         [Tooltip("Maximum y bound")]
         public float y2 = 50.0f;
 
+        [Tooltip("The magnitude of the force that a destructible object spawns with")]
         public float startingForce = 20.0f;
 
+        [Tooltip("The magnitude of the torque that a destructible object spawns with")]
         public float startingTorque = 5.0f;
 
         private float t;
@@ -55,7 +57,7 @@ namespace TeamBronze.HexWars
                 float angleInRad = rb.rotation * Mathf.Deg2Rad;
                 Vector2 direction = new Vector2(-(float)Mathf.Cos(angleInRad), -(float)Mathf.Sin(angleInRad));
                 rb.AddForce(direction * startingForce);
-                rb.AddTorque(startingTorque);
+                rb.AddTorque(RandomNegOrPos() * startingTorque);
             }
         }
 
@@ -63,6 +65,14 @@ namespace TeamBronze.HexWars
         {
             /* TODO: Make sure position doesn't collide with anything */
             return new Vector3(Random.Range(x1, x2), Random.Range(y1, y2), 0.0f);
+        }
+
+        int RandomNegOrPos()
+        {
+            if (Random.value > 0.5)
+                return -1;
+            else
+                return 1;
         }
     }
 }

@@ -1,15 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DestructibleObjectBoundary : MonoBehaviour {
+namespace TeamBronze.HexWars
+{
+    public class DestructibleObjectBoundary : Photon.MonoBehaviour
+    {
+        public Vector2 minBound = new Vector2(-50.0f, -50.0f);
+        public Vector2 maxBound = new Vector2(50.0f, 50.0f);
 
-	void Start()
-    {
-	
-	}
-	
-	void Update()
-    {
-	
-	}
+        void Update()
+        {
+            if(    transform.position.x < minBound.x
+                || transform.position.y < minBound.y
+                || transform.position.x > maxBound.x
+                || transform.position.y > maxBound.y)
+            {
+                photonView.RPC("PunFadeOut", PhotonTargets.All);
+            }
+        }
+    }
 }
