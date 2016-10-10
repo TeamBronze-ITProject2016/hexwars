@@ -106,6 +106,24 @@ namespace TeamBronze.HexWars
 			transform.RotateAround(transform.position, Vector3.forward, rotateDir * rotationSpeed * Time.deltaTime);
         }
 
+        /* Move using joystick */
+        bool JoyStickMove()
+        {
+            VirtualJoystick joystick = GameObject.FindGameObjectWithTag("Joystick").GetComponent<VirtualJoystick>();
+
+            Vector3 direction = Vector3.zero;
+
+            direction.x = joystick.getHorizontal();
+            direction.y = joystick.getVertical();
+
+            if (direction.x == 0 && direction.y == 0)
+                return false;
+
+            rb.AddForce(direction * acceleration * rb.mass);
+
+            return true;
+        }
+
         void KeepInBoundary()
         {
             if (transform.position.x < minBound.x)
