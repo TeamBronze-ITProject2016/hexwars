@@ -67,7 +67,10 @@ namespace TeamBronze.HexWars
 
             if (inputManager.IsActive())
             {
-                gameObject.GetComponent<SpinLogic>().spinUpdate();
+                if (!JoyStickMove())
+                {
+                    gameObject.GetComponent<SpinLogic>().spinUpdate();
+                }
             }
 
             KeepInBoundary();
@@ -103,6 +106,24 @@ namespace TeamBronze.HexWars
 				rotateDir = 1;
 
 			transform.RotateAround(transform.position, Vector3.forward, rotateDir * rotationSpeed * Time.deltaTime);
+        }
+
+        /* Move using joystick */
+        bool JoyStickMove()
+        {
+            VirtualJoystick joystick = GameObject.FindGameObjectWithTag("Joystick").GetComponent<VirtualJoystick>();
+
+            Vector3 direction = Vector3.zero;
+
+            direction.x = joystick.getHorizontal();
+            direction.y = joystick.getVertical();
+
+            if (direction.x == 0 && direction.y == 0)
+                return false;
+
+            rb.AddForce(direction * acceleration * rb.mass);
+
+            return true;
         }
 
         void KeepInBoundary()
