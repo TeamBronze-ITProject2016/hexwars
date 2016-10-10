@@ -29,8 +29,7 @@ namespace TeamBronze.HexWars
 
         [HideInInspector]
         public Rigidbody2D rb;
-
-        [HideInInspector]
+        
         public int points = 0;
         public int score = 0;
 

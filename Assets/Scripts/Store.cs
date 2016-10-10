@@ -14,6 +14,8 @@ namespace TeamBronze.HexWars
         public GameObject hexagonStore;
         public GameObject triangleStore;
 
+        public GameObject store;
+
         void Start()
         {
             StartCoroutine(LateStart());
@@ -30,19 +32,35 @@ namespace TeamBronze.HexWars
         // Update is called once per frame
         void Update()
         {
-            if(player.GetComponent<Player>().points > 50)
-                storeActive();
+            if(player.GetComponent<Player>().points >= 50 && !store.GetActive())
+                store.SetActive(true);
         }
 
-        void storeActive()
+        public void addHexagon()
         {
-            // If the store is active, freeze the player until a part has been attached
+            // freeze the player until a part has been attached
             player.transform.position = Vector3.zero;
             player.transform.rotation = Quaternion.Euler(Vector3.zero);
 
-            partAdder.addRandomPart();
+            partAdder.addRandomPart("Hexagon");
 
             player.GetComponent<Player>().points -= 50;
+
+            store.SetActive(false);
+        }
+
+
+        public void addTriangle()
+        {
+            // freeze the player until a part has been attached
+            player.transform.position = Vector3.zero;
+            player.transform.rotation = Quaternion.Euler(Vector3.zero);
+
+            partAdder.addRandomPart("Triangle");
+
+            player.GetComponent<Player>().points -= 50;
+
+            store.SetActive(false);
         }
     }
 }
