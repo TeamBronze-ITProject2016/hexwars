@@ -63,6 +63,13 @@ namespace TeamBronze.HexWars
                 return;
             }
 
+            // Freeze the player until the part has been added
+            Vector3 playerLocation = player.shape.transform.position;
+            Quaternion playerRotation = player.shape.transform.rotation;
+
+            player.shape.transform.position = Vector3.zero;
+            player.shape.transform.rotation = Quaternion.Euler(Vector3.zero);
+
             if (hexData.checkPart(location))
             {
                 // Only add axial rotation if the part is a triangle
@@ -78,6 +85,9 @@ namespace TeamBronze.HexWars
                 Part addedPart = new Part { shape = newPart, type = type };
                 hexData.addPart(location, addedPart);
             }
+
+            player.shape.transform.position = playerLocation;
+            player.shape.transform.rotation = playerRotation;
 
         }
 

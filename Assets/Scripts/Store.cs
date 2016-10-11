@@ -40,10 +40,6 @@ namespace TeamBronze.HexWars
 
         public void addHexagon()
         {
-            // freeze the player until a part has been attached
-            player.transform.position = Vector3.zero;
-            player.transform.rotation = Quaternion.Euler(Vector3.zero);
-
             partAdder.addRandomPart("Hexagon");
 
             player.GetComponent<Player>().points -= storeMinimum;
@@ -54,10 +50,6 @@ namespace TeamBronze.HexWars
 
         public void addTriangle()
         {
-            // freeze the player until a part has been attached
-            player.transform.position = Vector3.zero;
-            player.transform.rotation = Quaternion.Euler(Vector3.zero);
-
             partAdder.addRandomPart("Triangle");
 
             player.GetComponent<Player>().points -= storeMinimum;
