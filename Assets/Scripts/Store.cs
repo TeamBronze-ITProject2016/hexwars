@@ -16,6 +16,8 @@ namespace TeamBronze.HexWars
 
         public GameObject store;
 
+        public int storeMinimum = 3;
+
         void Start()
         {
             StartCoroutine(LateStart());
@@ -32,7 +34,7 @@ namespace TeamBronze.HexWars
         // Update is called once per frame
         void Update()
         {
-            if (player.GetComponent<Player>().points >= 50 && !store.GetActive())
+            if (player.GetComponent<Player>().points >= storeMinimum && !store.GetActive())
                 store.SetActive(true);
         }
 
@@ -44,7 +46,7 @@ namespace TeamBronze.HexWars
 
             partAdder.addRandomPart("Hexagon");
 
-            player.GetComponent<Player>().points -= 50;
+            player.GetComponent<Player>().points -= storeMinimum;
 
             store.SetActive(false);
         }
@@ -58,7 +60,7 @@ namespace TeamBronze.HexWars
 
             partAdder.addRandomPart("Triangle");
 
-            player.GetComponent<Player>().points -= 50;
+            player.GetComponent<Player>().points -= storeMinimum;
 
             store.SetActive(false);
         }
