@@ -52,6 +52,8 @@ namespace TeamBronze.HexWars
         /*Called once per frame*/
         void FixedUpdate()
         {
+            JoyStickMove();
+
             if (!inputManager)
             {
                 Debug.Log("Player - Warning: Not initialised!");
@@ -65,8 +67,7 @@ namespace TeamBronze.HexWars
 
             if (inputManager.IsActive())
             {
-				if (!JoyStickMove())
-                	gameObject.GetComponent<SpinLogic>().spinUpdate();
+                	//
                 //MoveForward();
                 //RotateToPoint(inputManager.GetPos());
             }
@@ -115,6 +116,8 @@ namespace TeamBronze.HexWars
 
             direction.x = joystick.getHorizontal();
             direction.y = joystick.getVertical();
+
+            Debug.Log(direction);
 
             if (direction.x == 0 && direction.y == 0)
                 return false;
