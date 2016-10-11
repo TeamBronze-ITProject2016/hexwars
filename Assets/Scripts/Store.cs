@@ -25,7 +25,7 @@ namespace TeamBronze.HexWars
         
         IEnumerator LateStart()
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(3);
             inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
             partAdder = GameObject.FindGameObjectWithTag("PartAdder").GetComponent<PartAdder>();
             player = GameObject.FindGameObjectWithTag("LocalPlayer");
@@ -40,21 +40,29 @@ namespace TeamBronze.HexWars
 
         public void addHexagon()
         {
+
             partAdder.addRandomPart("Hexagon");
 
             player.GetComponent<Player>().points -= storeMinimum;
 
             store.SetActive(false);
+
+            PhotonView destroyedView = PhotonView.Get(player);
+            destroyedView.RPC("updateServerScore", PhotonPlayer.Find(destroyedView.owner.ID));
         }
 
 
         public void addTriangle()
         {
+
             partAdder.addRandomPart("Triangle");
 
             player.GetComponent<Player>().points -= storeMinimum;
 
             store.SetActive(false);
+
+            PhotonView destroyedView = PhotonView.Get(player);
+            destroyedView.RPC("updateServerScore", PhotonPlayer.Find(destroyedView.owner.ID));
         }
     }
 }

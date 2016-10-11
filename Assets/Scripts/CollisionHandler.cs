@@ -35,8 +35,8 @@ namespace TeamBronze.HexWars
 
                 /* TODO: Decide whether to do this locally or through server */
                 // Update score for destroyed player
-                // PhotonView destroyedView = PhotonView.Get(this);
-                // destroyedView.RPC("updateServerScore", PhotonPlayer.Find(destroyedView.owner.ID));
+                PhotonView destroyedView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);
+                destroyedView.RPC("updateServerScore", PhotonPlayer.Find(destroyedView.owner.ID));
 
                 foreach (AxialCoordinate location in listToDestroy)
                     partAdder.removePart(location);

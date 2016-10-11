@@ -31,7 +31,6 @@ namespace TeamBronze.HexWars
         public Rigidbody2D rb;
         
         public int points = 0;
-        public int score = 0;
 
         private InputManager inputManager; /* Need to fix namespaces */
         
