@@ -7,13 +7,16 @@ namespace TeamBronze.HexWars
     {
         void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.collider.gameObject.tag == "Triangle")
+            GameObject collisionObj = collision.collider.gameObject;
+
+            if (collisionObj.tag == "Triangle")
             {
                 GetComponent<LocalObjectFader>().FadeOut();
 
-                // Update points for attacking player
-                PhotonView attackingView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);
-                attackingView.RPC("updateLocalPointsDestructable", PhotonPlayer.Find(attackingView.owner.ID));
+                // Update points if local player destroyed
+                GameObject playerObj = collisionObj.transform.parent.gameObject;
+                if(playerObj.tag == "LocalPlayer")
+                    playerObj.GetComponent<PointScoreHandler>().updateLocalPointsDestructable();
             }
         }
     }
