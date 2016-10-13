@@ -20,9 +20,8 @@ public class LocalObjectFader : Photon.MonoBehaviour
 	public float fadeDelay = 0.0f; 
 	public float fadeTime = 0.5f; 
 	public bool fadeInOnStart = false; 
-	public bool fadeOutOnStart = false;
-	private bool logInitialFadeSequence = false; 
-
+	public bool fadeOutOnStart = true;
+	private bool logInitialFadeSequence = false;
 
 
 	// store colours
@@ -125,6 +124,7 @@ public class LocalObjectFader : Photon.MonoBehaviour
 				rendererObjects[i].enabled = false; 
 			}
 		}
+
         Destroy(gameObject);
 	}
 
