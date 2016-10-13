@@ -1,38 +1,39 @@
 ﻿/*ReplayManager.cs
 * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
-* Description: Handles storage and playback of replay data
-*/
+* Description: Handles storage and playback of replay data.*/
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace TeamBronze.HexWars
-{
+namespace TeamBronze.HexWars {
     /*Class which stores replay data and plays it back*/
     public class ReplayManager : MonoBehaviour {
 
+        private static bool DEBUG_REPLAYMANAGER = false;
+
         /*The length of the recorded replay.*/
-        private float replayLength = 0.0f;
+        private static float replayLength = 0.0f;
 
         /*The maximum possible length of a replay*/
         private const float MAX_REPLAY_LENGTH = 10.0f;
 
         /*The minimum time between data points in the replay*/
-        private const float  MIN_REPLAY_POINT_INTERVAL = 1.0f/60.0f; /*60 points/sec*/
+        private const float MIN_REPLAY_POINT_INTERVAL = 1.0f / 60.0f; /*60 points/sec*/
 
         /*Playback data*/
-        private bool playing = false;
-        private float playbackStart = -1.0f;
-        private float originalTimeScale = 1.0f;
-        private const float PLAYBACK_TIMESCALE = 0.5f;
+        private static bool playing = false;
+        private static float playbackStart = -1.0f;
+        private static float originalTimeScale = 1.0f;
+        private const float PLAYBACK_TIMESCALE = 1.0f;
 
         /*Replay data structure*/
-        private struct ReplayData{
+        private struct ReplayData {
             public Vector2 position;
             public Quaternion rotation;
             public float time;
 
-            public ReplayData(Vector2 pos, Quaternion rot, float time){
+            public ReplayData(Vector2 pos, Quaternion rot, float time) {
                 this.position = pos;
                 this.rotation = rot;
                 this.time = time;
@@ -40,16 +41,20 @@ namespace TeamBronze.HexWars
         };
 
         /*Maps game objects to replay data*/
-        private Dictionary<GameObject, ArrayList> replayDict;
+        private static Dictionary<GameObject, ArrayList> replayDict;
 
         /*Initialise Replay Manager*/
-        void Start () {
+        public static void init() {
             replayDict = new Dictionary<GameObject, ArrayList>();
+            EventManager.registerListener("replayStart", playback);
+
+            if (DEBUG_REPLAYMANAGER)
+                Debug.Log("ReplayManager::init() called.");
         }
 
         /*Find the closest data point in list to the given point. Returns the index of the
          * data point if successful or -1 if unsuccessful*/
-        int findClosestReplayData(ArrayList list, float time, float maxDist) {
+        private static int findClosestReplayData(ArrayList list, float time, float maxDist) {
             int closest = -1, left = 0, right = list.Count - 1;
             float deltaMax = float.PositiveInfinity;
 
@@ -57,21 +62,28 @@ namespace TeamBronze.HexWars
                 return closest;
 
             /*Modified binary search*/
-            while(true){
-                int midIndex = (left + right)/2;
+            while (true) {
+                int midIndex = (left + right) / 2;
                 ReplayData middle = (ReplayData)list[midIndex];
 
                 float delta = Mathf.Abs(middle.time - time);
 
+                //if (DEBUG_REPLAYMANAGER)
+                //    Debug.Log("Delta: " + delta + ", left: " + left + "right: "+ right + " midIndex: " + midIndex + " deltaMax: " + deltaMax + " time: " + time + " maxDist: " + maxDist + " middle time: " + middle.time);
+
                 /*If we're getting further away, return closest point*/
-                if(delta > deltaMax)
+                if (delta > deltaMax)
                     return closest;
 
                 /*Record closest data point within maximum distance*/
-                if(delta < deltaMax && delta <= maxDist){
+                if (delta < deltaMax && delta <= maxDist) {
                     deltaMax = Mathf.Abs(middle.time - time);
                     closest = midIndex;
                 }
+
+                /*Return closest point if left, right and middle have converged*/
+                if (left >= right)
+                    return closest;
 
                 if (middle.time < time) {
                     left = midIndex + 1;
@@ -82,37 +94,64 @@ namespace TeamBronze.HexWars
                 }
             }
         }
-        
+
+        void Start() {
+            ReplayManager.init();
+        }
+
+        void Update() {
+            ReplayManager.doUpdate();
+        }
+
         /*Update the stored replay data for all registered GameObjects.*/
-        void Update () {
+        public static void doUpdate() {
             if (replayDict == null) {
-                Debug.Log("ReplayDict is null - Start() not called?");
-                Start();
+                Debug.LogWarning("ReplayManager::doUpdate() - Not initialised!");
+                init();
             }
 
-            if (Input.GetKeyDown(KeyCode.R))
-                playback();
+            /*For debugging, remove me.*/
+            if (Input.GetKeyDown(KeyCode.R)) {
+                EventManager.triggerEvent("replayStart");
+            }
 
-            if (getPlaybackTime() > getReplayLength()) { 
+            if (getPlaybackTime() > getReplayLength()) {
                 playing = false;
                 Time.timeScale = originalTimeScale;
+                replayLength = 0.0f;
+                EventManager.triggerEvent("replayStop");
             }
-
-            //Debug.Log("Count " + replayDict.Count); count is 0 here?
 
             /*Playback*/
             if (playing) {
-                foreach(KeyValuePair<GameObject, ArrayList> pair in replayDict){
+
+                //if (DEBUG_REPLAYMANAGER)
+                //    Debug.Log("Playing back replay");
+
+                foreach (KeyValuePair<GameObject, ArrayList> pair in replayDict) {
+
+                    //if (DEBUG_REPLAYMANAGER)
+                    //    Debug.Log("Finding closest datapoint");
+
                     /*Get closest data point*/
                     ArrayList list = pair.Value;
-                    int index = findClosestReplayData(list, getPlaybackTime(), 
+                    int index = findClosestReplayData(list, playbackStart/*Time.time*/ - replayLength + getPlaybackTime(),
                         MIN_REPLAY_POINT_INTERVAL * 2.0f);
 
                     /*Check if we failed*/
                     if (index == -1) {
-                        Debug.Log("Failed to find replay data point");
+                        /*Debug.LogWarning("ReplayManager: Failed to find replay data point, ending replay early...");
+                        playing = false;
+                        Time.timeScale = originalTimeScale;
+                        replayLength = 0.0f;
+                        EventManager.triggerEvent("replayStop");
+                        return;*/
+                        Debug.Log("ReplayManager: Failed to find replay datapoint");
                         continue;
                     }
+
+                    if (DEBUG_REPLAYMANAGER)
+                        Debug.Log("Getting game object and rigidbody");
 
                     /*Set GameObject data to recorded values*/
                     GameObject obj = pair.Key;
@@ -121,21 +160,27 @@ namespace TeamBronze.HexWars
 
                     /*Calculate velocity and angular velocity if applicable*/
                     if (rb && index < list.Count - 1) {
+
+                        if (DEBUG_REPLAYMANAGER)
+                            Debug.Log("Calculating velocity and angular velocity");
+
                         ReplayData next = (ReplayData)list[index + 1];
                         float timeDelta = next.time - data.time;
                         Vector2 vel = (next.position - data.position) / timeDelta;
-                        Vector3 rvel = (next.rotation.eulerAngles - data.rotation.eulerAngles) 
+                        Vector3 rvel = (next.rotation.eulerAngles - data.rotation.eulerAngles)
                                        / timeDelta;
 
                         /*Set velocity and angular velocity*/
                         rb.velocity = vel;
                         rb.angularVelocity = rvel.z;
                     }
-                    
+
                     /*Set position and rotation*/
+                    if (DEBUG_REPLAYMANAGER)
+                        Debug.Log("Setting values");
+
                     obj.transform.position = data.position;
                     obj.transform.rotation = data.rotation;
-                    Debug.Log("Set values...");
                 }
 
                 /*Don't record data if we are playing the replay*/
@@ -143,15 +188,15 @@ namespace TeamBronze.HexWars
             }
 
             /*Record data*/
-            foreach(KeyValuePair<GameObject, ArrayList> pair in replayDict){
+            foreach (KeyValuePair<GameObject, ArrayList> pair in replayDict) {
                 /*Get latest replay data point, if it exists*/
                 ArrayList curList = pair.Value;
 
                 /*Check interval between last data point and now*/
-                if(curList.Count > 0){
+                if (curList.Count > 0) {
                     ReplayData data = (ReplayData)curList[curList.Count - 1];
 
-                    if(Time.time - data.time < MIN_REPLAY_POINT_INTERVAL)
+                    if (Time.time - data.time < MIN_REPLAY_POINT_INTERVAL)
                         continue;
                 }
 
@@ -161,38 +206,43 @@ namespace TeamBronze.HexWars
                     obj.transform.position.y), obj.transform.rotation, Time.time);
                 curList.Add(curPoint);
 
-                //Debug.Log("Recorded data point");
+                if (DEBUG_REPLAYMANAGER)
+                    Debug.Log("Recorded data point");
 
                 /*Check if we have reached MIN_REPLAY_LENGTH seconds worth of data
                  if so, remove earliest data point*/
-                if(curList.Count >= 2){
+                if (curList.Count >= 2) {
                     ReplayData first = (ReplayData)curList[0];
 
-                    if(curPoint.time - first.time > MAX_REPLAY_LENGTH)
+                    if (DEBUG_REPLAYMANAGER)
+                        Debug.Log("Reached end, removing first datapoint");
+
+                    if (curPoint.time - first.time > MAX_REPLAY_LENGTH) {
                         curList.RemoveAt(0);
+                    }
                 }
             }
-            
+
             /*Record length of replay*/
-            replayLength = Mathf.Clamp(replayLength + Time.deltaTime, 0.0f, 
+            replayLength = Mathf.Clamp(replayLength + Time.deltaTime, 0.0f,
                 MAX_REPLAY_LENGTH);
         }
 
         /*Register a game object. 
          * Returns a non-negative index if successful, or -1 if unsuccessful.*/
-        public bool registerGameObject(GameObject obj){
+        static public bool registerGameObject(GameObject obj) {
             /*Check if null, or already registered*/
-            if(!obj){
-                Debug.LogWarning("ReplayManager: Attempted to register null GameObject!");
+            if (!obj) {
+                Debug.LogWarning("ReplayManager::registerGameObject() - Attempted to register null GameObject!");
                 return false;
             }
 
             if (replayDict == null) {
-                Debug.LogError("????????");
-                Start();
+                Debug.LogWarning("ReplayManager::registerGameObject() - Not initialised!");
+                init();
             }
-            
-            if(replayDict.ContainsKey(obj)){
+
+            if (replayDict.ContainsKey(obj)) {
                 Debug.LogWarning(@"ReplayManager: Attempted to register already registered
                 GameObject!");
                 return true;
@@ -201,24 +251,33 @@ namespace TeamBronze.HexWars
             /*Register game object*/
             ArrayList list = new ArrayList();
             replayDict.Add(obj, list);
-            Debug.Log("ReplayManager - GameObject Registered");
+
+            if (DEBUG_REPLAYMANAGER)
+                Debug.Log("ReplayManager - GameObject Registered");
             return true;
         }
 
         /*De-register a game object.*/
-        public void deregisterGameObject(GameObject obj){
-            if(!replayDict.Remove(obj))
+        static public void deregisterGameObject(GameObject obj) {
+            if (!replayDict.Remove(obj))
                 Debug.LogWarning(@"ReplayManager: Attempted to remove nonexistent 
                 GameObject!");
+
+            if (DEBUG_REPLAYMANAGER)
+                Debug.Log("ReplayManager::deregisterGameObject() called.");
         }
 
         /*Return the total length of the recorded replay*/
-        public float getReplayLength(){
+        static public float getReplayLength() {
             return replayLength;
         }
 
         /*Start playing back the replay*/
-        public void playback(){
+        static public void playback() {
+            if (playing) {
+                Debug.LogWarning("ReplayManager::Playback() - Already playing replay!");
+                return;
+            }
             playing = true;
             playbackStart = Time.time;
             originalTimeScale = Time.timeScale;
@@ -226,12 +285,15 @@ namespace TeamBronze.HexWars
         }
 
         /*Returns true while the replay is playing*/
-        public bool isPlaying(){
+        static public bool isPlaying() {
             return playing;
         }
 
         /*Get the time elapsed since playback began*/
-        public float getPlaybackTime(){
+        static public float getPlaybackTime() {
+            if (!isPlaying())
+                return 0.0f;
+
             return Time.time - playbackStart;
         }
     }

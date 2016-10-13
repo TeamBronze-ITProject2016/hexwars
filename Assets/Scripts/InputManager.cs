@@ -29,15 +29,23 @@ namespace TeamBronze.HexWars
         /*GUI Manager*/
         GUIManager GUI = null;
 
+        bool inReplay = false;
+
         /*Initialise*/
         void Start(){
             /*Find GUIManager*/
             GUI = FindObjectOfType<GUIManager>();
             Debug.Assert(GUI != null);
+
+            EventManager.registerListener("replayStart", replayStart);
+            EventManager.registerListener("replayStop", replayStop);
         }
 
         public bool IsActive(){
             lastMove = new Vector2(0.0f, 0.0f);
+
+            if (inReplay)
+                return false;
 
             /* Mouse */
             if (inputType == InputType.Mouse) {
@@ -91,18 +99,33 @@ namespace TeamBronze.HexWars
             throw new System.Exception("InputManager::GetPos() - Invalid inputType value!");
         }
 
-        /*Returns a unit vector indicating the direction of movement. Used to draw the
-         * joystick.*/
-        public Vector2 lastMoveVector() {
+        /* Returns a vector indicating the direction of movement */
+        public Vector2 lastMoveVector()
+        {
             /*Return null vector if there is no movement input.*/
             if (lastMove == new Vector2(0.0f, 0.0f))
                 return new Vector2(0.0f, 0.0f);
 
             /*Calculate movement vector*/
             Vector2 unit = new Vector2(Screen.width, Screen.height) / 2.0f - lastMove;
+            return unit;
+        }
+
+        /*Returns a unit vector indicating the direction of movement.*/
+        public Vector2 lastMoveVectorUnit() {
+            Vector2 unit = lastMoveVector();
             unit.Normalize();
             unit.x *= -1.0f;
             return unit;
+        }
+
+        /*Replay start/stop event callbacks*/
+        public void replayStart() {
+            inReplay = true;
+        }
+
+        public void replayStop() {
+            inReplay = false;
         }
     }
 }
