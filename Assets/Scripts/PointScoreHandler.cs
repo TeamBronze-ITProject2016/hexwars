@@ -18,10 +18,7 @@ namespace TeamBronze.HexWars
         public int pointsDestroyHexagon = 2;
         public int pointsDestroyPlayer = 3;
         public int pointsDestroyDestructable = 1;
-        // Score gained when destroying specific objects
-        public int scoreDestoryTriangle = 1;
-        public int scoreDestroyHexagon = 2;
-        public int scoreDestroyPlayer = 3;
+        public int pointsDestroyEnemy = 4;
 
         // Add score after destroying a destructable
         [PunRPC]
@@ -29,6 +26,14 @@ namespace TeamBronze.HexWars
         {
             Player player = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<Player>();
             player.points += pointsDestroyDestructable;
+        }
+
+        // Add score after destroying a destructable
+        [PunRPC]
+        public void updateLocalPointsEnemy()
+        {
+            Player player = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<Player>();
+            player.points += pointsDestroyEnemy;
         }
 
         [PunRPC]

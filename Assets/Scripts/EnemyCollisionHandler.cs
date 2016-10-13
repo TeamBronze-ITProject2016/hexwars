@@ -21,7 +21,8 @@ namespace TeamBronze.HexWars
                 // Add points only for player collision
                 if (collisionObj.tag == "Triangle" && collisionObj.GetPhotonView().isMine)
                 {
-                    // Add points to player
+                    PhotonView attackingView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);
+                    attackingView.RPC("updateLocalPointsEnemy", PhotonPlayer.Find(attackingView.owner.ID));
                 }
             }
         }
