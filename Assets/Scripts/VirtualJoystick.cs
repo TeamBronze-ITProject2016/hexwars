@@ -11,6 +11,13 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
 
     private void Start()
     {
+        // Make it so area fits half of screen
+        GameObject parent = transform.parent.gameObject;
+        Debug.Log(parent.GetComponent<RectTransform>().rect.width);
+        GetComponent<Image>().rectTransform.sizeDelta = new Vector3(parent.GetComponent<RectTransform>().rect.width / 2,
+                                                                     parent.GetComponent<RectTransform>().rect.height,
+                                                                     0);
+
         backgroundImage = transform.FindChild("JoystickBackground").GetComponent<Image>();
         joystickImage = transform.FindChild("JoystickBackground").transform.FindChild("JoystickImage").GetComponent<Image>();
         backgroundImage.enabled = false;

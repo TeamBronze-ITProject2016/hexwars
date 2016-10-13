@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using System;
+using UnityEngine.UI;
 
 public class DragToRotate : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 {
@@ -11,6 +12,16 @@ public class DragToRotate : MonoBehaviour, IPointerUpHandler, IPointerDownHandle
     float currentRotation;
     public float maxRotateSpeed = 50f;
     private bool mouseDown;
+
+    void Start()
+    {
+        // Make it so area fits half of screen
+        GameObject parent = transform.parent.gameObject;
+        Debug.Log(parent.GetComponent<RectTransform>().rect.width);
+        GetComponent<Image>().rectTransform.sizeDelta = new Vector3(parent.GetComponent<RectTransform>().rect.width/2,
+                                                                     parent.GetComponent<RectTransform>().rect.height,
+                                                                     0);
+    }
 
     void Update()
     {
