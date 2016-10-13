@@ -13,7 +13,6 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
     {
         // Make it so area fits half of screen
         GameObject parent = transform.parent.gameObject;
-        Debug.Log(parent.GetComponent<RectTransform>().rect.width);
         GetComponent<Image>().rectTransform.sizeDelta = new Vector3(parent.GetComponent<RectTransform>().rect.width / 2,
                                                                      parent.GetComponent<RectTransform>().rect.height,
                                                                      0);
