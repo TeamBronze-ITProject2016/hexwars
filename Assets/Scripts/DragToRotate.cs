@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using System;
 using UnityEngine.UI;
 
-public class DragToRotate : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler
+public class DragToRotate : MonoBehaviour, IDragHandler, IPointerDownHandler
 {
 
     float deltaRotation;
@@ -48,7 +48,7 @@ public class DragToRotate : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoi
     {
             GameObject playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
 
-            currentRotation = angleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+		currentRotation = angleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(eventData.position));
             deltaRotation = Mathf.DeltaAngle(currentRotation, previousRotation);
             if (deltaRotation > maxRotateSpeed)
             {
