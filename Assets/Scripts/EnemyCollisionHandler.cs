@@ -23,10 +23,6 @@ namespace TeamBronze.HexWars
                 {
                     PhotonView attackingView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);
                     attackingView.RPC("updateLocalPointsEnemy", PhotonPlayer.Find(attackingView.owner.ID));
-
-                    // Update the scoreboard
-                    PhotonView scoreboardView = PhotonView.Get(GameObject.FindGameObjectWithTag("ScoreBoard"));
-                    scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);
                 }
             }
         }

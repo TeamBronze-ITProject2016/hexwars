@@ -40,9 +40,18 @@ public class Scoreboard : MonoBehaviour {
         myText.text = text;
     }
 
+
+
 	// Update is called once per frame
     [PunRPC]
 	void UpdateScoresBoard () {
+        // Remove previous scores
+        GameObject scoresDisplay = transform.FindChild("Scores").gameObject;
+        foreach (Transform child in scoresDisplay.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
         string url = "http://128.199.229.64/hexwars";
         WWW www = new WWW(url);
         StartCoroutine(WaitForRequest(www));

@@ -79,6 +79,8 @@ namespace TeamBronze.HexWars
             string name = PhotonNetwork.player.name + "/";
             string score = localPlayer.rb.mass.ToString();
 
+            Debug.Log(url + name + score);
+
             UnityWebRequest request = UnityWebRequest.Get(url + name + score);
             request.Send();
         }
