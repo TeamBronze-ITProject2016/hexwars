@@ -27,7 +27,7 @@ namespace TeamBronze.HexWars {
 
         GUIState state = GUIState.InGame;
 
-        /*GUI sound effects and audio*/
+        /*Audio*/
         private AudioSource GUIAudioSource;
         private AudioClip elementSelectedClip;
         private float guiAudioVolume = 1.0f;
@@ -37,6 +37,10 @@ namespace TeamBronze.HexWars {
         private float voiceToggleTime = -1.0f;
         private const float VOICE_TOGGLE_DELAY = 0.25f;
 
+        /*Images*/
+        private Texture2D voiceicondisabled;
+        private Texture2D voiceiconenabled;
+
         /*Classes needed to draw GUI.*/
         private InputManager inputManager;
 
@@ -45,7 +49,6 @@ namespace TeamBronze.HexWars {
         private Color replayTimerColor = Color.red;
 
         /*GUI*/
-        /*TODO: use ini file, or GameObjects?*/
         private const float GUI_BUTTON_WIDTHFACTOR = 0.09f;
         private const float GUI_BUTTON_HEIGHTFACTOR = 0.04f;
 
@@ -81,6 +84,9 @@ namespace TeamBronze.HexWars {
             /*Initialise audio*/
             GUIAudioSource = GetComponent<AudioSource>();
             elementSelectedClip = (AudioClip)Resources.Load("Audio/Blop-Mark_DiAngelo-79054334");
+            voiceicondisabled = (Texture2D)Resources.Load("voiceicondisabled");
+            voiceiconenabled = (Texture2D)Resources.Load("voiceiconenabled");
+            Debug.Assert(voiceicondisabled && voiceiconenabled);
             Debug.Assert(GUIAudioSource);
             Debug.Assert(elementSelectedClip);
         }
@@ -95,7 +101,9 @@ namespace TeamBronze.HexWars {
                     float btnWidth = Screen.width * GUI_BUTTON_WIDTHFACTOR;
                     float btnHeight = Screen.width * GUI_BUTTON_HEIGHTFACTOR;
 
-                    if (GUI.RepeatButton(new Rect(0.0f, 0.0f, btnWidth, btnHeight), "Voice Chat")) {
+                    Texture2D voiceIcon = voiceLast ? voiceiconenabled : voiceicondisabled;
+
+                    if (GUI.RepeatButton(new Rect(0.0f, 2.0f, btnWidth, btnHeight), voiceIcon, GUIStyle.none)) {
                         voiceToggleTime = Time.time;
 
                         if (!voiceLast) {
@@ -122,7 +130,7 @@ namespace TeamBronze.HexWars {
                         GUI.Label(new Rect(replayTimerOffset.x, replayTimerOffset.y, 128.0f, 32.0f), timerStr);
                     }
 
-                    /*Draw Joystick*/
+                    /*Draw Joystick - replaced by VirtualJoystick
                     if (joystickEnabled) {
                         joystickOff = inputManager.lastMoveVectorUnit() * joystickMoveRadius;
                         GUI.color = Color.white;
@@ -132,7 +140,7 @@ namespace TeamBronze.HexWars {
                         GUI.DrawTexture(new Rect(JOYSTICK_OUTER_RADIUS / 2.0f - JOYSTICK_INNER_RADIUS / 2.0f + joystickOff.x, Screen.height -
                             JOYSTICK_OUTER_RADIUS / 2.0f - JOYSTICK_INNER_RADIUS / 2.0f + joystickOff.y, JOYSTICK_INNER_RADIUS,
                             JOYSTICK_INNER_RADIUS), joystickInner);
-                    }
+                    }*/
                     break;
 
                 /*In-Game Menu*/
@@ -234,6 +242,7 @@ namespace TeamBronze.HexWars {
         }
 
         public bool isPointerOverGUIElement(Vector2 pointer) {
+            Debug.Log("pointer: (" + pointer.x + "," + pointer.y + ")");
             /*Check all the GUI elements visible in each state.*/
             switch (state) {
                 case GUIState.InGame:
