@@ -44,7 +44,7 @@ public class Scoreboard : MonoBehaviour {
 
 	// Update is called once per frame
     [PunRPC]
-	void UpdateScoresBoard () {
+    IEnumerator UpdateScoresBoard () {
         // Remove previous scores
         GameObject scoresDisplay = transform.FindChild("Scores").gameObject;
         foreach (Transform child in scoresDisplay.transform)
@@ -54,8 +54,7 @@ public class Scoreboard : MonoBehaviour {
 
         string url = "http://128.199.229.64/hexwars";
         WWW www = new WWW(url);
-        StartCoroutine(WaitForRequest(www));
-        while (!www.isDone) { }
+        yield return www;
         // Format string into array
         // http://stackoverflow.com/questions/19178983/how-in-c-sharp-to-convert-a-string-of-comma-separated-bracket-enclosed-nested
         string s = www.text;
@@ -76,10 +75,5 @@ public class Scoreboard : MonoBehaviour {
 
             }
         }
-    }
-
-    private IEnumerator WaitForRequest(object www)
-    {
-        yield return www;
     }
 }
