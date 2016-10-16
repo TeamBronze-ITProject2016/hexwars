@@ -76,7 +76,7 @@ namespace TeamBronze.HexWars
             PartAdder partAdder = GameObject.FindGameObjectWithTag("PartAdder").GetComponent<PartAdder>();
             Player localPlayer = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<Player>();
             string url = "http://128.199.229.64/hexwars/";
-            string name = PhotonNetwork.player.ID + "/";
+            string name = PhotonNetwork.player.name + "/";
             string score = localPlayer.rb.mass.ToString();
 
             UnityWebRequest request = UnityWebRequest.Get(url + name + score);
