@@ -40,6 +40,10 @@ namespace TeamBronze.HexWars
                     // Update score for destroyed player
                     PhotonView destroyedView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);
                     destroyedView.RPC("updateServerScore", PhotonPlayer.Find(destroyedView.owner.ID));
+
+                    // Update the scoreboard
+                    PhotonView scoreboardView = PhotonView.Get(GameObject.FindGameObjectWithTag("ScoreBoard"));
+                    scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);
                 }
 
                 foreach (AxialCoordinate location in listToDestroy)

@@ -14,6 +14,10 @@ namespace TeamBronze.HexWars
                 // Update points for attacking player
                 PhotonView attackingView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);
                 attackingView.RPC("updateLocalPointsDestructable", PhotonPlayer.Find(attackingView.owner.ID));
+
+                // Update the scoreboard
+                PhotonView scoreboardView = PhotonView.Get(GameObject.FindGameObjectWithTag("ScoreBoard"));
+                scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);
             }
         }
     }
