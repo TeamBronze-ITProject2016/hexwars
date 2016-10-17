@@ -108,6 +108,20 @@ namespace TeamBronze.HexWars
             return empty;
         }
 
+        public List<AxialCoordinate> getFullNeighbors(AxialCoordinate location)
+        {
+            List<AxialCoordinate> full = new List<AxialCoordinate>();
+
+            foreach (AxialCoordinate direction in directions)
+            {
+                AxialCoordinate neighbor = location + direction;
+                if (getPart(neighbor) != null)
+                    full.Add(neighbor);
+            }
+
+            return full;
+        }
+
         public List<AxialCoordinate> getFullHexNeighbors(AxialCoordinate location)
         {
             List<AxialCoordinate> full = new List<AxialCoordinate>();

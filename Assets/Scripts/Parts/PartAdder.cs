@@ -153,7 +153,6 @@ namespace TeamBronze.HexWars
         private Vector3 axialToPixel(AxialCoordinate location)
         {
             // Convert the axial position of the location to a pixel location
-            Vector3 playerPosition = hexData.getPart(playerLocation).Value.shape.transform.position;
 
             float x; float y;
             x = size * Mathf.Sqrt(3f) * (location.x + location.y / 2f);
