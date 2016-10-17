@@ -117,7 +117,6 @@ namespace TeamBronze.HexWars
                 // Location is a triangle, there's only one possible neighbor!
                 if(getNeighborFromTriangle(location) != null)
                     full.Add((AxialCoordinate)getNeighborFromTriangle(location));
-                Debug.Log("Triangle: " + ((AxialCoordinate)getNeighborFromTriangle(location)).x + ", "+ ((AxialCoordinate)getNeighborFromTriangle(location)).y);
                 return full;
             }
 
@@ -238,7 +237,7 @@ namespace TeamBronze.HexWars
 
             Debug.Log(position + neighbor);
 
-            if (dataTable[position + neighbor] != null) return neighbor + position;
+            if (getPart(position + neighbor) != null) return neighbor + position;
 
             Debug.Log("Error!");
             return null;
