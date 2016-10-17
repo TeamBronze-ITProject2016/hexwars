@@ -79,7 +79,8 @@ public class Scoreboard : MonoBehaviour {
             }
             catch
             {
-                Destroy(scoresDisplay.transform.GetChild(i).gameObject);
+                if (scoresDisplay.transform.GetChild(i).gameObject != null)
+                    Destroy(scoresDisplay.transform.GetChild(i).gameObject);
             }
         }
     }
