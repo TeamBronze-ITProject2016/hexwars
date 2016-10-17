@@ -146,9 +146,9 @@ namespace TeamBronze.HexWars
         {
             PhotonView destroyedObject = PhotonView.Get(hexData.getPart(location).Value.shape);
             hexData.removePart(location);
-            destroyedObject.RPC("PunFadeOut", PhotonTargets.All);
+            //destroyedObject.RPC("PunFadeOut", PhotonTargets.All);
 
-            //PhotonNetwork.Destroy(((Part)hexData.getPart(location)).shape);
+            PhotonNetwork.Destroy(((Part)hexData.getPart(location)).shape);
         }
 
         private Vector3 axialToPixel(AxialCoordinate location)
