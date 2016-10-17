@@ -74,7 +74,7 @@ namespace TeamBronze.HexWars
             {
                 string playerName = players[i].GetPhotonView().owner.name;
                 string playerScore = playerScores[i].ToString();
-                playerScore = playerScore.Substring(0, playerScore.IndexOf("."));
+                playerScore = RemoveDecimals(playerScore);
                 Text text = AddText(" " + (i + 1) + ". " + playerName + " - " + playerScore);
                 text.color = players[i].GetComponent<SpriteRenderer>().color;
                 text.fontStyle = FontStyle.Bold;
@@ -120,6 +120,14 @@ namespace TeamBronze.HexWars
             {
                 Destroy(scoresDisplay.transform.GetChild(i).gameObject);
             }
+        }
+
+        private string RemoveDecimals(string s)
+        {
+            if (s.IndexOf(".") < 0)
+                return s;
+
+            return s.Substring(0, s.IndexOf("."));
         }
 
         /*
