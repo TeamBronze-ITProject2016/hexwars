@@ -31,7 +31,7 @@ namespace TeamBronze.HexWars
         void setPos(Camera camera)
         {
             if (!mainCamera){
-                Debug.Log("CameraFollow: mainCamera does not exist!");
+                //Debug.Log("CameraFollow: mainCamera does not exist!");
                 return;
             }
 
@@ -43,7 +43,7 @@ namespace TeamBronze.HexWars
         void setZoom(Camera camera)
         {
             if (!mainCamera) {
-                Debug.Log("CameraFollow: mainCamera does not exist!");
+                //Debug.Log("CameraFollow: mainCamera does not exist!");
                 return;
             }
 

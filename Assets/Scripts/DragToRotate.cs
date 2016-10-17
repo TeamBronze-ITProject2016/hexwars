@@ -4,66 +4,87 @@ using UnityEngine.EventSystems;
 using System;
 using UnityEngine.UI;
 
-public class DragToRotate : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler
+namespace TeamBronze.HexWars
 {
-
-    float deltaRotation;
-    float previousRotation;
-    float currentRotation;
-    public float maxRotateSpeed;
-    bool touch = false;
-
-    void Start()
+    public class DragToRotate : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler
     {
-        // Make it so area fits half of screen
-        GameObject parent = transform.parent.gameObject;
-        GetComponent<Image>().rectTransform.sizeDelta = new Vector3(parent.GetComponent<RectTransform>().rect.width,
-                                                                     parent.GetComponent<RectTransform>().rect.height,
-                                                                     0);
-    }
+        float deltaRotation;
+        float previousRotation;
+        float currentRotation;
+        public float maxRotateSpeed;// = 50f;
+        bool touch = false;
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
-        deltaRotation = 0f;
-        previousRotation = angleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(eventData.position));
-    }
+        private GUIManager gui;
 
-    float angleBetweenPoints(Vector2 position1, Vector2 position2)
-    {
-        var fromLine = position2 - position1;
-        var toLine = new Vector2(1, 0);
-
-        var angle = Vector2.Angle(fromLine, toLine);
-        var cross = Vector3.Cross(fromLine, toLine);
-
-        // did we wrap around?
-        if (cross.z > 0)
-            angle = 360f - angle;
-
-        return angle;
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
-
-		currentRotation = angleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(eventData.position));
-        deltaRotation = Mathf.DeltaAngle(currentRotation, previousRotation);
-        if (deltaRotation > maxRotateSpeed)
+        /*Initialise*/
+        void Start()
         {
-            deltaRotation = maxRotateSpeed;
+            // Make it so area fits half of screen
+            GameObject parent = transform.parent.gameObject;
+            GetComponent<Image>().rectTransform.sizeDelta = new Vector3(parent.GetComponent<RectTransform>().rect.width/2,
+                                                                         parent.GetComponent<RectTransform>().rect.height,
+                                                                         0);
+            gui = FindObjectOfType<GUIManager>();
+                Debug.Assert(gui);
         }
-        if (deltaRotation < -maxRotateSpeed)
+
+        /*Returns false if the GUI is in a state where no joystick input should be accepted,
+        * or true otherwise.*/
+        private bool active() {
+        if (gui.gameOverSplashVisible() || gui.inGameMenuVisible())
+            return false;
+                
+           return true;
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
         {
-            deltaRotation = -maxRotateSpeed;
+            if (!active())
+                return;
+
+            GameObject playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
+            deltaRotation = 0f;
+            previousRotation = angleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(eventData.position));
         }
-        previousRotation = currentRotation;
 
-        playerObj.transform.Rotate(Vector3.back, deltaRotation);
-    }
+        float angleBetweenPoints(Vector2 position1, Vector2 position2)
+        {
+            var fromLine = position2 - position1;
+            var toLine = new Vector2(1, 0);
 
-    public void OnPointerUp(PointerEventData eventData)
-    {
+            var angle = Vector2.Angle(fromLine, toLine);
+            var cross = Vector3.Cross(fromLine, toLine);
+
+            // did we wrap around?
+            if (cross.z > 0)
+                angle = 360f - angle;
+
+            return angle;
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (!active())
+                return;
+
+            GameObject playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
+
+            currentRotation = angleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(eventData.position));
+                deltaRotation = Mathf.DeltaAngle(currentRotation, previousRotation);
+                if (deltaRotation > maxRotateSpeed)
+                {
+                    deltaRotation = maxRotateSpeed;
+                }
+                if (deltaRotation < -maxRotateSpeed)
+                {
+                    deltaRotation = -maxRotateSpeed;
+                }
+                previousRotation = currentRotation;
+
+                playerObj.transform.Rotate(Vector3.back, deltaRotation);
+        }
+        public void OnPointerUp(PointerEventData eventData)
+        {
+        }
     }
 }

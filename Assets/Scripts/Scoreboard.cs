@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using UnityEngine.Networking;
 using System;
 using System.Linq;
 using TeamBronze.HexWars;

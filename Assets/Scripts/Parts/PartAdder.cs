@@ -84,6 +84,12 @@ namespace TeamBronze.HexWars
                 newPart.transform.parent = player.shape.transform;
                 Part addedPart = new Part { shape = newPart, type = type };
                 hexData.addPart(location, addedPart);
+
+                /*Notify replay manager that part has been added*/
+                EventManager.pushEventDataFloat("partadded", newPart.transform.position.z);
+                EventManager.pushEventDataFloat("partadded", newPart.transform.position.y);
+                EventManager.pushEventDataFloat("partadded", newPart.transform.position.x);
+                EventManager.triggerEvent("partadded");
             }
 
             // Return the player to their position before the part was added
@@ -104,8 +110,10 @@ namespace TeamBronze.HexWars
         public void addRandomPart(string part="None")
         {
             // Get a random location
-            foreach (AxialCoordinate location in RandomKeys(hexData.dataTable).Take(1))
+            foreach (AxialCoordinate location in RandomKeys(hexData.dataTable))
             {
+                if (hexData.getPart(location).Value.type == -1)
+                    continue;
                 List<AxialCoordinate> randLocations = hexData.getEmptyNeighbors(location);
                 System.Random rnd = new System.Random();
 
@@ -116,7 +124,8 @@ namespace TeamBronze.HexWars
                         part = "Hexagon";
                 }
 
-                addPart(randLocations[rnd.Next(rnd.Next(randLocations.Count))], part);
+                addPart(randLocations[rnd.Next(randLocations.Count)], part);
+                return;
             }
 
         }
