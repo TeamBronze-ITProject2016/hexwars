@@ -86,6 +86,7 @@ namespace TeamBronze.HexWars
                 hexData.addPart(location, addedPart);
             }
 
+            // Return the player to their position before the part was added
             player.shape.transform.position = playerLocation;
             player.shape.transform.rotation = playerRotation;
 

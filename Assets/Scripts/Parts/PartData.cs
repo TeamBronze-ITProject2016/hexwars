@@ -32,6 +32,11 @@ namespace TeamBronze.HexWars
             return !(a1.x == a2.x && a1.y == a2.y);
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public static AxialCoordinate operator +(AxialCoordinate a1, AxialCoordinate a2)
         {
             return new AxialCoordinate { x = a1.x + a2.x, y = a1.y + a2.y };
@@ -113,13 +118,14 @@ namespace TeamBronze.HexWars
         {
             List<AxialCoordinate> full = new List<AxialCoordinate>();
 
-            if (dataTable[location].Value.type == -1)
+            /*if (dataTable[location].Value.type == -1)
             {
                 // Location is a triangle, there's only one possible neighbor!
                 if(getNeighborFromTriangle(location) != null)
                     full.Add((AxialCoordinate)getNeighborFromTriangle(location));
+                Debug.Log("Triangle: " + ((AxialCoordinate)getNeighborFromTriangle(location)).x + ", "+ ((AxialCoordinate)getNeighborFromTriangle(location)).y);
                 return full;
-            }
+            }*/
 
             foreach (AxialCoordinate direction in directions)
             {
@@ -221,7 +227,6 @@ namespace TeamBronze.HexWars
         {
             // TODO: This line doesn't work
             int rotation = (int)dataTable[position].Value.shape.transform.rotation.eulerAngles.x;
-
             AxialCoordinate neighbor;
 
             // Given a rotation (ie used for triangle), get the neighbor attached to that part
@@ -233,6 +238,7 @@ namespace TeamBronze.HexWars
             else neighbor = new AxialCoordinate { x = 0, y = -1 };
 
             if (dataTable[neighbor + position] != null) return neighbor + position;
+            Debug.Log("Error!");
             return null;
         }
     }
