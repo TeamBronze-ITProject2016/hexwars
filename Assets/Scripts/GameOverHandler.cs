@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.IO;
+using System.Net;
 
 namespace TeamBronze.HexWars
 {
     public class GameOverHandler : Photon.PunBehaviour
     {
         GameManager gameManager;
+        Scoreboard scoreboard;
 
         void Start()
         {
             gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+            scoreboard = GameObject.FindGameObjectWithTag("ScoreBoard").GetComponent<Scoreboard>();
         }
 
         void OnCollisionEnter2D(Collision2D collision)
@@ -18,11 +22,20 @@ namespace TeamBronze.HexWars
 
             if(photonView.isMine && (collisionObjTag == "Triangle" || collisionObjTag ==  "EnemyAttackingPart"))
             {
-                PlayerPrefs.SetFloat("finalScore", 0.0f);
+                float highestScore = scoreboard.GetLocalPlayerHighestScore();
+                SendScoreToServer(highestScore);
+                PlayerPrefs.SetFloat("highestScore", highestScore);
                 PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.player.ID);
                 gameManager.isGameOver = true;
                 PhotonNetwork.Disconnect();
             }
+        }
+
+        void SendScoreToServer(float score)
+        {
+            string escapedPlayerName = WWW.EscapeURL(photonView.owner.name);
+
+            WebRequest.Create("http://128.199.229.64/hexwars/scores/" + escapedPlayerName + "/" + score);
         }
     }
 }
