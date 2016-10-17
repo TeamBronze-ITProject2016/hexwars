@@ -34,7 +34,7 @@ namespace TeamBronze.HexWars
         // Update is called once per frame
         void Update()
         {
-            if (player.GetComponent<Player>().points >= storeMinimum && !store.GetActive())
+            if (player != null && (player.GetComponent<Player>().points >= storeMinimum && !store.GetActive()))
                 store.SetActive(true);
         }
 

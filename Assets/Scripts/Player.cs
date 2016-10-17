@@ -117,7 +117,7 @@ namespace TeamBronze.HexWars
             direction.x = joystick.getHorizontal();
             direction.y = joystick.getVertical();
 
-            Debug.Log(direction);
+            //Debug.Log(direction);
 
             if (direction.x == 0 && direction.y == 0)
                 return false;

@@ -124,9 +124,7 @@ namespace TeamBronze.HexWars
         {
             // Remove a part, return the type of the part that was removed
             int type = dataTable[location].Value.type;
-
             dataTable[location] = null;
-
             return type;
         }
 

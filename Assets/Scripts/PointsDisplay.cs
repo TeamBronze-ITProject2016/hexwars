@@ -23,7 +23,7 @@ namespace TeamBronze.HexWars
 
             if (!player) player = GameObject.FindGameObjectWithTag("LocalPlayer");
 
-            points.text = "Points/Score: " + player.GetComponent<Player>().points + "/" + player.GetComponent<Player>().rb.mass.ToString();
+            points.text = "Points/Score: " + player.GetComponent<Player>().points + "/" + player.GetComponent<Player>().rb.mass.ToString("0.0");
 
         }
     }
