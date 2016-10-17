@@ -180,6 +180,7 @@ namespace TeamBronze.HexWars
             addPart(destroyedPartLocation, tempPart);
             destroyedLocations.Add(destroyedPartLocation);
 
+            Debug.Log(destroyedLocations.Count);
             return destroyedLocations;
         }
 
@@ -197,7 +198,8 @@ namespace TeamBronze.HexWars
                 AxialCoordinate nodeToExpand = unvisited[0];
                 unvisited.RemoveAt(0);
                 visited.Add(nodeToExpand);
-                unvisited.AddRange(getFullHexNeighbors(nodeToExpand));
+                if (getPart(nodeToExpand).Value.type != -1 && nodeToExpand != location)
+                    unvisited.AddRange(getFullHexNeighbors(nodeToExpand));
             }
 
             if (visited.Contains(player)) return true;
@@ -220,7 +222,10 @@ namespace TeamBronze.HexWars
         public AxialCoordinate? getNeighborFromTriangle(AxialCoordinate position)
         {
             // TODO: This line doesn't work
-            int rotation = (int)dataTable[position].Value.shape.transform.rotation.eulerAngles.z;
+            GameObject player = GameObject.FindGameObjectWithTag("LocalPlayer");
+            int rotation = (int)(dataTable[position].Value.shape.transform.localRotation.eulerAngles.z);
+            Debug.Log(rotation);
+
             AxialCoordinate neighbor;
 
             // Given a rotation (ie used for triangle), get the neighbor attached to that part
@@ -231,7 +236,10 @@ namespace TeamBronze.HexWars
             else if (rotation == 270) neighbor = new AxialCoordinate { x = 1, y = 0 };
             else neighbor = new AxialCoordinate { x = 0, y = -1 };
 
-            if (getPart(neighbor + position) != null) return neighbor + position;
+            Debug.Log(position + neighbor);
+
+            if (dataTable[position + neighbor] != null) return neighbor + position;
+
             Debug.Log("Error!");
             return null;
         }
