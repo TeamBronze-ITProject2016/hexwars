@@ -2,36 +2,23 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using System;
+using UnityEngine.UI;
 
-public class DragToRotate : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
+public class DragToRotate : MonoBehaviour, IDragHandler, IPointerDownHandler
 {
 
     float deltaRotation;
     float previousRotation;
     float currentRotation;
     public float maxRotateSpeed = 50f;
-    private bool mouseDown;
 
-    void Update()
+    void Start()
     {
-        if (mouseDown)
-        {
-            GameObject playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
-
-            currentRotation = angleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            deltaRotation = Mathf.DeltaAngle(currentRotation, previousRotation);
-            if (deltaRotation > maxRotateSpeed)
-            {
-                deltaRotation = maxRotateSpeed;
-            }
-            if (deltaRotation < -maxRotateSpeed)
-            {
-                deltaRotation = -maxRotateSpeed;
-            }
-            previousRotation = currentRotation;
-
-            playerObj.transform.Rotate(Vector3.back, deltaRotation);
-        }
+        // Make it so area fits half of screen
+        GameObject parent = transform.parent.gameObject;
+        GetComponent<Image>().rectTransform.sizeDelta = new Vector3(parent.GetComponent<RectTransform>().rect.width/2,
+                                                                     parent.GetComponent<RectTransform>().rect.height,
+                                                                     0);
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -39,7 +26,6 @@ public class DragToRotate : MonoBehaviour, IPointerUpHandler, IPointerDownHandle
         GameObject playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
         deltaRotation = 0f;
         previousRotation = angleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(eventData.position));
-        mouseDown = true;
     }
 
     float angleBetweenPoints(Vector2 position1, Vector2 position2)
@@ -57,8 +43,22 @@ public class DragToRotate : MonoBehaviour, IPointerUpHandler, IPointerDownHandle
         return angle;
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public void OnDrag(PointerEventData eventData)
     {
-        mouseDown = false;
+            GameObject playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
+
+		currentRotation = angleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(eventData.position));
+            deltaRotation = Mathf.DeltaAngle(currentRotation, previousRotation);
+            if (deltaRotation > maxRotateSpeed)
+            {
+                deltaRotation = maxRotateSpeed;
+            }
+            if (deltaRotation < -maxRotateSpeed)
+            {
+                deltaRotation = -maxRotateSpeed;
+            }
+            previousRotation = currentRotation;
+
+            playerObj.transform.Rotate(Vector3.back, deltaRotation);
     }
 }

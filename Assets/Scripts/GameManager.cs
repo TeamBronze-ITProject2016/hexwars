@@ -13,6 +13,21 @@ namespace TeamBronze.HexWars
         [Tooltip("The prefab to use for representing the player")]
         public GameObject playerPrefab;
 
+        [Tooltip("The radius around the enemy that must be clear in order to spawn")]
+        public float spawnClearRadius = 5.0f;
+
+        [Tooltip("Minimum x bound")]
+        public float x1 = -50.0f;
+
+        [Tooltip("Maximum x bound")]
+        public float x2 = 50.0f;
+
+        [Tooltip("Minimum y bound")]
+        public float y1 = -50.0f;
+
+        [Tooltip("Maximum y bound")]
+        public float y2 = 50.0f;
+
         static public GameManager Instance;
 
         private ReplayManager replayManager;
@@ -59,8 +74,18 @@ namespace TeamBronze.HexWars
             else
             {
                 Debug.Log("We are Instantiating LocalPlayer from " + Application.loadedLevelName);
+
+
+
                 /* We're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate */
-                PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+                Vector3 spawnPos;
+                do
+                {
+                    spawnPos = new Vector3(UnityEngine.Random.Range(x1, x2), UnityEngine.Random.Range(y1, y2), 0.0f);
+                }
+                while (!IsPosClear(spawnPos));
+
+                PhotonNetwork.Instantiate(this.playerPrefab.name, spawnPos, Quaternion.identity, 0);
             }
 
             replayManager = FindObjectOfType<ReplayManager>();
@@ -77,6 +102,20 @@ namespace TeamBronze.HexWars
             }
             Debug.Log("PhotonNetwork : Loading Level : Room");
             PhotonNetwork.LoadLevel("Room");
+        }
+
+        bool IsPosClear(Vector3 position)
+        {
+            GameObject tempObj = new GameObject("Temp Obj");
+            tempObj.transform.position = position;
+            CircleCollider2D collider = tempObj.AddComponent<CircleCollider2D>();
+            collider.isTrigger = true;
+            collider.radius = spawnClearRadius;
+            RaycastHit2D[] results = new RaycastHit2D[1];
+            bool isPosClear = (collider.Cast(Vector2.zero, results) == 0);
+            Destroy(tempObj);
+
+            return isPosClear;
         }
     }
 }

@@ -89,6 +89,16 @@ namespace TeamBronze.HexWars
             player.shape.transform.position = playerLocation;
             player.shape.transform.rotation = playerRotation;
 
+            // Update the server when part added
+            PointScoreHandler pointsScoreHandler = player.shape.GetComponent<PointScoreHandler>();
+            pointsScoreHandler.updateServerScore();
+
+            // Update the scoreboard
+            GameObject scoreboard = GameObject.FindGameObjectWithTag("ScoreBoard");
+            Debug.Log(scoreboard);
+            PhotonView scoreboardView = PhotonView.Get(scoreboard);
+            scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);
+
         }
 
         /*public void addPart(Vector3 location, string part)
