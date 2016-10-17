@@ -5,12 +5,6 @@ namespace TeamBronze.HexWars
 {
     public class VoiceChatManager : MonoBehaviour
     {
-        [Tooltip("How many frames to wait before updating audio groups")]
-        public int waitFrames;
-
-        [Tooltip("Distance at which players can communicate")]
-        public float chatRadius;
-
         public bool enabledByDefault = false;
 
         private PhotonVoiceRecorder voiceRecorder;
