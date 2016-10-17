@@ -197,7 +197,7 @@ namespace TeamBronze.HexWars
                 AxialCoordinate nodeToExpand = unvisited[0];
                 unvisited.RemoveAt(0);
                 visited.Add(nodeToExpand);
-                if (getPart(nodeToExpand).Value.type != -1 && nodeToExpand != location)
+                if (getPart(nodeToExpand).Value.type != -1)
                     unvisited.AddRange(getFullHexNeighbors(nodeToExpand));
             }
 
