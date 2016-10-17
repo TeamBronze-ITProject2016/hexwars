@@ -17,7 +17,7 @@ namespace TeamBronze.HexWars
         {
             string highestScoreStr = PlayerPrefs.GetFloat("highestScore").ToString();
             highestScoreStr = highestScoreStr.Substring(0, highestScoreStr.LastIndexOf('.'));
-            yourScoreTextObj.GetComponent<Text>().text = "Your highest score was " + highestScoreStr;
+            yourScoreTextObj.GetComponent<Text>().text = "Your highest score was " + highestScoreStr + ".";
 
             GetHighScoresFromServer();
         }
