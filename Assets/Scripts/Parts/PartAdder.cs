@@ -95,7 +95,6 @@ namespace TeamBronze.HexWars
 
             // Update the scoreboard
             GameObject scoreboard = GameObject.FindGameObjectWithTag("ScoreBoard");
-            Debug.Log(scoreboard);
             PhotonView scoreboardView = PhotonView.Get(scoreboard);
             scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);
 

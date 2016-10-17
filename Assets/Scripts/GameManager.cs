@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
-
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if UNITY_5_3
+using UnityEngine.Experimental.Networking;
+#else
+using UnityEngine.Networking;
+#endif
 
 
 namespace TeamBronze.HexWars
@@ -62,7 +65,16 @@ namespace TeamBronze.HexWars
             {
                 Debug.Log("OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient); /* Called before OnPhotonPlayerDisconnected */
                 //LoadArena();
+                // Remove player from server
+                string url = "http://128.199.229.64/hexwars/remove/";
+                string name = PhotonNetwork.player.name;
+                UnityWebRequest request = UnityWebRequest.Get(url + name);
+                request.Send();
             }
+            // Update the scoreboard
+            GameObject scoreboard = GameObject.FindGameObjectWithTag("ScoreBoard");
+            PhotonView scoreboardView = PhotonView.Get(scoreboard);
+            scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);
         }
 
         void Start()
