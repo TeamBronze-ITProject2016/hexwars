@@ -80,6 +80,10 @@ namespace TeamBronze.HexWars
                 request.Send();
                 */
             }
+            string url = "http://128.199.229.64/remove/";
+            string name = PhotonNetwork.player.name;
+            UnityWebRequest request = UnityWebRequest.Get(url + name);
+            request.Send();
             // Update the scoreboard
             GameObject scoreboard = GameObject.FindGameObjectWithTag("ScoreBoard");
             PhotonView scoreboardView = PhotonView.Get(scoreboard);

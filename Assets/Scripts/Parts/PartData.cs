@@ -60,17 +60,17 @@ namespace TeamBronze.HexWars
             directions.Add(new AxialCoordinate { x = -1, y = 1 });
             directions.Add(new AxialCoordinate { x = -1, y = 0 });
         }
-
+        
         public bool checkPart(AxialCoordinate location)
         {
             // Check that a part can be added to the location provided. Will return true if:
             // 1. location has no parts already attached
             // 2. a path exists from location to player
-            if (pathExistsToPlayer(location) && ((dataTable.ContainsKey(location) && getPart(location) == null) || (!dataTable.ContainsKey(location))))
+            if (pathExistsToPlayer(location) && getPart(location) == null)
                 return true;
             else return false;
         }
-
+        
         public bool addPart(AxialCoordinate location, Part? part)
         {
             // Returns true if the part was successfully added
@@ -79,35 +79,47 @@ namespace TeamBronze.HexWars
             else return false;
             return true;
         }
-
+        
         public Part? getPart(AxialCoordinate location)
         {
             Part? val = new Part?();
             dataTable.TryGetValue(location, out val);
             return val;
         }
-
-        public List<Part?> getParts()
+        
+        /*public List<Part?> getParts()
         {
             List<Part?> items = new List<Part?>();
             items.AddRange(dataTable.Values);
 
             return items;
-        }
-
+        }*/
+        
         public List<AxialCoordinate> getEmptyNeighbors(AxialCoordinate location)
         {
             List<AxialCoordinate> empty = new List<AxialCoordinate>();
-            if (getPart(location).Value.type == -1) return empty;
+            if (getPart(location).Value.type == -1) return empty; // triangles don't have any empty neighbors
             foreach (AxialCoordinate direction in directions)
             {
                 AxialCoordinate neighbor = location + direction;
-                if (getPart(neighbor) == null)
-                    empty.Add(neighbor);
+                if (getPart(neighbor) == null) empty.Add(neighbor);
             }
             return empty;
         }
+        
+        public List<AxialCoordinate> getFullNeighbors(AxialCoordinate location)
+        {
+            List<AxialCoordinate> full = new List<AxialCoordinate>();
+            if (getPart(location).Value.type == -1) { full.Add((AxialCoordinate)getNeighborFromTriangle(location)); return full; }
+            foreach (AxialCoordinate direction in directions)
+            {
+                AxialCoordinate neighbor = location + direction;
+                if (getPart(neighbor) != null) full.Add(neighbor);
+            }
 
+            return full;
+        }
+        
         public List<AxialCoordinate> getFullHexNeighbors(AxialCoordinate location)
         {
             List<AxialCoordinate> full = new List<AxialCoordinate>();
@@ -116,30 +128,24 @@ namespace TeamBronze.HexWars
             {
                 // Location is a triangle, there's only one possible neighbor!
                 AxialCoordinate? neighbor = getNeighborFromTriangle(location);
-                if(neighbor != null)
-                    full.Add((AxialCoordinate)neighbor);
-                return full;
+                if(neighbor != null) full.Add((AxialCoordinate)neighbor);
             }
-
-            foreach (AxialCoordinate direction in directions)
-            {
-                AxialCoordinate neighbor = location + direction;
-                if (getPart(neighbor) != null && getPart(neighbor).Value.type != -1)
-                    full.Add(neighbor);
-            }
+            else
+                foreach (AxialCoordinate direction in directions)
+                {
+                    AxialCoordinate neighbor = location + direction;
+                    if (getPart(neighbor) != null && getPart(neighbor).Value.type != -1) full.Add(neighbor);
+                }
 
             return full;
         }
-
+        
         public void removePart(AxialCoordinate location)
         {
-            // Remove a part, return the type of the part that was removed
-            if (getPart(location) == null) return;
-
-            int type = getPart(location).Value.type;
+            // Remove a part
             dataTable[location] = null;
         }
-
+        
         public AxialCoordinate getLocation(Vector3 location)
         {
             // Given a pixel coordinate, return the AxialCoordinate location of the closest part
@@ -159,11 +165,10 @@ namespace TeamBronze.HexWars
                     }
                 }
             }
-            Debug.Log("min coordinate" + minCoordinate);
 
             return minCoordinate;
         }
-
+        
         public List<AxialCoordinate> findDestroyedPartLocations(AxialCoordinate destroyedPartLocation)
         {
             List<AxialCoordinate> destroyedLocations = new List<AxialCoordinate>();
@@ -180,11 +185,10 @@ namespace TeamBronze.HexWars
             // Restore the destroyed part
             addPart(destroyedPartLocation, tempPart);
             destroyedLocations.Add(destroyedPartLocation);
-
-            Debug.Log(destroyedLocations.Count);
+            
             return destroyedLocations;
         }
-
+        
         private bool pathExistsToPlayer(AxialCoordinate location)
         {
             // Given a location, find a path that exists from that location back to the player
@@ -199,6 +203,7 @@ namespace TeamBronze.HexWars
                 AxialCoordinate nodeToExpand = unvisited[0];
                 unvisited.RemoveAt(0);
                 visited.Add(nodeToExpand);
+                //TODO Check that you're not looping?
                 unvisited.AddRange(getFullHexNeighbors(nodeToExpand));
             }
 
@@ -206,11 +211,10 @@ namespace TeamBronze.HexWars
 
             return false;
         }
-
+        
         public int getRotationFromNeighbor(AxialCoordinate neighborNormal)
         {
-            // Given a neighborNormal, return the rotation it should be at
-
+            // Given a neighborNormal, return the rotation a triangle should be at
             if (neighborNormal.x == -1 && neighborNormal.y == 0) return 90;
             if (neighborNormal.x == -1 && neighborNormal.y == 1) return 30;
             if (neighborNormal.x == 0 && neighborNormal.y == 1) return 330;
@@ -218,14 +222,13 @@ namespace TeamBronze.HexWars
             if (neighborNormal.x == 1 && neighborNormal.y == 0) return 270;
             return 150;
         }
-
+        
         public AxialCoordinate? getNeighborFromTriangle(AxialCoordinate position)
         {
-            // Returns a hexagon attached to the triangle at position. Returns null if error of any sort
+            // Returns a hexagon attached to the triangle at position. Returns null if error
 
             if (getPart(position).Value.type != -1) return null;
-
-            GameObject player = GameObject.FindGameObjectWithTag("LocalPlayer");
+            
             int rotation = (int)(dataTable[position].Value.shape.transform.localRotation.eulerAngles.z);
 
             AxialCoordinate neighbor;
@@ -238,7 +241,7 @@ namespace TeamBronze.HexWars
             else if (rotation == 270) neighbor = new AxialCoordinate { x = 1, y = 0 };
             else neighbor = new AxialCoordinate { x = 0, y = -1 };
 
-            if (getPart(position + neighbor) != null && getPart(position+neighbor).Value.type != -1) return position + neighbor;
+            if (getPart(position + neighbor) != null) return position + neighbor;
             
             return null;
         }
