@@ -52,6 +52,8 @@ namespace TeamBronze.HexWars
             players[0] = GameObject.FindGameObjectWithTag("LocalPlayer");
             float[] playerScores = new float[players.Length];
 
+            Array.Copy(otherPlayers, 0, players, 1, otherPlayers.Length);
+
             for (int i = 0; i < playerScores.Length; i++)
             {
                 playerScores[i] = players[i].GetComponent<Rigidbody2D>().mass * scoreMultiplier;
@@ -71,9 +73,11 @@ namespace TeamBronze.HexWars
             for(int i = 0; i < scoresToDisplay; i ++)
             {
                 string playerName = players[i].GetPhotonView().owner.name;
-                float playerScore = playerScores[i];
+                string playerScore = playerScores[i].ToString();
+                playerScore = playerScore.Substring(0, playerScore.IndexOf("."));
                 Text text = AddText(" " + (i + 1) + ". " + playerName + " - " + playerScore);
                 text.color = players[i].GetComponent<SpriteRenderer>().color;
+                text.fontStyle = FontStyle.Bold;
             }
 
             // ---------- Old stuff ----------
