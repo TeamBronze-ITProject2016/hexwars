@@ -104,8 +104,10 @@ namespace TeamBronze.HexWars
         public void addRandomPart(string part="None")
         {
             // Get a random location
-            foreach (AxialCoordinate location in RandomKeys(hexData.dataTable).Take(1))
+            foreach (AxialCoordinate location in RandomKeys(hexData.dataTable))
             {
+                if (hexData.getPart(location).Value.type == -1)
+                    continue;
                 List<AxialCoordinate> randLocations = hexData.getEmptyNeighbors(location);
                 System.Random rnd = new System.Random();
 
@@ -116,7 +118,8 @@ namespace TeamBronze.HexWars
                         part = "Hexagon";
                 }
 
-                addPart(randLocations[rnd.Next(rnd.Next(randLocations.Count-1))], part);
+                addPart(randLocations[rnd.Next(randLocations.Count)], part);
+                return;
             }
 
         }
