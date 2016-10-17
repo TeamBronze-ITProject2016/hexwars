@@ -18,6 +18,10 @@ namespace TeamBronze.HexWars
 
         void OnCollisionEnter2D(Collision2D collision)
         {
+            // Make sure collision is with core part
+            if (!GetComponent<PolygonCollider2D>().IsTouching(collision.collider))
+                return;
+
             string collisionObjTag = collision.collider.gameObject.tag;
 
             if(photonView.isMine && (collisionObjTag == "Triangle" || collisionObjTag ==  "EnemyAttackingPart"))

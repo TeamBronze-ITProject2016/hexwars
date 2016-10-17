@@ -15,8 +15,8 @@ namespace TeamBronze.HexWars
 
                 // Update points if local player destroyed
                 GameObject playerObj = collisionObj.transform.parent.gameObject;
-                if(playerObj.tag == "LocalPlayer")
-                    playerObj.GetComponent<PointScoreHandler>().updateLocalPointsDestructable();
+                if (playerObj.tag == "LocalPlayer")
+                    playerObj.GetComponent<Player>().points += 1;
             }
         }
     }
