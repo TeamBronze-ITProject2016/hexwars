@@ -119,7 +119,8 @@ namespace TeamBronze.HexWars
             if (this.tag != "LocalPlayer")
                 return;
 
-            if (collision.gameObject.tag == "EnemyTriangle") {
+            //doesn't work, as gameObject is always tagged as 'Player' or 'Enemy'.
+            if (collision.gameObject.tag == "EnemyAttackingPart") {
                 EventManager.triggerEvent("replayStart");
                 EventManager.triggerEvent("gameover");
                 //Destroy(this);

@@ -30,6 +30,8 @@ namespace TeamBronze.HexWars {
 
         /*Voice chat*/
         private bool voiceLast = false;
+        private bool voiceOn = true;
+        private bool voiceOnLast = true;
         private float voiceToggleTime = -1.0f;
         private const float VOICE_TOGGLE_DELAY = 0.25f;
 
@@ -116,7 +118,7 @@ namespace TeamBronze.HexWars {
 
                     Texture2D voiceIcon = voiceLast ? voiceiconenabled : voiceicondisabled;
 
-                    if (GUI.RepeatButton(new Rect(0.0f, 2.0f, btnWidth, btnHeight), voiceIcon, GUIStyle.none)) {
+                    if (voiceOn && GUI.RepeatButton(new Rect(0.0f, 2.0f, btnWidth, btnHeight), voiceIcon, GUIStyle.none)) {
                         voiceToggleTime = Time.time;
 
                         if (!voiceLast) {
@@ -177,38 +179,46 @@ namespace TeamBronze.HexWars {
 
                     /*Option 1*/
                     yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
-                    if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 1")) {
-                        Debug.Log("Option 1 Pressed.");
+                    voiceOn = GUI.Toggle(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), voiceOn, "Voice Chat Enabled");
+
+                    if(voiceOn != voiceOnLast && Time.time - voiceToggleTime > VOICE_TOGGLE_DELAY){
+
+                        voiceOnLast = voiceOn;
+                        voiceToggleTime = Time.time;
+
+                        if (voiceOn) {
+                            EventManager.triggerEvent("voiceOn");
+                        } else {
+                            EventManager.triggerEvent("voiceOff");
+                        }
+
                         onElementSelected();
                     }
 
-                    /*Option 2*/
+                    /*Option 2
                     yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
                     if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 2")) {
                         Debug.Log("Option 2 Pressed.");
                         onElementSelected();
                     }
 
-                    /*Option 3*/
                     yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
                     if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 3")) {
                         Debug.Log("Option 3 Pressed.");
                         onElementSelected();
                     }
 
-                    /*Option 4*/
                     yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
                     if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 4")) {
                         Debug.Log("Option 4 Pressed.");
                         onElementSelected();
                     }
 
-                    /*Option 5*/
                     yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
                     if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Disconnect")) {
                         EventManager.triggerEvent("disconnect");
                         onElementSelected();
-                    }
+                    }*/
                     break;
 
                 /*Draw game over splash screen*/
