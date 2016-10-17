@@ -12,7 +12,7 @@ namespace TeamBronze.HexWars
 
         void OnCollisionEnter2D(Collision2D collision)
         {
-			if (photonView.isMine && (collision.collider.gameObject.tag == "Triangle" || collision.collider.gameObject.tag == "EnemyTriangle"))
+			if (photonView.isMine && (collision.collider.gameObject.tag == "Triangle" || collision.collider.gameObject.tag == "EnemyAttackingPart"))
             {
 				// Getting part adder class
 				PartAdder partAdder = GameObject.FindGameObjectWithTag ("PartAdder").GetComponent<PartAdder> ();

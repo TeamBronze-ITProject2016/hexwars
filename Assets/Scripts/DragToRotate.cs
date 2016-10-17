@@ -6,14 +6,13 @@ using UnityEngine.UI;
 
 namespace TeamBronze.HexWars
 {
-  
-    public class DragToRotate : MonoBehaviour, IDragHandler, IPointerDownHandler
+    public class DragToRotate : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler
     {
-
         float deltaRotation;
         float previousRotation;
         float currentRotation;
-        public float maxRotateSpeed = 50f;
+        public float maxRotateSpeed;// = 50f;
+        bool touch = false;
 
         private GUIManager gui;
 
@@ -83,6 +82,9 @@ namespace TeamBronze.HexWars
                 previousRotation = currentRotation;
 
                 playerObj.transform.Rotate(Vector3.back, deltaRotation);
+        }
+        public void OnPointerUp(PointerEventData eventData)
+        {
         }
     }
 }

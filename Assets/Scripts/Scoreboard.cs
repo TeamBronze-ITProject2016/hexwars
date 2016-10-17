@@ -13,6 +13,8 @@ using UnityEngine.Networking;
 
 public class Scoreboard : MonoBehaviour {
 
+    public int maxScores = 4;
+
 	// Use this for initialization
 	void Start () {
         UpdateScoresBoard();
@@ -63,12 +65,16 @@ public class Scoreboard : MonoBehaviour {
                .Select(i => i.Replace('[', ' '))
                .Select(i => i.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                .ToList()).ToList();
+
+        int scorecount = 0;
         // Display score
         foreach (var player in result)
         {
+            if (scorecount == maxScores) break;
             try
             {
                 AddText(player[0] + " : " + player[1]);
+                scorecount++;
             }
             catch
             {

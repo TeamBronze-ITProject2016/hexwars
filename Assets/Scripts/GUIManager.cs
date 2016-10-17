@@ -50,13 +50,13 @@ namespace TeamBronze.HexWars {
         private const float GUI_BUTTON_HEIGHTFACTOR = 0.04f;
 
         /*Joystick*/
-        private bool joystickEnabled = false;
-        private Texture joystickInner = null;
-        private Texture joystickOuter = null;
-        private Vector2 joystickOff = new Vector2(0.0f, 0.0f);
-        private const float JOYSTICK_OUTER_RADIUS = 64.0f;
-        private const float JOYSTICK_INNER_RADIUS = 48.0f;
-        private float joystickMoveRadius = JOYSTICK_OUTER_RADIUS - JOYSTICK_INNER_RADIUS;
+        //private bool joystickEnabled = false;
+        //private Texture joystickInner = null;
+        //private Texture joystickOuter = null;
+        //private Vector2 joystickOff = new Vector2(0.0f, 0.0f);
+        //private const float JOYSTICK_OUTER_RADIUS = 64.0f;
+        //private const float JOYSTICK_INNER_RADIUS = 48.0f;
+        //private float joystickMoveRadius = JOYSTICK_OUTER_RADIUS - JOYSTICK_INNER_RADIUS;
 
         /*In-game menu*/
         private const float INGAMEMENU_WIDTH_FACTOR = 0.3f;
@@ -85,11 +85,13 @@ namespace TeamBronze.HexWars {
             EventManager.registerListener("gameover", onGameOver);
                 
             /*Load textures. Should use LoadAll in future.*/
-            joystickInner = Resources.Load("JoystickInner") as Texture;
-            joystickOuter = Resources.Load("JoystickOuter") as Texture;
+            //joystickInner = Resources.Load("JoystickInner") as Texture;
+            //joystickOuter = Resources.Load("JoystickOuter") as Texture;
             voiceicondisabled = (Texture2D)Resources.Load("voiceicondisabled");
             voiceiconenabled = (Texture2D)Resources.Load("voiceiconenabled");
             gameoverText = (Texture2D)Resources.Load("gameover");
+            //joystickInner = Resources.Load("JoystickInner") as Texture;
+            //joystickOuter = Resources.Load("JoystickOuter") as Texture;
 
             /*Initialise audio*/
             GUIAudioSource = GetComponent<AudioSource>();
@@ -285,6 +287,7 @@ namespace TeamBronze.HexWars {
         }
 
         public bool isPointerOverGUIElement(Vector2 pointer) {
+            //Debug.Log("pointer: (" + pointer.x + "," + pointer.y + ")");
             /*Check all the GUI elements visible in each state.*/
             switch (state) {
                 case GUIState.InGame:
@@ -305,10 +308,10 @@ namespace TeamBronze.HexWars {
             return (state == GUIState.InGameMenu);
         }
 
-        /*Show or hide the joystick*/
-        public void setJoystickEnabled(bool val) {
+        /*Show or hide the joystick
+        /*public void setJoystickEnabled(bool val) {
             joystickEnabled = val;
-        }
+        }*/
 
         /*Game over event*/
         private void onGameOver() {

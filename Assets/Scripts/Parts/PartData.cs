@@ -31,6 +31,11 @@ namespace TeamBronze.HexWars
         {
             return !(a1.x == a2.x && a1.y == a2.y);
         }
+
+        public static AxialCoordinate operator +(AxialCoordinate a1, AxialCoordinate a2)
+        {
+            return new AxialCoordinate { x = a1.x + a2.x, y = a1.y + a2.y };
+        }
     }
 
     public class PartData
@@ -92,8 +97,7 @@ namespace TeamBronze.HexWars
             if (getPart(location).Value.type == -1) return empty;
             foreach (AxialCoordinate direction in directions)
             {
-                AxialCoordinate neighbor = new AxialCoordinate
-                { x = location.x + direction.x, y = location.y + direction.y };
+                AxialCoordinate neighbor = location + direction;
                 if (getPart(neighbor) == null)
                     empty.Add(neighbor);
             }
@@ -104,10 +108,18 @@ namespace TeamBronze.HexWars
         {
             List<AxialCoordinate> full = new List<AxialCoordinate>();
 
+            if (getPart(location) != null && getPart(location).Value.type == -1)
+            {
+                // Location is a triangle, there's only one possible neighbor!
+                if(getNeighborFromTriangle(location) != null)
+                    full.Add((AxialCoordinate)getNeighborFromTriangle(location));
+                Debug.Log("Triangle: " + ((AxialCoordinate)getNeighborFromTriangle(location)).x + ", "+ ((AxialCoordinate)getNeighborFromTriangle(location)).y);
+                return full;
+            }
+
             foreach (AxialCoordinate direction in directions)
             {
-                AxialCoordinate neighbor = new AxialCoordinate
-                { x = location.x + direction.x, y = location.y + direction.y };
+                AxialCoordinate neighbor = location + direction;
                 if (getPart(neighbor) != null && getPart(neighbor).Value.type != -1)
                     full.Add(neighbor);
             }
@@ -118,10 +130,8 @@ namespace TeamBronze.HexWars
         public int removePart(AxialCoordinate location)
         {
             // Remove a part, return the type of the part that was removed
-            int type = dataTable[location].Value.type;
-
+            int type = getPart(location).Value.type;
             dataTable[location] = null;
-
             return type;
         }
 
@@ -189,6 +199,37 @@ namespace TeamBronze.HexWars
             if (visited.Contains(player)) return true;
 
             return false;
+        }
+
+        public int getRotationFromNeighbor(AxialCoordinate neighborNormal)
+        {
+            // Given a neighborNormal, return the rotation it should be at
+
+            if (neighborNormal.x == -1 && neighborNormal.y == 0) return 90;
+            if (neighborNormal.x == -1 && neighborNormal.y == 1) return 30;
+            if (neighborNormal.x == 0 && neighborNormal.y == 1) return 330;
+            if (neighborNormal.x == 1 && neighborNormal.y == -1) return 210;
+            if (neighborNormal.x == 1 && neighborNormal.y == 0) return 270;
+            return 150;
+        }
+
+        public AxialCoordinate? getNeighborFromTriangle(AxialCoordinate position)
+        {
+            // TODO: This line doesn't work
+            int rotation = (int)dataTable[position].Value.shape.transform.rotation.eulerAngles.z;
+            AxialCoordinate neighbor;
+
+            // Given a rotation (ie used for triangle), get the neighbor attached to that part
+            if (rotation == 90) neighbor = new AxialCoordinate { x = -1, y = 0 };
+            else if (rotation == 30) neighbor = new AxialCoordinate { x = -1, y = 1 };
+            else if (rotation == 330) neighbor = new AxialCoordinate { x = 0, y = 1 };
+            else if (rotation == 210) neighbor = new AxialCoordinate { x = 1, y = -1 };
+            else if (rotation == 270) neighbor = new AxialCoordinate { x = 1, y = 0 };
+            else neighbor = new AxialCoordinate { x = 0, y = -1 };
+
+            if (getPart(neighbor + position) != null) return neighbor + position;
+            Debug.Log("Error!");
+            return null;
         }
     }
 }

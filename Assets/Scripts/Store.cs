@@ -34,11 +34,14 @@ namespace TeamBronze.HexWars
         // Update is called once per frame
         void Update()
         {
-            try { 
-            if (player.GetComponent<Player>().points >= storeMinimum && !store.GetActive())
+            if (player != null && (player.GetComponent<Player>().points >= storeMinimum && !store.GetActive()))
+            {
                 store.SetActive(true);
-            } catch {
-                //...
+
+                if (!inputManager.IsActive()) 
+                    return;
+
+                Vector2 pos = -inputManager.lastMoveVector();
             }
         }
 
