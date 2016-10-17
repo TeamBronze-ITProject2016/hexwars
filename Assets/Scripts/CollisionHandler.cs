@@ -14,8 +14,6 @@ namespace TeamBronze.HexWars
         {
 			if (photonView.isMine && (collision.collider.gameObject.tag == "Triangle" || collision.collider.gameObject.tag == "EnemyAttackingPart"))
             {
-                Debug.Log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-
 				// Getting part adder class
 				PartAdder partAdder = GameObject.FindGameObjectWithTag ("PartAdder").GetComponent<PartAdder> ();
 				// Gets the axialcoord of the object to destroy
