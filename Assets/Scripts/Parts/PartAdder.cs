@@ -104,7 +104,6 @@ namespace TeamBronze.HexWars
             GameObject scoreboard = GameObject.FindGameObjectWithTag("ScoreBoard");
             PhotonView scoreboardView = PhotonView.Get(scoreboard);
             scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);
-
         }
         
         public void addRandomPart(string part="None")

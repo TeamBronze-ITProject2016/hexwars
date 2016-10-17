@@ -48,10 +48,6 @@ public class Scoreboard : MonoBehaviour {
     IEnumerator UpdateScoresBoard () {
         // Remove previous scores
         GameObject scoresDisplay = transform.FindChild("Scores").gameObject;
-        foreach (Transform child in scoresDisplay.transform)
-        {
-            Destroy(child.gameObject);
-        }
 
         string url = "http://128.199.229.64/hexwars";
         WWW www = new WWW(url);
@@ -65,19 +61,25 @@ public class Scoreboard : MonoBehaviour {
                .Select(i => i.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                .ToList()).ToList();
 
-        int scorecount = 0;
-        // Display score
-        foreach (var player in result)
+        for(int i = 1; i <= maxScores; i++)
         {
-            if (scorecount == maxScores) break;
+            string playerscore;
             try
             {
-                AddText(player[0] + " : " + player[1]);
-                scorecount++;
+                playerscore = i + ". " + result[i][0].Trim('"').Remove(0,3) + ":" + result[i][1];
+                Debug.Log(result[i][0].Trim('"').Remove(0, 3));
+                try
+                {
+                    scoresDisplay.transform.GetChild(i).gameObject.GetComponent<Text>().text = playerscore;
+                }
+                catch
+                {
+                    AddText(playerscore);
+                }
             }
             catch
             {
-
+                Destroy(scoresDisplay.transform.GetChild(i).gameObject);
             }
         }
     }
