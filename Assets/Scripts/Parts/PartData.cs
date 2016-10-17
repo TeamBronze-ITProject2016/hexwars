@@ -17,7 +17,11 @@ namespace TeamBronze.HexWars
     }
 
     [Serializable]
+#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
     public struct AxialCoordinate
+#pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
     {
         public int x;
         public int y;
@@ -62,7 +66,7 @@ namespace TeamBronze.HexWars
             // Check that a part can be added to the location provided. Will return true if:
             // 1. location has no parts already attached
             // 2. a path exists from location to player
-            if (pathExistsToPlayer(location) && ((dataTable.ContainsKey(location) && dataTable[location] == null) || (!dataTable.ContainsKey(location))))
+            if (pathExistsToPlayer(location) && ((dataTable.ContainsKey(location) && getPart(location) == null) || (!dataTable.ContainsKey(location))))
                 return true;
             else return false;
         }
@@ -111,9 +115,9 @@ namespace TeamBronze.HexWars
             if (getPart(location) != null && getPart(location).Value.type == -1)
             {
                 // Location is a triangle, there's only one possible neighbor!
-                if(getNeighborFromTriangle(location) != null)
-                    full.Add((AxialCoordinate)getNeighborFromTriangle(location));
-                Debug.Log("Triangle: " + ((AxialCoordinate)getNeighborFromTriangle(location)).x + ", "+ ((AxialCoordinate)getNeighborFromTriangle(location)).y);
+                AxialCoordinate? neighbor = getNeighborFromTriangle(location);
+                if(neighbor != null)
+                    full.Add((AxialCoordinate)neighbor);
                 return full;
             }
 
@@ -164,7 +168,7 @@ namespace TeamBronze.HexWars
             List<AxialCoordinate> destroyedLocations = new List<AxialCoordinate>();
 
             // Temporarily destroy the part
-            Part? tempPart = dataTable[destroyedPartLocation];
+            Part? tempPart = getPart(destroyedPartLocation);
             removePart(destroyedPartLocation);
 
             // Search all parts to see if path is present
@@ -176,6 +180,7 @@ namespace TeamBronze.HexWars
             addPart(destroyedPartLocation, tempPart);
             destroyedLocations.Add(destroyedPartLocation);
 
+            Debug.Log(destroyedLocations.Count);
             return destroyedLocations;
         }
 
@@ -215,8 +220,13 @@ namespace TeamBronze.HexWars
 
         public AxialCoordinate? getNeighborFromTriangle(AxialCoordinate position)
         {
-            // TODO: This line doesn't work
-            int rotation = (int)dataTable[position].Value.shape.transform.rotation.eulerAngles.z;
+            // Returns a hexagon attached to the triangle at position. Returns null if error of any sort
+
+            if (getPart(position).Value.type != -1) return null;
+
+            GameObject player = GameObject.FindGameObjectWithTag("LocalPlayer");
+            int rotation = (int)(dataTable[position].Value.shape.transform.localRotation.eulerAngles.z);
+
             AxialCoordinate neighbor;
 
             // Given a rotation (ie used for triangle), get the neighbor attached to that part
@@ -227,8 +237,8 @@ namespace TeamBronze.HexWars
             else if (rotation == 270) neighbor = new AxialCoordinate { x = 1, y = 0 };
             else neighbor = new AxialCoordinate { x = 0, y = -1 };
 
-            if (getPart(neighbor + position) != null) return neighbor + position;
-            Debug.Log("Error!");
+            if (getPart(position + neighbor) != null && getPart(position+neighbor).Value.type != -1) return position + neighbor;
+            
             return null;
         }
     }
