@@ -5,9 +5,6 @@ namespace TeamBronze.HexWars
 {
     public class VoiceChatManager : MonoBehaviour
     {
-        public bool enabledByDefault = false;
-
-        private PhotonVoiceSpeaker voiceSpeaker;
         private PhotonVoiceRecorder voiceRecorder;
         private GameObject localPlayer;
         private GameObject[] players;
@@ -16,10 +13,8 @@ namespace TeamBronze.HexWars
         // Use this for initialization
         void Start()
         {
-            //voiceSpeaker = GetComponent<PhotonVoiceSpeaker>();
             audioSource = GetComponent<AudioSource>();
             voiceRecorder = GetComponent<PhotonVoiceRecorder>();
-            voiceRecorder.Transmit = enabledByDefault;
 
             EventManager.registerListener("voiceEnable", startTransmitting);
             EventManager.registerListener("voiceDisable", stopTransmitting);
