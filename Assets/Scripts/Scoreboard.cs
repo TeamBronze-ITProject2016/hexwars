@@ -76,7 +76,7 @@ namespace TeamBronze.HexWars
                 string playerScore = playerScores[i].ToString();
                 playerScore = RemoveDecimals(playerScore);
                 Text text = AddText(" " + (i + 1) + ". " + playerName + " - " + playerScore);
-                text.color = players[i].GetComponent<SpriteRenderer>().color;
+                text.color = Color.Lerp(players[i].GetComponent<SpriteRenderer>().color, Color.black, 0.5f);
                 text.fontStyle = FontStyle.Bold;
             }
 
