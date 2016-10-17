@@ -131,12 +131,13 @@ namespace TeamBronze.HexWars
             return full;
         }
 
-        public int removePart(AxialCoordinate location)
+        public void removePart(AxialCoordinate location)
         {
             // Remove a part, return the type of the part that was removed
+            if (getPart(location) == null) return;
+
             int type = getPart(location).Value.type;
             dataTable[location] = null;
-            return type;
         }
 
         public AxialCoordinate getLocation(Vector3 location)
