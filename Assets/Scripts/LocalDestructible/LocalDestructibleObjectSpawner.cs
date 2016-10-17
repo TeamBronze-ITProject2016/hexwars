@@ -51,6 +51,7 @@ namespace TeamBronze.HexWars
                 rb.AddForce(direction * startingForce);
                 rb.AddTorque(RandomNegOrPos() * startingTorque);
 
+                // Don't spawn if on top of something
                 if (destructibleObj.GetComponent<PolygonCollider2D>().Cast(Vector2.zero, new RaycastHit2D[1], 0) > 0)
                     Destroy(destructibleObj);
             }
@@ -58,7 +59,6 @@ namespace TeamBronze.HexWars
 
         Vector3 GetSpawnPos()
         {
-            /* TODO: Make sure position doesn't collide with anything */
             return new Vector3(Random.Range(x1, x2), Random.Range(y1, y2), 0.0f);
         }
 
