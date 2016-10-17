@@ -38,7 +38,8 @@ namespace TeamBronze.HexWars
             {
                 store.SetActive(true);
 
-                if (!inputManager.IsActive()) return;
+                if (!inputManager.IsActive()) 
+                    return;
 
                 Vector2 pos = -inputManager.lastMoveVector();
             }

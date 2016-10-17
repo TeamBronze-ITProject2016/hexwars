@@ -20,7 +20,6 @@ namespace TeamBronze.HexWars {
             GetComponent<Image>().rectTransform.sizeDelta = new Vector3(parent.GetComponent<RectTransform>().rect.width / 2,
                                                                          parent.GetComponent<RectTransform>().rect.height,
                                                                          0);
-
             gui = FindObjectOfType<GUIManager>();
             Debug.Assert(gui);
             backgroundImage = transform.FindChild("JoystickBackground").GetComponent<Image>();
@@ -29,9 +28,25 @@ namespace TeamBronze.HexWars {
             joystickImage.enabled = false;
         }
 
+        /*Returns false if the GUI is in a state where no joystick input should be accepted,
+         * or true otherwise.*/
+        private bool active() {
+            if (gui.gameOverSplashVisible() || gui.inGameMenuVisible())
+                return false;
+
+            return true;
+        }
+
         public virtual void OnDrag(PointerEventData ped)
         {
+            if (!active())
+                return;
+
             Vector2 pos = ped.position;
+
+            /*Don't enable joystick if we're over a GUI element.*/
+            if(gui.isPointerOverGUIElement(new Vector2(ped.position.x, ped.position.y)))
+                return;
 
             // Get position ratio from 0,1
             pos.x = ((pos.x - backgroundImage.transform.position.x) / backgroundImage.rectTransform.sizeDelta.x);
@@ -50,8 +65,8 @@ namespace TeamBronze.HexWars {
 
         public virtual void OnPointerDown(PointerEventData ped)
         {
-            /*Don't enabled joystick if we're over a GUI element.*/
-            if(gui.isPointerOverGUIElement(new Vector2(ped.position.x, ped.position.y)))
+            /*Don't draw joystick if not active or over a gui element*/
+            if (!active() || gui.isPointerOverGUIElement(new Vector2(ped.position.x, ped.position.y)))
                 return;
 
             // Enable joystick and move to correct position

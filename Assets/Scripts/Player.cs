@@ -73,6 +73,12 @@ namespace TeamBronze.HexWars
             }
 
             KeepInBoundary();
+
+            if(Input.GetKeyDown(KeyCode.F5)){
+                EventManager.triggerEvent("replayStart");
+                EventManager.triggerEvent("gameover");
+            }
+
         } 
 
         /* Apply a forward force to the hexagon. */
@@ -105,6 +111,19 @@ namespace TeamBronze.HexWars
 				rotateDir = 1;
 
 			transform.RotateAround(transform.position, Vector3.forward, rotateDir * rotationSpeed * Time.deltaTime);
+        }
+
+        /*Called when something collides with the player's hexagon*/
+        void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (this.tag != "LocalPlayer")
+                return;
+
+            if (collision.gameObject.tag == "EnemyTriangle") {
+                EventManager.triggerEvent("replayStart");
+                EventManager.triggerEvent("gameover");
+                //Destroy(this);
+            }
         }
 
         /* Move using joystick */
