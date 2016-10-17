@@ -31,6 +31,16 @@ namespace TeamBronze.HexWars
         {
             return !(a1.x == a2.x && a1.y == a2.y);
         }
+
+        public static AxialCoordinate operator +(AxialCoordinate a1, AxialCoordinate a2)
+        {
+            return new AxialCoordinate { x = a1.x + a2.x, y = a1.y + a2.y };
+        }
+
+        public static AxialCoordinate operator -(AxialCoordinate a1, AxialCoordinate a2)
+        {
+            return new AxialCoordinate { x = a1.x - a2.x, y = a1.y - a2.y };
+        }
     }
 
     public class PartData
@@ -92,8 +102,7 @@ namespace TeamBronze.HexWars
             if (getPart(location).Value.type == -1) return empty;
             foreach (AxialCoordinate direction in directions)
             {
-                AxialCoordinate neighbor = new AxialCoordinate
-                { x = location.x + direction.x, y = location.y + direction.y };
+                AxialCoordinate neighbor = location + direction;
                 if (getPart(neighbor) == null)
                     empty.Add(neighbor);
             }
@@ -104,15 +113,17 @@ namespace TeamBronze.HexWars
         {
             List<AxialCoordinate> full = new List<AxialCoordinate>();
 
-            // NOTE: Triangles are tricky, depending on their rotation, they will only be attached to one hexagon
-            // but if you try to pull all hexagons, odd behaviour will result after collisions.
-            // So we have to manually determine which edge of the triangle we add
-            // TODO
+            if (dataTable[location].Value.type == -1)
+            {
+                // Location is a triangle, there's only one possible neighbor!
+                if(getNeighborFromTriangle(location) != null)
+                    full.Add((AxialCoordinate)getNeighborFromTriangle(location));
+                return full;
+            }
 
             foreach (AxialCoordinate direction in directions)
             {
-                AxialCoordinate neighbor = new AxialCoordinate
-                { x = location.x + direction.x, y = location.y + direction.y };
+                AxialCoordinate neighbor = location + direction;
                 if (getPart(neighbor) != null && getPart(neighbor).Value.type != -1)
                     full.Add(neighbor);
             }
@@ -206,16 +217,23 @@ namespace TeamBronze.HexWars
             return 150;
         }
 
-        public AxialCoordinate getNeighborFromRotation(int rotation)
+        public AxialCoordinate? getNeighborFromTriangle(AxialCoordinate position)
         {
-            // Given a rotation (ie used for triangle), get the neighbor attached to that part
+            // TODO: This line doesn't work
+            int rotation = (int)dataTable[position].Value.shape.transform.rotation.eulerAngles.x;
 
-            if (rotation == 90) return new AxialCoordinate { x = -1, y = 0 };
-            if (rotation == 30) return new AxialCoordinate { x = -1, y = 1 };
-            if (rotation == 330) return new AxialCoordinate { x = 0, y = 1 };
-            if (rotation == 210) return new AxialCoordinate { x = 1, y = -1 };
-            if (rotation == 270) return new AxialCoordinate { x = 1, y = 0 };
-            return new AxialCoordinate { x = 0, y = -1 };
+            AxialCoordinate neighbor;
+
+            // Given a rotation (ie used for triangle), get the neighbor attached to that part
+            if (rotation == 90) neighbor = new AxialCoordinate { x = -1, y = 0 };
+            else if (rotation == 30) neighbor = new AxialCoordinate { x = -1, y = 1 };
+            else if (rotation == 330) neighbor = new AxialCoordinate { x = 0, y = 1 };
+            else if (rotation == 210) neighbor = new AxialCoordinate { x = 1, y = -1 };
+            else if (rotation == 270) neighbor = new AxialCoordinate { x = 1, y = 0 };
+            else neighbor = new AxialCoordinate { x = 0, y = -1 };
+
+            if (dataTable[neighbor + position] != null) return neighbor + position;
+            return null;
         }
     }
 }

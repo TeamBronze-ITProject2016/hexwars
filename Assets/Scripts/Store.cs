@@ -35,7 +35,13 @@ namespace TeamBronze.HexWars
         void Update()
         {
             if (player != null && (player.GetComponent<Player>().points >= storeMinimum && !store.GetActive()))
+            {
                 store.SetActive(true);
+
+                if (!inputManager.IsActive()) return;
+
+                Vector2 pos = -inputManager.lastMoveVector();
+            }
         }
 
         public void addHexagon()
