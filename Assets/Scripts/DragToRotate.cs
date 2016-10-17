@@ -4,19 +4,20 @@ using UnityEngine.EventSystems;
 using System;
 using UnityEngine.UI;
 
-public class DragToRotate : MonoBehaviour, IDragHandler, IPointerDownHandler
+public class DragToRotate : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler
 {
 
     float deltaRotation;
     float previousRotation;
     float currentRotation;
-    public float maxRotateSpeed = 50f;
+    public float maxRotateSpeed;
+    bool touch = false;
 
     void Start()
     {
         // Make it so area fits half of screen
         GameObject parent = transform.parent.gameObject;
-        GetComponent<Image>().rectTransform.sizeDelta = new Vector3(parent.GetComponent<RectTransform>().rect.width/2,
+        GetComponent<Image>().rectTransform.sizeDelta = new Vector3(parent.GetComponent<RectTransform>().rect.width,
                                                                      parent.GetComponent<RectTransform>().rect.height,
                                                                      0);
     }
@@ -45,20 +46,24 @@ public class DragToRotate : MonoBehaviour, IDragHandler, IPointerDownHandler
 
     public void OnDrag(PointerEventData eventData)
     {
-            GameObject playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
+        GameObject playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
 
 		currentRotation = angleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(eventData.position));
-            deltaRotation = Mathf.DeltaAngle(currentRotation, previousRotation);
-            if (deltaRotation > maxRotateSpeed)
-            {
-                deltaRotation = maxRotateSpeed;
-            }
-            if (deltaRotation < -maxRotateSpeed)
-            {
-                deltaRotation = -maxRotateSpeed;
-            }
-            previousRotation = currentRotation;
+        deltaRotation = Mathf.DeltaAngle(currentRotation, previousRotation);
+        if (deltaRotation > maxRotateSpeed)
+        {
+            deltaRotation = maxRotateSpeed;
+        }
+        if (deltaRotation < -maxRotateSpeed)
+        {
+            deltaRotation = -maxRotateSpeed;
+        }
+        previousRotation = currentRotation;
 
-            playerObj.transform.Rotate(Vector3.back, deltaRotation);
+        playerObj.transform.Rotate(Vector3.back, deltaRotation);
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
     }
 }
