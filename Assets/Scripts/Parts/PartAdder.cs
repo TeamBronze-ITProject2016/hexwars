@@ -15,6 +15,7 @@ namespace TeamBronze.HexWars
         public float size = 1.23f;
 
         public PartData hexData = new PartData();
+        public int maxNeighbors = 3;
 
         private Part player;
         private AxialCoordinate playerLocation = new AxialCoordinate { x = 0, y = 0 };
@@ -108,11 +109,24 @@ namespace TeamBronze.HexWars
         
         public void addRandomPart(string part="None")
         {
+            int maxTries = 100;
+            int counter = 0;
+
             // Get a random location
             foreach (AxialCoordinate location in RandomKeys(hexData.dataTable))
             {
-                if (hexData.getPart(location).Value.type == -1)
-                    continue;
+                if (counter < maxTries)
+                {
+                    counter++;
+                }
+                else
+                {
+                    addPartError();
+                    return;
+                }
+
+                int localMaxNeighbors;
+                if (hexData.getPart(location).Value.type == -1) continue;
                 List<AxialCoordinate> randLocations = hexData.getEmptyNeighbors(location);
                 System.Random rnd = new System.Random();
 
@@ -123,10 +137,20 @@ namespace TeamBronze.HexWars
                         part = "Hexagon";
                 }
 
+                // Ensure that adding this part doesn't exceed the max allowed per hexagon
+                localMaxNeighbors = maxNeighbors;
+                if (part == "Triangle") localMaxNeighbors -= 1;
+                if (hexData.getFullNeighbors(location).Count >= localMaxNeighbors) continue;
+
                 addPart(randLocations[rnd.Next(randLocations.Count)], part);
                 return;
             }
 
+        }
+
+        void addPartError()
+        {
+            
         }
 
         // From http://stackoverflow.com/questions/1028136/random-entry-from-dictionary
