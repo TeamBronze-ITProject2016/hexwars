@@ -14,8 +14,6 @@ namespace TeamBronze.HexWars
         public bool enabledByDefault = false;
 
         private PhotonVoiceRecorder voiceRecorder;
-        private PhotonVoiceSpeaker voiceSpeaker;
-
         private GameObject localPlayer;
         private GameObject[] players;
 
@@ -23,7 +21,6 @@ namespace TeamBronze.HexWars
         void Start()
         {
             voiceRecorder = GetComponent<PhotonVoiceRecorder>();
-            voiceSpeaker = GetComponent<PhotonVoiceSpeaker>();
             voiceRecorder.Transmit = enabledByDefault;
 
             EventManager.registerListener("voiceEnable", voiceEnable);
