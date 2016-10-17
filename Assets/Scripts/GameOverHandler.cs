@@ -35,7 +35,10 @@ namespace TeamBronze.HexWars
         {
             string playerName = photonView.owner.name;
 
-            WebRequest.Create("http://128.199.229.64/hexwars/" + playerName + "/" + score);
+            var request = (HttpWebRequest)WebRequest.Create("http://128.199.229.64/hexwars/" + playerName + "/" + score);
+            var response = (HttpWebResponse)request.GetResponse();
+            var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            Debug.Log(responseString);
         }
     }
 }
