@@ -66,7 +66,7 @@ namespace TeamBronze.HexWars
                 Debug.Log("OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient); /* Called before OnPhotonPlayerDisconnected */
                 //LoadArena();
                 // Remove player from server
-                string url = "http://128.199.229.64/hexwars/remove/";
+                string url = "http://128.199.229.64/remove/";
                 string name = PhotonNetwork.player.name;
                 UnityWebRequest request = UnityWebRequest.Get(url + name);
                 request.Send();
