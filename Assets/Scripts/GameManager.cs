@@ -85,7 +85,7 @@ namespace TeamBronze.HexWars
             }
             else
             {
-                Debug.Log("We are Instantiating LocalPlayer from " + Application.loadedLevelName);
+                Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
 
 
 

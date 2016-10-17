@@ -11,7 +11,6 @@ public class DragToRotate : MonoBehaviour, IDragHandler, IPointerDownHandler, IP
     float previousRotation;
     float currentRotation;
     public float maxRotateSpeed;
-    bool touch = false;
 
     void Start()
     {
