@@ -123,7 +123,7 @@ namespace TeamBronze.HexWars
             foreach (AxialCoordinate direction in directions)
             {
                 AxialCoordinate neighbor = location + direction;
-                if (getPart(neighbor) != null && getPart(neighbor).Value.type != -1)
+                if (getPart(neighbor) != null)
                     full.Add(neighbor);
             }
 

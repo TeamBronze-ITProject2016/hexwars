@@ -125,9 +125,10 @@ public class ObjectFader : Photon.MonoBehaviour
 				rendererObjects[i].enabled = false; 
 			}
 		}
-		if (PhotonNetwork.isMasterClient) {
+        Destroy(gameObject);
+		/*if (PhotonNetwork.isMasterClient) {
 			PhotonNetwork.Destroy (gameObject);
-		}
+		}*/
 	}
 
 	[PunRPC]
