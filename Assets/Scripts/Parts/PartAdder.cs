@@ -116,7 +116,7 @@ namespace TeamBronze.HexWars
                         part = "Hexagon";
                 }
 
-                addPart(randLocations[rnd.Next(rnd.Next(randLocations.Count))], part);
+                addPart(randLocations[rnd.Next(rnd.Next(randLocations.Count-1))], part);
             }
 
         }
