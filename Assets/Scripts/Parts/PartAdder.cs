@@ -107,7 +107,7 @@ namespace TeamBronze.HexWars
             scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);
         }
         
-        public void addRandomPart(string part="None")
+        public bool addRandomPart(string part="None")
         {
             int maxTries = 100;
             int counter = 0;
@@ -115,15 +115,7 @@ namespace TeamBronze.HexWars
             // Get a random location
             foreach (AxialCoordinate location in RandomKeys(hexData.dataTable))
             {
-                if (counter < maxTries)
-                {
-                    counter++;
-                }
-                else
-                {
-                    addPartError();
-                    return;
-                }
+                if (counter < maxTries) counter++; else {addPartError(); return false;}
 
                 int localMaxNeighbors;
                 if (hexData.getPart(location).Value.type == -1) continue;
@@ -140,17 +132,21 @@ namespace TeamBronze.HexWars
                 // Ensure that adding this part doesn't exceed the max allowed per hexagon
                 localMaxNeighbors = maxNeighbors;
                 if (part == "Triangle") localMaxNeighbors -= 1;
-                if (hexData.getFullNeighbors(location).Count >= localMaxNeighbors) continue;
+                if (hexData.getFullNeighbors(location).Count >= localMaxNeighbors) {addPartError(); return false;}
 
                 addPart(randLocations[rnd.Next(randLocations.Count)], part);
-                return;
+                return true;
             }
+
+            return false;
 
         }
 
-        void addPartError()
+        IEnumerator addPartError()
         {
-            
+            GameObject.FindGameObjectWithTag("PartError").SetActive(true);
+            yield return new WaitForSeconds(3);
+            GameObject.FindGameObjectWithTag("PartError").SetActive(false);
         }
 
         // From http://stackoverflow.com/questions/1028136/random-entry-from-dictionary
