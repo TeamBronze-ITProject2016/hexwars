@@ -66,7 +66,7 @@ namespace TeamBronze.HexWars
             // Check that a part can be added to the location provided. Will return true if:
             // 1. location has no parts already attached
             // 2. a path exists from location to player
-            if (pathExistsToPlayer(location) && ((dataTable.ContainsKey(location) && dataTable[location] == null) || (!dataTable.ContainsKey(location))))
+            if (pathExistsToPlayer(location) && ((dataTable.ContainsKey(location) && getPart(location) == null) || (!dataTable.ContainsKey(location))))
                 return true;
             else return false;
         }
@@ -167,7 +167,7 @@ namespace TeamBronze.HexWars
             List<AxialCoordinate> destroyedLocations = new List<AxialCoordinate>();
 
             // Temporarily destroy the part
-            Part? tempPart = dataTable[destroyedPartLocation];
+            Part? tempPart = getPart(destroyedPartLocation);
             removePart(destroyedPartLocation);
 
             // Search all parts to see if path is present
