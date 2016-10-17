@@ -99,18 +99,7 @@ namespace TeamBronze.HexWars
             scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);
 
         }
-
-        /*public void addPart(Vector3 location, string part)
-        {
-            // Do a search for the hexagon closest to location with at least one open slot
-            AxialCoordinate newLocation = hexData.getLocation(location);
-
-            //TODO: Find closest neighbor to vector
-            newLocation = hexData.getEmptyNeighbors(newLocation)[0];
-
-            addPart(newLocation, part);
-        }*/
-
+        
         public void addRandomPart(string part="None")
         {
             // Get a random location
@@ -176,22 +165,8 @@ namespace TeamBronze.HexWars
                     lowestNeighbor = neighbor;
 
             //Step 3: Rotate to that neighbor
-            //XXX: I couldn't think of a way to do this except to hard-code the different configurations
             AxialCoordinate neighborNormal = new AxialCoordinate { x = location.x - lowestNeighbor.x, y = location.y - lowestNeighbor.y };
-            int rotation = 0;
-
-            if (neighborNormal.x == -1 && neighborNormal.y == 0)
-                rotation = 90;
-            else if (neighborNormal.x == -1 && neighborNormal.y == 1)
-                rotation = 30;
-            else if (neighborNormal.x == 0 && neighborNormal.y == 1)
-                rotation = 330;
-            else if (neighborNormal.x == 1 && neighborNormal.y == -1)
-                rotation = 210;
-            else if (neighborNormal.x == 1 && neighborNormal.y == 0)
-                rotation = 270;
-            else
-                rotation = 150;
+            int rotation = hexData.getRotationFromNeighbor(neighborNormal);
 
             return Quaternion.Euler(0, 0, rotation);
         }

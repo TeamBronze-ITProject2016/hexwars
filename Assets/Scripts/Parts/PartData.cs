@@ -104,6 +104,11 @@ namespace TeamBronze.HexWars
         {
             List<AxialCoordinate> full = new List<AxialCoordinate>();
 
+            // NOTE: Triangles are tricky, depending on their rotation, they will only be attached to one hexagon
+            // but if you try to pull all hexagons, odd behaviour will result after collisions.
+            // So we have to manually determine which edge of the triangle we add
+            // TODO
+
             foreach (AxialCoordinate direction in directions)
             {
                 AxialCoordinate neighbor = new AxialCoordinate
@@ -189,6 +194,30 @@ namespace TeamBronze.HexWars
             if (visited.Contains(player)) return true;
 
             return false;
+        }
+
+        public int getRotationFromNeighbor(AxialCoordinate neighborNormal)
+        {
+            // Given a neighborNormal, return the rotation it should be at
+
+            if (neighborNormal.x == -1 && neighborNormal.y == 0) return 90;
+            if (neighborNormal.x == -1 && neighborNormal.y == 1) return 30;
+            if (neighborNormal.x == 0 && neighborNormal.y == 1) return 330;
+            if (neighborNormal.x == 1 && neighborNormal.y == -1) return 210;
+            if (neighborNormal.x == 1 && neighborNormal.y == 0) return 270;
+            return 150;
+        }
+
+        public AxialCoordinate getNeighborFromRotation(int rotation)
+        {
+            // Given a rotation (ie used for triangle), get the neighbor attached to that part
+
+            if (rotation == 90) return new AxialCoordinate { x = -1, y = 0 };
+            if (rotation == 30) return new AxialCoordinate { x = -1, y = 1 };
+            if (rotation == 330) return new AxialCoordinate { x = 0, y = 1 };
+            if (rotation == 210) return new AxialCoordinate { x = 1, y = -1 };
+            if (rotation == 270) return new AxialCoordinate { x = 1, y = 0 };
+            return new AxialCoordinate { x = 0, y = -1 };
         }
     }
 }
