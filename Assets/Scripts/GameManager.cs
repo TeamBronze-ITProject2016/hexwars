@@ -31,6 +31,9 @@ namespace TeamBronze.HexWars
         [Tooltip("Maximum y bound")]
         public float y2 = 50.0f;
 
+        [HideInInspector]
+        public bool isGameOver = false;
+
         static public GameManager Instance;
 
         private ReplayManager replayManager;
@@ -38,7 +41,10 @@ namespace TeamBronze.HexWars
         /* Called when the local player left the room. We need to load the launcher scene. */
         public override void OnLeftRoom()
         {
-            SceneManager.LoadScene(0);
+            if (isGameOver)
+                SceneManager.LoadScene(2);
+            else
+                SceneManager.LoadScene(0);
         }
 
         public void LeaveRoom()
