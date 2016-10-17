@@ -8,7 +8,7 @@ namespace TeamBronze.HexWars
         void OnDestroy()
         {
             GameObject fadeObj = new GameObject();
-            fadeObj.name = "AIFade";
+            fadeObj.name = "FadeObj";
 
             fadeObj.transform.position = transform.position;
             fadeObj.transform.rotation = transform.rotation;
