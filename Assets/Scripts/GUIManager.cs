@@ -130,12 +130,14 @@ namespace TeamBronze.HexWars {
                         EventManager.triggerEvent("voiceDisable");
                     }
 
+                    // HIDDEN BECAUSE INCOMPLETE
                     /*In-Game menu open button*/
+                    /*
                     if (GUI.Button(new Rect(Screen.width - btnWidth, 0.0f, btnWidth, btnHeight), "Menu")) {
                         Debug.Log("In-Game menu open button pressed");
                         state = GUIState.InGameMenu;
                         onElementSelected();
-                    }
+                    }*/
 
                     /*Draw replay timer if we are playing a replay*/
                     if (ReplayManager.isPlaying()) {
