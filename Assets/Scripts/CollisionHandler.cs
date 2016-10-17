@@ -40,6 +40,11 @@ namespace TeamBronze.HexWars
 
                 foreach (AxialCoordinate location in listToDestroy)
                     partAdder.removePart(location);
+
+                // Update the scoreboard
+                GameObject scoreboard = GameObject.FindGameObjectWithTag("ScoreBoard");
+                PhotonView scoreboardView = PhotonView.Get(scoreboard);
+                scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);
             }
         }
     }
