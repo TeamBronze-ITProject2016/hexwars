@@ -67,31 +67,38 @@ namespace TeamBronze.HexWars
 
         void Start()
         {
+            EventManager.registerListener("playagain", spawnLocalPlayer);
+
             if (playerPrefab == null)
             {
                 Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
             }
             else
             {
-                Debug.Log("We are Instantiating LocalPlayer from " + Application.loadedLevelName);
-
-
-
-                /* We're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate */
-                Vector3 spawnPos;
-                do
-                {
-                    spawnPos = new Vector3(UnityEngine.Random.Range(x1, x2), UnityEngine.Random.Range(y1, y2), 0.0f);
-                }
-                while (!IsPosClear(spawnPos));
-
-                PhotonNetwork.Instantiate(this.playerPrefab.name, spawnPos, Quaternion.identity, 0);
+                spawnLocalPlayer();
             }
 
             replayManager = FindObjectOfType<ReplayManager>();
             Debug.Assert(replayManager);
 
             EventManager.registerListener("disconnect", LeaveRoom);
+            EventManager.registerListener("replayStart", DisableSending);
+            EventManager.registerListener("playagain", DoReconnect);
+        }
+
+        /*Create an instance of the local player at a random location free of other players.*/
+        void spawnLocalPlayer() {
+            Debug.Log("We are Instantiating LocalPlayer from " + Application.loadedLevelName);
+
+            /* We're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate */
+            Vector3 spawnPos;
+            do
+            {
+                spawnPos = new Vector3(UnityEngine.Random.Range(x1, x2), UnityEngine.Random.Range(y1, y2), 0.0f);
+            }
+            while (!IsPosClear(spawnPos));
+
+            GameObject playerObj = PhotonNetwork.Instantiate(this.playerPrefab.name, spawnPos, Quaternion.identity, 0);
         }
 
         void LoadArena()
@@ -116,6 +123,18 @@ namespace TeamBronze.HexWars
             Destroy(tempObj);
 
             return isPosClear;
+        }
+        
+        /*Replay callbacks.*/
+        void DisableSending() {
+            PhotonNetwork.SetSendingEnabled(0, false);
+            PhotonNetwork.SetReceivingEnabled(0, false);
+        }
+        void DoReconnect() {
+            PhotonNetwork.SetSendingEnabled(0, true);
+            PhotonNetwork.SetReceivingEnabled(0, true);
+            LeaveRoom();
+            PhotonNetwork.JoinRandomRoom();
         }
     }
 }

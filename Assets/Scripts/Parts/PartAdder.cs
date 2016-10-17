@@ -84,6 +84,12 @@ namespace TeamBronze.HexWars
                 newPart.transform.parent = player.shape.transform;
                 Part addedPart = new Part { shape = newPart, type = type };
                 hexData.addPart(location, addedPart);
+
+                /*Notify replay manager that part has been added*/
+                EventManager.pushEventDataFloat("partadded", newPart.transform.position.z);
+                EventManager.pushEventDataFloat("partadded", newPart.transform.position.y);
+                EventManager.pushEventDataFloat("partadded", newPart.transform.position.x);
+                EventManager.triggerEvent("partadded");
             }
 
             player.shape.transform.position = playerLocation;

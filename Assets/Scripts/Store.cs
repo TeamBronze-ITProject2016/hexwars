@@ -34,8 +34,12 @@ namespace TeamBronze.HexWars
         // Update is called once per frame
         void Update()
         {
+            try { 
             if (player.GetComponent<Player>().points >= storeMinimum && !store.GetActive())
                 store.SetActive(true);
+            } catch {
+                //...
+            }
         }
 
         public void addHexagon()

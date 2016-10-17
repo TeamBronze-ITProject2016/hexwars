@@ -16,10 +16,16 @@ public class EventManager : MonoBehaviour {
     /*Maps string representations of an event to the corresponding event object*/
     private static Dictionary<string, UnityEvent> eventDict = null;
 
+    /*Maps string representations of an event to a a list of floats*/
+    private static Dictionary<string, List<float>> eventFloatsDict = null;
+
     /*Register an event listener, creating the event if it does not exist*/
     public static void registerListener(string eventname, UnityAction listener) {
         if (eventDict == null)
             eventDict = new Dictionary<string, UnityEvent>();
+
+        if (eventFloatsDict == null)
+            eventFloatsDict = new Dictionary<string, List<float>>();
 
         UnityEvent curEvent = null;
 
@@ -55,7 +61,7 @@ public class EventManager : MonoBehaviour {
         }
     }
 
-    /*Trigger the given event*/
+     /*Trigger the given event*/
     public static void triggerEvent(string eventname) {
         if (eventDict == null)
             eventDict = new Dictionary<string, UnityEvent>();
@@ -72,4 +78,32 @@ public class EventManager : MonoBehaviour {
             Debug.Log("Triggered event " + eventname);
         }
     }
+
+   /*Push event data - floats*/
+   public static void pushEventDataFloat(string eventname, float data) {
+        if (!eventFloatsDict.ContainsKey(eventname)) {
+            eventFloatsDict[eventname] = new List<float>();
+        }
+
+        eventFloatsDict[eventname].Add(data);
+    }
+
+    /*Return and remove the last float pushed for the given event*/
+    public static bool popEventDataFloat(string eventname, ref float outval){
+        /*Ensure list exists and is not empty*/
+        if (!eventFloatsDict.ContainsKey(eventname))
+            return false;
+
+        int lastindex = eventFloatsDict[eventname].Count - 1;
+
+        if(lastindex == -1)
+            return false;
+
+        /*Remove and return item*/
+        outval = eventFloatsDict[eventname][lastindex];
+        eventFloatsDict[eventname].RemoveAt(lastindex);
+        return true;
+    }
+
+
 }

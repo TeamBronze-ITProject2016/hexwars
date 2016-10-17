@@ -6,55 +6,74 @@ using System.Collections;
  * http://answers.unity3d.com/questions/716086/spin-a-2d-object-with-mouse-drag.html
  **/
 
-public class SpinLogic : MonoBehaviour {
+namespace TeamBronze.HexWars
+{
+    public class SpinLogic : MonoBehaviour {
 
-	float deltaRotation;
-	float previousRotation;
-	float currentRotation;
-	public float maxRotateSpeed = 50f;
+        float deltaRotation;
+        float previousRotation;
+        float currentRotation;
+        public float maxRotateSpeed = 50f;
 
-	// Use this for initialization
-	void Start () 
-	{
+        private GUIManager gui;
 
-	}
+        // Use this for initialization
+        void Start () 
+        {
+            gui = FindObjectOfType<GUIManager>();
+            Debug.Assert(gui);
+        }
 
-	// Update is called once per frame
-	public void spinUpdate () 
-		{
-			if (Input.GetMouseButtonDown (0))
-			{
-				deltaRotation = 0f;
-				previousRotation = angleBetweenPoints( gameObject.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
-			}
-			else if(Input.GetMouseButton(0))
-			{
-				currentRotation = angleBetweenPoints( gameObject.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition) );
-				deltaRotation = Mathf.DeltaAngle( currentRotation, previousRotation );
-				if (deltaRotation > maxRotateSpeed) {
-					deltaRotation = maxRotateSpeed;
-				}
-				if (deltaRotation < -maxRotateSpeed) {
-					deltaRotation = -maxRotateSpeed;
-				}
-				previousRotation = currentRotation;
-				gameObject.transform.Rotate(Vector3.back, deltaRotation);
-			}
+        /*Returns false if the GUI is in a state where no joystick input should be accepted,
+        * or true otherwise.*/
+        private bool active() {
+            if (gui.gameOverSplashVisible() || gui.inGameMenuVisible())
+                return false;
+            
+            return true;
+        }
 
-		}
+        // Update is called once per frame
+        public void spinUpdate () 
+        {
+            /*Ignore input if inactive*/
+            if (!active())
+                return;
 
-		float angleBetweenPoints( Vector2 position1, Vector2 position2 )
-		{
-			var fromLine = position2 - position1;
-			var toLine = new Vector2( 1, 0 );
+            if (Input.GetMouseButtonDown (0))
+            {
+                deltaRotation = 0f;
+                previousRotation = angleBetweenPoints( gameObject.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            }
+            else if(Input.GetMouseButton(0))
+            {
+                currentRotation = angleBetweenPoints( gameObject.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition) );
+                deltaRotation = Mathf.DeltaAngle( currentRotation, previousRotation );
+                if (deltaRotation > maxRotateSpeed) {
+                    deltaRotation = maxRotateSpeed;
+                }
+                if (deltaRotation < -maxRotateSpeed) {
+                    deltaRotation = -maxRotateSpeed;
+                }
+                previousRotation = currentRotation;
+                gameObject.transform.Rotate(Vector3.back, deltaRotation);
+            }
 
-			var angle = Vector2.Angle( fromLine, toLine );
-			var cross = Vector3.Cross( fromLine, toLine );
+        }
 
-			// did we wrap around?
-			if( cross.z > 0 )
-				angle = 360f - angle;
+        float angleBetweenPoints( Vector2 position1, Vector2 position2 )
+        {
+            var fromLine = position2 - position1;
+            var toLine = new Vector2( 1, 0 );
 
-			return angle;
-		}
+            var angle = Vector2.Angle( fromLine, toLine );
+            var cross = Vector3.Cross( fromLine, toLine );
+
+            // did we wrap around?
+            if( cross.z > 0 )
+                angle = 360f - angle;
+
+            return angle;
+        }
+    }
 }
