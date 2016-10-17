@@ -9,7 +9,7 @@ namespace TeamBronze.HexWars
         {
             GameObject collisionObj = collision.collider.gameObject;
 
-            if (collisionObj.tag == "Triangle")
+            if (collisionObj.tag == "Triangle" || collisionObj.tag == "EnemyAttackingPart")
             {
                 GetComponent<LocalObjectFader>().FadeOut();
 
