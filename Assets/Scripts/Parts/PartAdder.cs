@@ -15,7 +15,7 @@ namespace TeamBronze.HexWars
         public float size = 1.23f;
 
         public PartData hexData = new PartData();
-        public int maxNeighbors = 3;
+        public int maxNeighbors = 4;
 
         private Part player;
         private AxialCoordinate playerLocation = new AxialCoordinate { x = 0, y = 0 };
@@ -24,7 +24,7 @@ namespace TeamBronze.HexWars
         {
             InvokeRepeating("connectPartAdder", 0.2f, 1.0f);
         }
-
+        
         void connectPartAdder()
         {
             if (player.shape == null)
@@ -34,7 +34,7 @@ namespace TeamBronze.HexWars
                 addPart(new AxialCoordinate { x = -1, y = 0 }, "Triangle");
             }
         }
-
+        
         public void addPart(AxialCoordinate location, string part)
         {
             // NOTE: type = 1 if player part. type = 0 if hexagon part. type = -1 if triangle part
@@ -97,14 +97,14 @@ namespace TeamBronze.HexWars
             player.shape.transform.position = playerLocation;
             player.shape.transform.rotation = playerRotation;
 
-            // Update the server when part added
+            /*// Update the server when part added
             PointScoreHandler pointsScoreHandler = player.shape.GetComponent<PointScoreHandler>();
             pointsScoreHandler.updateServerScore();
 
             // Update the scoreboard
             GameObject scoreboard = GameObject.FindGameObjectWithTag("ScoreBoard");
             PhotonView scoreboardView = PhotonView.Get(scoreboard);
-            scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);
+            scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);*/
         }
         
         public bool addRandomPart(string part="None")
@@ -138,29 +138,28 @@ namespace TeamBronze.HexWars
                 return true;
             }
 
-            return false;
+            addPartError();  return false;
 
         }
 
+        //XXX
         IEnumerator addPartError()
         {
+            GameObject error = GameObject.FindGameObjectWithTag("PartError");
             GameObject.FindGameObjectWithTag("PartError").SetActive(true);
             yield return new WaitForSeconds(3);
             GameObject.FindGameObjectWithTag("PartError").SetActive(false);
         }
-
+        
         // From http://stackoverflow.com/questions/1028136/random-entry-from-dictionary
         public IEnumerable<TKey> RandomKeys<TKey, TValue>(IDictionary<TKey, TValue> dict)
         {
             System.Random rand = new System.Random();
             List<TKey> keys = Enumerable.ToList(dict.Keys);
             int size = dict.Count;
-            while (true)
-            {
-                yield return keys[rand.Next(size)];
-            }
+            while (true) yield return keys[rand.Next(size)];
         }
-
+        
         public void removePart(AxialCoordinate location)
         {
             PhotonView destroyedObject = PhotonView.Get(((Part)hexData.getPart(location)).shape);
@@ -169,7 +168,7 @@ namespace TeamBronze.HexWars
 
             PhotonNetwork.Destroy(destroyedObject);
         }
-
+        
         private Vector3 axialToPixel(AxialCoordinate location)
         {
             // Convert the axial position of the location to a pixel location
@@ -179,7 +178,7 @@ namespace TeamBronze.HexWars
             y = size * (3f / 2f) * location.y;
             return new Vector3(x + player.shape.transform.position.x, y + player.shape.transform.position.y, 0);
         }
-
+        
         private Quaternion axialToRotation(AxialCoordinate location)
         {
             // Convert an axial location to the rotation that that GameObject should be at
