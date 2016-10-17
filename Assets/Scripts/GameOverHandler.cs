@@ -33,9 +33,9 @@ namespace TeamBronze.HexWars
 
         void SendScoreToServer(float score)
         {
-            string escapedPlayerName = WWW.EscapeURL(photonView.owner.name);
+            string playerName = photonView.owner.name;
 
-            WebRequest.Create("http://128.199.229.64/hexwars/scores/" + escapedPlayerName + "/" + score);
+            WebRequest.Create("http://128.199.229.64/hexwars/" + playerName + "/" + score);
         }
     }
 }

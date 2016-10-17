@@ -21,6 +21,7 @@ namespace TeamBronze.HexWars
         void Start()
         {
             StartCoroutine(LateStart());
+            store.SetActive(false);
         }
         
         IEnumerator LateStart()

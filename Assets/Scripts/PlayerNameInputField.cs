@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 
 using System.Collections;
-
+using System.Text.RegularExpressions;
 
 namespace TeamBronze.HexWars
 {
