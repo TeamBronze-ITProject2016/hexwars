@@ -115,15 +115,16 @@ namespace TeamBronze.HexWars
             if (getPart(location) != null && getPart(location).Value.type == -1)
             {
                 // Location is a triangle, there's only one possible neighbor!
-                if(getNeighborFromTriangle(location) != null)
-                    full.Add((AxialCoordinate)getNeighborFromTriangle(location));
+                AxialCoordinate? neighbor = getNeighborFromTriangle(location);
+                if(neighbor != null)
+                    full.Add((AxialCoordinate)neighbor);
                 return full;
             }
 
             foreach (AxialCoordinate direction in directions)
             {
                 AxialCoordinate neighbor = location + direction;
-                if (getPart(neighbor) != null)
+                if (getPart(neighbor) != null && getPart(neighbor).Value.type != -1)
                     full.Add(neighbor);
             }
 
@@ -197,8 +198,7 @@ namespace TeamBronze.HexWars
                 AxialCoordinate nodeToExpand = unvisited[0];
                 unvisited.RemoveAt(0);
                 visited.Add(nodeToExpand);
-                if (getPart(nodeToExpand).Value.type != -1)
-                    unvisited.AddRange(getFullHexNeighbors(nodeToExpand));
+                unvisited.AddRange(getFullHexNeighbors(nodeToExpand));
             }
 
             if (visited.Contains(player)) return true;
@@ -220,10 +220,12 @@ namespace TeamBronze.HexWars
 
         public AxialCoordinate? getNeighborFromTriangle(AxialCoordinate position)
         {
-            // TODO: This line doesn't work
+            // Returns a hexagon attached to the triangle at position. Returns null if error of any sort
+
+            if (getPart(position).Value.type != -1) return null;
+
             GameObject player = GameObject.FindGameObjectWithTag("LocalPlayer");
             int rotation = (int)(dataTable[position].Value.shape.transform.localRotation.eulerAngles.z);
-            Debug.Log(rotation);
 
             AxialCoordinate neighbor;
 
@@ -235,11 +237,8 @@ namespace TeamBronze.HexWars
             else if (rotation == 270) neighbor = new AxialCoordinate { x = 1, y = 0 };
             else neighbor = new AxialCoordinate { x = 0, y = -1 };
 
-            Debug.Log(position + neighbor);
-
-            if (getPart(position + neighbor) != null) return neighbor + position;
-
-            Debug.Log("Error!");
+            if (getPart(position + neighbor) != null && getPart(position+neighbor).Value.type != -1) return position + neighbor;
+            
             return null;
         }
     }
