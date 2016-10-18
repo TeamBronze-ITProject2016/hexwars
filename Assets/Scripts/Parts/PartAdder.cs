@@ -153,11 +153,17 @@ namespace TeamBronze.HexWars
         
         public void removePart(AxialCoordinate location)
         {
-            PhotonView destroyedObject = PhotonView.Get(((Part)hexData.getPart(location)).shape);
-            hexData.removePart(location);
-            //destroyedObject.RPC("PunFadeOut", PhotonTargets.All);
+            try
+            {
+                PhotonView destroyedObject = PhotonView.Get(((Part)hexData.getPart(location)).shape);
+                PhotonNetwork.Destroy(destroyedObject);
+            }
+            catch
+            {
+                Debug.Log("Could not destroy Photon GameObject");
+            }
 
-            PhotonNetwork.Destroy(destroyedObject);
+            hexData.removePart(location);
         }
         
         private Vector3 axialToPixel(AxialCoordinate location)
