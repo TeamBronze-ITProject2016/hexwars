@@ -115,6 +115,7 @@ namespace TeamBronze.HexWars
             foreach (AxialCoordinate location in RandomKeys(hexData.dataTable))
             {
                 if (counter > maxCount) return false; counter++;
+                if (hexData.getPart(location) == null) continue;
                 if (hexData.getPart(location).Value.type == -1) continue;
                 List<AxialCoordinate> randLocations = hexData.getEmptyNeighbors(location);
                 System.Random rnd = new System.Random();
