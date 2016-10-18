@@ -56,7 +56,7 @@ namespace TeamBronze.HexWars
                 store.SetActive(false);
 
                 PhotonView destroyedView = PhotonView.Get(player);
-                destroyedView.RPC("updateServerScore", PhotonPlayer.Find(destroyedView.owner.ID));
+                //destroyedView.RPC("updateServerScore", PhotonPlayer.Find(destroyedView.owner.ID));
             }
 
         }
@@ -72,7 +72,7 @@ namespace TeamBronze.HexWars
                 store.SetActive(false);
 
                 PhotonView destroyedView = PhotonView.Get(player);
-                destroyedView.RPC("updateServerScore", PhotonPlayer.Find(destroyedView.owner.ID));
+                //destroyedView.RPC("updateServerScore", PhotonPlayer.Find(destroyedView.owner.ID));
             }
         }
     }

@@ -109,15 +109,9 @@ namespace TeamBronze.HexWars
         
         public bool addRandomPart(string part="None")
         {
-            int maxTries = 100;
-            int counter = 0;
-
             // Get a random location
             foreach (AxialCoordinate location in RandomKeys(hexData.dataTable))
             {
-                if (counter < maxTries) counter++; else {addPartError(); return false;}
-
-                int localMaxNeighbors;
                 if (hexData.getPart(location).Value.type == -1) continue;
                 List<AxialCoordinate> randLocations = hexData.getEmptyNeighbors(location);
                 System.Random rnd = new System.Random();
@@ -130,25 +124,19 @@ namespace TeamBronze.HexWars
                 }
 
                 // Ensure that adding this part doesn't exceed the max allowed per hexagon
+                int localMaxNeighbors;
                 localMaxNeighbors = maxNeighbors;
                 if (part == "Triangle") localMaxNeighbors -= 1;
-                if (hexData.getFullNeighbors(location).Count >= localMaxNeighbors) {addPartError(); return false;}
+                if (hexData.getFullNeighbors(location).Count >= localMaxNeighbors) {continue;}
 
-                addPart(randLocations[rnd.Next(randLocations.Count)], part);
+                int size = randLocations.Count;
+                AxialCoordinate randomSpot = randLocations[rnd.Next(size)];
+                addPart(randomSpot, part);
                 return true;
             }
 
-            addPartError();  return false;
+            return false;
 
-        }
-
-        //XXX
-        IEnumerator addPartError()
-        {
-            GameObject error = GameObject.FindGameObjectWithTag("PartError");
-            GameObject.FindGameObjectWithTag("PartError").SetActive(true);
-            yield return new WaitForSeconds(3);
-            GameObject.FindGameObjectWithTag("PartError").SetActive(false);
         }
         
         // From http://stackoverflow.com/questions/1028136/random-entry-from-dictionary

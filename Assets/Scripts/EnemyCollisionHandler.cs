@@ -22,7 +22,7 @@ namespace TeamBronze.HexWars
                 if (collisionObj.tag == "Triangle" && collisionObj.GetPhotonView().isMine)
                 {
                     PhotonView attackingView = PhotonView.Get(collision.collider.gameObject.transform.parent.gameObject);
-                    attackingView.RPC("updateLocalPointsEnemy", PhotonPlayer.Find(attackingView.owner.ID));
+                    //attackingView.RPC("updateLocalPointsEnemy", PhotonPlayer.Find(attackingView.owner.ID));
                 }
             }
         }
