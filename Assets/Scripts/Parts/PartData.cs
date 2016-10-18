@@ -229,7 +229,7 @@ namespace TeamBronze.HexWars
 
             if (getPart(position).Value.type != -1) return null;
             
-            int rotation = (int)(dataTable[position].Value.shape.transform.localRotation.eulerAngles.z);
+            int rotation = ((int)(dataTable[position].Value.shape.transform.localRotation.eulerAngles.z) + 180)%360;
 
             AxialCoordinate neighbor;
 
