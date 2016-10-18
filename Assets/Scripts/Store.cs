@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 
 namespace TeamBronze.HexWars
@@ -11,8 +12,11 @@ namespace TeamBronze.HexWars
         private InputManager inputManager;
         private GameObject player;
 
-        public GameObject hexagonStore;
-        public GameObject triangleStore;
+        private bool isTriangleUnavailable;
+        private float t = 1.0f;
+
+        public Sprite triangleSprite;
+        public Sprite noTriangleSprite;
 
         public GameObject store;
 
@@ -44,6 +48,19 @@ namespace TeamBronze.HexWars
 
                 Vector2 pos = -inputManager.lastMoveVector();
             }
+
+            if (isTriangleUnavailable)
+            {
+                if (t > 0.0f)
+                {
+                    t -= Time.deltaTime;
+                }
+                else
+                {
+                    isTriangleUnavailable = false;
+                    GameObject.FindGameObjectWithTag("TriangleStoreIcon").GetComponent<Image>().sprite = triangleSprite;
+                }
+            }
         }
 
         public void addHexagon()
@@ -65,7 +82,7 @@ namespace TeamBronze.HexWars
         public void addTriangle()
         {
 
-            if(partAdder.addRandomPart("Triangle"))
+            if (partAdder.addRandomPart("Triangle"))
             {
                 player.GetComponent<Player>().points -= storeMinimum;
 
@@ -73,6 +90,12 @@ namespace TeamBronze.HexWars
 
                 PhotonView destroyedView = PhotonView.Get(player);
                 //destroyedView.RPC("updateServerScore", PhotonPlayer.Find(destroyedView.owner.ID));
+            }
+            else
+            {
+                GameObject.FindGameObjectWithTag("TriangleStoreIcon").GetComponent<Image>().sprite = noTriangleSprite;
+                isTriangleUnavailable = true;
+                t = 1.0f;
             }
         }
     }
