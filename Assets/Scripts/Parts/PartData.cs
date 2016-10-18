@@ -203,8 +203,8 @@ namespace TeamBronze.HexWars
                 AxialCoordinate nodeToExpand = unvisited[0];
                 unvisited.RemoveAt(0);
                 visited.Add(nodeToExpand);
-                //TODO Check that you're not looping?
-                unvisited.AddRange(getFullHexNeighbors(nodeToExpand));
+                foreach(AxialCoordinate neighbor in getFullHexNeighbors(nodeToExpand))
+                    if (!visited.Contains(neighbor)) unvisited.Add(neighbor);
             }
 
             if (visited.Contains(player)) return true;
