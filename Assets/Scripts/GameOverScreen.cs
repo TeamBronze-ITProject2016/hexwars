@@ -25,7 +25,7 @@ namespace TeamBronze.HexWars
 
         public void BackToMenu()
         {
-            Application.LoadLevel(0);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         }
 
         void SendScoreToServer(float score)
