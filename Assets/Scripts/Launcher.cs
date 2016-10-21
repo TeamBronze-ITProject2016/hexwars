@@ -17,7 +17,7 @@ namespace TeamBronze.HexWars
 
         /* This client's version number. Users are separated from each other by gameversion (which allows
          * you to make breaking changes). */
-        string _gameVersion = "dev";
+        string _gameVersion = "1.0";
 
         bool isConnecting;
 
@@ -42,7 +42,7 @@ namespace TeamBronze.HexWars
             controlPanel.SetActive(true);
         }
 
-        /* Start the connection process. 
+        /* Start the connection process.
          * - If already connected, we attempt joining a random room
          * - if not yet connected, Connect this application instance to Photon Cloud Network */
         public void Connect()
@@ -86,7 +86,7 @@ namespace TeamBronze.HexWars
         {
             Debug.Log("DemoAnimator/Launcher:OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
 
-            /* We failed to join a random room, maybe none exists or they are all full. 
+            /* We failed to join a random room, maybe none exists or they are all full.
              * No worries, we create a new room. */
             PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = MaxPlayersPerRoom }, null);
         }
