@@ -16,8 +16,8 @@ Think agar.io meet Robot wars!
 
 ## Server Dependencies  
 This game requires two server elements in order to run.
-* A [Photon Server](https://www.photonengine.com/en/OnPremise) must be running on a Windows OS platform. By default, the game will connect to our locally hosted server, but you can choose to connect to a cloud-based solution (max 20 concurrent users), or deploy your own server.
-* A Python API framework must serve high scores to the game. Again, by default the game will connect to our locally hosted server. Should you desire setting up your own server for high scores, deploy [this Flask application](https://bitbucket.org/teambronze/comp30022-team-bronze-server).
+ * A [Photon Server](https://www.photonengine.com/en/OnPremise) must be running on a Windows OS platform. By default, the game will connect to our locally hosted server, but you can choose to connect to a cloud-based solution (max 20 concurrent users), or deploy your own server.
+ * A Python API framework must serve high scores to the game. Again, by default the game will connect to our locally hosted server. Should you desire setting up your own server for high scores, deploy [this Flask application](https://bitbucket.org/teambronze/comp30022-team-bronze-server).
 
 ## Testing Instructions
  * Open the Editor Tests Runner (built into Unity 5.4.1+) via Window > Editor Tests Runner
