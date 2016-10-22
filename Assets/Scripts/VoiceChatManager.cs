@@ -10,7 +10,7 @@ namespace TeamBronze.HexWars
         private GameObject[] players;
         private AudioSource audioSource;
 
-        // Use this for initialization
+        /*Use this for initialization*/
         void Start()
         {
             audioSource = GetComponent<AudioSource>();
@@ -22,19 +22,17 @@ namespace TeamBronze.HexWars
             EventManager.registerListener("voiceOn", enableVoiceChat);
         }
 
-        /*Enable/disable voice transmission*/
-        public void startTransmitting()
-        {
+        /*Enable/disable voice transmission - event callbacks*/
+        public void startTransmitting(){
             Debug.Log("voiceEnable()");
             voiceRecorder.Transmit = true;
         }
-        public void stopTransmitting()
-        {
+        public void stopTransmitting(){
             Debug.Log("voiceDisable()");
             voiceRecorder.Transmit = false;
         }
 
-        /*Enable/disable voice chat*/
+        /*Enable/disable voice chat - event callbacks*/
         public void disableVoiceChat() {
             Debug.Log("Voice chat disabled");
             audioSource.volume = 0.0f;

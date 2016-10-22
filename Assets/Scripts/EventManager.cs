@@ -1,7 +1,7 @@
 ﻿/*EventManager.cs
 * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
 * Description: Allows callbacks corresponding to game events to be registered 
-and triggered.*/
+and triggered, and provides a stack for numeric event data.*/
 
 using UnityEngine;
 using UnityEngine.Events;
@@ -21,12 +21,14 @@ public class EventManager : MonoBehaviour {
 
     /*Register an event listener, creating the event if it does not exist*/
     public static void registerListener(string eventname, UnityAction listener) {
+        /*Create event dictionary and event data dictionary, if necessary*/
         if (eventDict == null)
             eventDict = new Dictionary<string, UnityEvent>();
 
         if (eventFloatsDict == null)
             eventFloatsDict = new Dictionary<string, List<float>>();
 
+        /*Find event in dictionary, or create it if it does not exist*/
         UnityEvent curEvent = null;
 
         if (!eventDict.ContainsKey(eventname)) {
@@ -36,6 +38,7 @@ public class EventManager : MonoBehaviour {
             curEvent = eventDict[eventname];
         }
 
+        /*Register listener as a listener for the given event*/
         curEvent.AddListener(listener);
 
         if (DEBUG_EVENTMANAGER) {
@@ -46,7 +49,7 @@ public class EventManager : MonoBehaviour {
     /*Remove a previously registered listener for the given event*/
     public static void deRegisterListener(string eventname, UnityAction listener) {
         if (eventDict == null)
-            eventDict = new Dictionary<string, UnityEvent>();
+            return;
 
         if (!eventDict.ContainsKey(eventname)) {
             Debug.LogWarning("EventManager: attempted to deregister from nonexistent event '" + eventname + "'");
@@ -104,6 +107,4 @@ public class EventManager : MonoBehaviour {
         eventFloatsDict[eventname].RemoveAt(lastindex);
         return true;
     }
-
-
 }

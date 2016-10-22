@@ -105,6 +105,7 @@ namespace TeamBronze.HexWars
             /*Return null vector if there is no movement input.*/
             if (lastMove == new Vector2(0.0f, 0.0f))
                 return new Vector2(0.0f, 0.0f);
+
             /*Calculate movement vector*/
             Vector2 unit = new Vector2(Screen.width, Screen.height) / 2.0f - lastMove;
             return unit;
@@ -122,7 +123,6 @@ namespace TeamBronze.HexWars
         public void replayStart() {
             inReplay = true;
         }
-
         public void replayStop() {
             inReplay = false;
         }
