@@ -93,6 +93,7 @@ namespace TeamBronze.HexWars {
             }
         }
 
+        /*Initalise the replay manager.*/
         void Start() {
             ReplayManager.init();
         }
@@ -129,13 +130,8 @@ namespace TeamBronze.HexWars {
 
                     /*Check if we failed*/
                     if (index == -1) {
-                        /*Debug.LogWarning("ReplayManager: Failed to find replay data point, ending replay early...");
-                        playing = false;
-                        Time.timeScale = originalTimeScale;
-                        replayLength = 0.0f;
-                        EventManager.triggerEvent("replayStop");
-                        return;*/
-                        Debug.Log("ReplayManager: Failed to find replay datapoint");
+                        if(DEBUG_REPLAYMANAGER)
+                            Debug.Log("ReplayManager: Failed to find replay datapoint!");
                         continue;
                     }
 
@@ -298,7 +294,7 @@ namespace TeamBronze.HexWars {
             return playing;
         }
 
-        /*Part add callback*/
+        /*Part add callback. Invalidate the replay if a part is added during it.*/
         static void onPartAdded() {
             float x = 0.0f, y = 0.0f, z = 0.0f;
             if(!EventManager.popEventDataFloat("partadded", ref x) ||
@@ -311,15 +307,11 @@ namespace TeamBronze.HexWars {
             /*Check if the part addition is visible*/
             Vector3 screenPoint = Camera.main.WorldToScreenPoint(new Vector3(x, y, z));
 
-            Debug.Log("Part added @ (" + x + "," + y + ","+z+") -> ("+screenPoint.x+","+screenPoint.y+","+screenPoint.z+")");
-
             if (screenPoint.z < 0 || screenPoint.x < 0 || screenPoint.y < 0)
                 return;
 
             if (screenPoint.x > Screen.width || screenPoint.y > Screen.height)
                 return;
-
-            Debug.Log("Part added @ (" + x + "," + y + "), invalidating replay");
 
             /*Visible, invalidate replay*/
             replayLength = 0.0f;
