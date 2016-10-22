@@ -51,15 +51,6 @@ namespace TeamBronze.HexWars {
         private const float GUI_BUTTON_WIDTHFACTOR = 0.09f;
         private const float GUI_BUTTON_HEIGHTFACTOR = 0.04f;
 
-        /*Joystick*/
-        //private bool joystickEnabled = false;
-        //private Texture joystickInner = null;
-        //private Texture joystickOuter = null;
-        //private Vector2 joystickOff = new Vector2(0.0f, 0.0f);
-        //private const float JOYSTICK_OUTER_RADIUS = 64.0f;
-        //private const float JOYSTICK_INNER_RADIUS = 48.0f;
-        //private float joystickMoveRadius = JOYSTICK_OUTER_RADIUS - JOYSTICK_INNER_RADIUS;
-
         /*In-game menu*/
         private const float INGAMEMENU_WIDTH_FACTOR = 0.3f;
         private const float INGAMEMENU_HEIGHT_FACTOR = 0.8f;
@@ -86,14 +77,10 @@ namespace TeamBronze.HexWars {
             /*Register for game over event*/
             EventManager.registerListener("gameover", onGameOver);
                 
-            /*Load textures. Should use LoadAll in future.*/
-            //joystickInner = Resources.Load("JoystickInner") as Texture;
-            //joystickOuter = Resources.Load("JoystickOuter") as Texture;
+            /*Load textures*/
             voiceicondisabled = (Texture2D)Resources.Load("voiceicondisabled");
             voiceiconenabled = (Texture2D)Resources.Load("voiceiconenabled");
             gameoverText = (Texture2D)Resources.Load("gameover");
-            //joystickInner = Resources.Load("JoystickInner") as Texture;
-            //joystickOuter = Resources.Load("JoystickOuter") as Texture;
 
             /*Initialise audio*/
             GUIAudioSource = GetComponent<AudioSource>();
@@ -105,6 +92,7 @@ namespace TeamBronze.HexWars {
         /*Draw GUI*/
         void OnGUI() {
 
+            /*Set GUI colors*/
             GUI.color = Color.white;
             GUI.backgroundColor = Color.white;
             GUI.contentColor = Color.white;
@@ -146,18 +134,7 @@ namespace TeamBronze.HexWars {
                         GUI.color = replayTimerColor;
                         GUI.Label(new Rect(replayTimerOffset.x, replayTimerOffset.y, 128.0f, 32.0f), timerStr);
                     }
-
-                    /*Draw Joystick - replaced by VirtualJoystick
-                    if (joystickEnabled) {
-                        joystickOff = inputManager.lastMoveVectorUnit() * joystickMoveRadius;
-                        GUI.color = Color.white;
-                        GUI.DrawTexture(new Rect(0.0f, Screen.height -
-                            JOYSTICK_OUTER_RADIUS, JOYSTICK_OUTER_RADIUS,
-                            JOYSTICK_OUTER_RADIUS), joystickOuter);
-                        GUI.DrawTexture(new Rect(JOYSTICK_OUTER_RADIUS / 2.0f - JOYSTICK_INNER_RADIUS / 2.0f + joystickOff.x, Screen.height -
-                            JOYSTICK_OUTER_RADIUS / 2.0f - JOYSTICK_INNER_RADIUS / 2.0f + joystickOff.y, JOYSTICK_INNER_RADIUS,
-                            JOYSTICK_INNER_RADIUS), joystickInner);
-                    }*/
+                    
                     break;
 
                 /*In-Game Menu*/
@@ -197,30 +174,6 @@ namespace TeamBronze.HexWars {
                         onElementSelected();
                     }
 
-                    /*Option 2
-                    yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
-                    if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 2")) {
-                        Debug.Log("Option 2 Pressed.");
-                        onElementSelected();
-                    }
-
-                    yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
-                    if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 3")) {
-                        Debug.Log("Option 3 Pressed.");
-                        onElementSelected();
-                    }
-
-                    yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
-                    if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Option 4")) {
-                        Debug.Log("Option 4 Pressed.");
-                        onElementSelected();
-                    }
-
-                    yOff += height * (INGAMEMENU_MENUITEM_HEIGHT_FACTOR + INGAMEMENU_MENUITEM_SPACE_FACTOR);
-                    if (GUI.Button(new Rect(xOff + menuItemOffsetX, yOff, menuItemWidth, menuItemHeight), "Disconnect")) {
-                        EventManager.triggerEvent("disconnect");
-                        onElementSelected();
-                    }*/
                     break;
 
                 /*Draw game over splash screen*/
@@ -234,14 +187,6 @@ namespace TeamBronze.HexWars {
                     float gameoverXOff = (Screen.height - gameoverWidth);///2.0f;
                     float gameoverYOff = GAMEOVER_Y_OFFSETFACTOR * Screen.height;
                     GUI.DrawTexture(new Rect(gameoverXOff, gameoverYOff, gameoverWidth, gameoverHeight), gameoverText);
-
-                    /*Play again button - TODO: Fix this
-                   if (GUI.Button(new Rect(gameoverXOff, gameoverYOff + gameoverHeight,
-                        GAMEOVER_PLAYAGAIN_WIDTH_FACTOR * Screen.width, GAMEOVER_PLAYAGAIN_HEIGHT_FACTOR * Screen.height), "Play Again")) {
-                            EventManager.triggerEvent("playagain");
-                            state = GUIState.InGame;
-                            onElementSelected();
-                    }*/
 
                     /*Disconnect button*/
                     if (GUI.Button(new Rect(gameoverXOff + GAMEOVER_PLAYAGAIN_WIDTH_FACTOR*Screen.width + 4, gameoverYOff + gameoverHeight, 
@@ -259,6 +204,8 @@ namespace TeamBronze.HexWars {
             }
         }
 
+        /*Call the replay manager's update function. Here as there is no other place that this fits - GameManager 
+         does not have an Update() method.*/
         void Update() {
             ReplayManager.doUpdate();
         }
@@ -298,9 +245,8 @@ namespace TeamBronze.HexWars {
             return isPointerInRect(pointer, new Rect(Screen.width - btnWidth, 0.0f, btnWidth, btnHeight));
         }
 
+        /*Returns true if the pointer is over one of the in-game GUI elements.*/
         public bool isPointerOverGUIElement(Vector2 pointer) {
-            //Debug.Log("pointer: (" + pointer.x + "," + pointer.y + ")");
-            /*Check all the GUI elements visible in each state.*/
             switch (state) {
                 case GUIState.InGame:
                     if (isPointerOverMenuBtn(pointer) || isPointerOverVoiceBtn(pointer))
@@ -319,11 +265,6 @@ namespace TeamBronze.HexWars {
         public bool isInGameMenuShown() {
             return (state == GUIState.InGameMenu);
         }
-
-        /*Show or hide the joystick
-        /*public void setJoystickEnabled(bool val) {
-            joystickEnabled = val;
-        }*/
 
         /*Game over event*/
         private void onGameOver() {
