@@ -1,5 +1,7 @@
 ﻿/* DragToRotate.cs
- * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Adapted from code provided by itsa on the Unity3D forums:
+ * http://answers.unity3d.com/questions/716086/spin-a-2d-object-with-mouse-drag.html
+ * Adapted by: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
  * Description: Controls the player drag-to-rotate mechanic
  */
 
