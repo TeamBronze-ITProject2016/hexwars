@@ -1,21 +1,19 @@
-﻿/*InputManager.cs
-* Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
-* Description: Handles user input.
-*/
+﻿/* InputManager.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Handles user input.
+ */
+
 using UnityEngine;
 using System.Collections;
 
-/*TODO:
- * -When touch controls are used, make sure that the touch is in the bounds of the inner
- * joystick.*/
-
 namespace TeamBronze.HexWars
 {
-    /*Handles all the input functionality*/
+    /* Handles all the input functionality */
     public class InputManager : MonoBehaviour
     {
-        /*Input type*/
-        public enum InputType {
+        /* Input type */
+        public enum InputType
+        {
             Mouse = 0,
             Touch = 1,
         }
