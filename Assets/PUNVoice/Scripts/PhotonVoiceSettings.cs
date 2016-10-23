@@ -18,7 +18,7 @@ public class PhotonVoiceSettings : MonoBehaviour
     public bool AutoDisconnect = true;         // set in inspector
 
     /// Start recording and transmit as soon as joined to the room.
-    public bool AutoTransmit = true;            // set in inspector
+    public bool AutoTransmit = false;            // set in inspector
 
     /// Outgoing audio stream sampling rate (applied per every recoder instance).
     public SamplingRate SamplingRate = (SamplingRate)Default.SamplingRate;     // set in inspector

@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/* PartAdder.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Manages all adding and removing parts from players
+ */
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +20,7 @@ namespace TeamBronze.HexWars
         public float size = 1.23f;
 
         public PartData hexData = new PartData();
+        public int maxNeighbors = 4;
 
         private Part player;
         private AxialCoordinate playerLocation = new AxialCoordinate { x = 0, y = 0 };
@@ -41,7 +47,7 @@ namespace TeamBronze.HexWars
 
             GameObject partType;
             int type;
-            
+
             if (part == "Hexagon")
             {
                 partType = hexagonPart;
@@ -84,29 +90,29 @@ namespace TeamBronze.HexWars
                 newPart.transform.parent = player.shape.transform;
                 Part addedPart = new Part { shape = newPart, type = type };
                 hexData.addPart(location, addedPart);
+
+                /*Notify replay manager that part has been added*/
+                EventManager.pushEventDataFloat("partadded", newPart.transform.position.z);
+                EventManager.pushEventDataFloat("partadded", newPart.transform.position.y);
+                EventManager.pushEventDataFloat("partadded", newPart.transform.position.x);
+                EventManager.triggerEvent("partadded");
             }
 
+            // Return the player to their position before the part was added
             player.shape.transform.position = playerLocation;
             player.shape.transform.rotation = playerRotation;
-
         }
 
-        /*public void addPart(Vector3 location, string part)
+        public bool addRandomPart(string part="None")
         {
-            // Do a search for the hexagon closest to location with at least one open slot
-            AxialCoordinate newLocation = hexData.getLocation(location);
-
-            //TODO: Find closest neighbor to vector
-            newLocation = hexData.getEmptyNeighbors(newLocation)[0];
-
-            addPart(newLocation, part);
-        }*/
-
-        public void addRandomPart(string part="None")
-        {
+            int maxCount = hexData.dataTable.Count;
+            int counter = 0;
             // Get a random location
-            foreach (AxialCoordinate location in RandomKeys(hexData.dataTable).Take(1))
+            foreach (AxialCoordinate location in RandomKeys(hexData.dataTable))
             {
+                if (counter > maxCount) return false; counter++;
+                if (hexData.getPart(location) == null) continue;
+                if (hexData.getPart(location).Value.type == -1) continue;
                 List<AxialCoordinate> randLocations = hexData.getEmptyNeighbors(location);
                 System.Random rnd = new System.Random();
 
@@ -117,8 +123,19 @@ namespace TeamBronze.HexWars
                         part = "Hexagon";
                 }
 
-                addPart(randLocations[rnd.Next(rnd.Next(randLocations.Count))], part);
+                // Ensure that adding this part doesn't exceed the max allowed per hexagon
+                int localMaxNeighbors;
+                localMaxNeighbors = maxNeighbors;
+                if (part == "Triangle") localMaxNeighbors -= 1;
+                if (hexData.getFullNeighbors(location).Count >= localMaxNeighbors) {continue;}
+
+                int size = randLocations.Count;
+                AxialCoordinate randomSpot = randLocations[rnd.Next(size)];
+                addPart(randomSpot, part);
+                return true;
             }
+
+            return false;
 
         }
 
@@ -128,25 +145,27 @@ namespace TeamBronze.HexWars
             System.Random rand = new System.Random();
             List<TKey> keys = Enumerable.ToList(dict.Keys);
             int size = dict.Count;
-            while (true)
-            {
-                yield return keys[rand.Next(size)];
-            }
+            while (true) yield return keys[rand.Next(size)];
         }
 
         public void removePart(AxialCoordinate location)
         {
-            PhotonView destroyedObject = PhotonView.Get(hexData.getPart(location).Value.shape);
-            hexData.removePart(location);
-            destroyedObject.RPC("PunFadeOut", PhotonTargets.All);
+            try
+            {
+                PhotonView destroyedObject = PhotonView.Get(((Part)hexData.getPart(location)).shape);
+                PhotonNetwork.Destroy(destroyedObject);
+            }
+            catch
+            {
+                Debug.Log("Could not destroy Photon GameObject");
+            }
 
-            //PhotonNetwork.Destroy(((Part)hexData.getPart(location)).shape);
+            hexData.removePart(location);
         }
 
         private Vector3 axialToPixel(AxialCoordinate location)
         {
             // Convert the axial position of the location to a pixel location
-            Vector3 playerPosition = hexData.getPart(playerLocation).Value.shape.transform.position;
 
             float x; float y;
             x = size * Mathf.Sqrt(3f) * (location.x + location.y / 2f);
@@ -167,22 +186,8 @@ namespace TeamBronze.HexWars
                     lowestNeighbor = neighbor;
 
             //Step 3: Rotate to that neighbor
-            //XXX: I couldn't think of a way to do this except to hard-code the different configurations
             AxialCoordinate neighborNormal = new AxialCoordinate { x = location.x - lowestNeighbor.x, y = location.y - lowestNeighbor.y };
-            int rotation = 0;
-
-            if (neighborNormal.x == -1 && neighborNormal.y == 0)
-                rotation = 90;
-            else if (neighborNormal.x == -1 && neighborNormal.y == 1)
-                rotation = 30;
-            else if (neighborNormal.x == 0 && neighborNormal.y == 1)
-                rotation = 330;
-            else if (neighborNormal.x == 1 && neighborNormal.y == -1)
-                rotation = 210;
-            else if (neighborNormal.x == 1 && neighborNormal.y == 0)
-                rotation = 270;
-            else
-                rotation = 150;
+            int rotation = hexData.getRotationFromNeighbor(neighborNormal);
 
             return Quaternion.Euler(0, 0, rotation);
         }
