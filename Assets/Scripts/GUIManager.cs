@@ -1,7 +1,8 @@
-﻿/*GUIManager.cs
-* Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
-* Description: Handles GUI functions
-*/
+﻿/* GUIManager.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Handles GUI functions (INCOMPLETE)
+ */
+
 using UnityEngine;
 using System.Collections;
 
@@ -9,13 +10,15 @@ using System.Collections;
 Created by Mark DiAngelo. Used under the Creative Commons Attribution 3.0 
 License: https://creativecommons.org/licenses/by/3.0/au/legalcode */
 
-namespace TeamBronze.HexWars {
+namespace TeamBronze.HexWars
+{
     /*Handles GUI drawing.*/
-    public class GUIManager : MonoBehaviour {
-
+    public class GUIManager : MonoBehaviour
+    {
         /*State of the GUI. Controls what GUI elements are drawn.
          TODO: Better names, add more states as needed*/
-        enum GUIState {
+        enum GUIState
+        {
             InGame = 0,
             InGameMenu = 1,
             GameOver = 2,
@@ -67,7 +70,8 @@ namespace TeamBronze.HexWars {
         private const float GAMEOVER_PLAYAGAIN_HEIGHT_FACTOR = GUI_BUTTON_HEIGHTFACTOR;
 
         /*Initialise*/
-        void Start() {
+        void Start()
+        {
             /*TODO: fix this - better method?*/
             inputManager = FindObjectOfType<InputManager>();
 
@@ -90,8 +94,8 @@ namespace TeamBronze.HexWars {
         }
 
         /*Draw GUI*/
-        void OnGUI() {
-
+        void OnGUI()
+        {
             /*Set GUI colors*/
             GUI.color = Color.white;
             GUI.backgroundColor = Color.white;
