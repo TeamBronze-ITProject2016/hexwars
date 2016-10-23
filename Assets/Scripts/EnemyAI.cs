@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/* EnemyAI.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Controls the movement of enemies.
+ */
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,27 +11,53 @@ namespace TeamBronze.HexWars
 {
     public class EnemyAI : Photon.PunBehaviour
     {
+        [Tooltip("Forward acceleration amount")]
         public float acceleration = 50.0f;
-        public float rotationSpeed = 250.0f;
-        public float changeModeIntervalMin = 1.0f;
-        public float changeModeIntervalMax = 3.0f;
-        public float chaseProbability = 0.5f;
-        public float maxChaseRange = 20.0f;
-        public float minX = -50.0f;
-        public float maxX = 50.0f;
-        public float minY = -50.0f;
-        public float maxY = 50.0f;
 
+        [Tooltip("Rotation speed")]
+        public float rotationSpeed = 250.0f;
+
+        [Tooltip("The minimum amount of time before switching modes")]
+        public float changeModeIntervalMin = 1.0f;
+
+        [Tooltip("The minimum amount of time before switching modes")]
+        public float changeModeIntervalMax = 3.0f;
+
+        [Tooltip("Chance that the switched-to mode will be the chase mode")]
+        public float chaseProbability = 0.5f;
+
+        [Tooltip("Maximum range to lock onto an object to chase")]
+        public float maxChaseRange = 20.0f;
+
+        [Tooltip("Minimum XY pos")]
+        public Vector2 minBound = new Vector2(-50.0f, -50.0f);
+
+        [Tooltip("Maximum XY pos")]
+        public Vector2 maxBound = new Vector2(50.0f, 50.0f);
+
+        // Reference to the enemy's Rigidbody2d
         private Rigidbody2D rb;
+
+        // Current mode, either "move" or "chase"
+        // Move mode picks a random direction and moves in that direction
+        // Chase mode finds the nearest attackable obj within maxChaseRange and moves towards that object
         private string mode = "move";
-        private float t = 4.0f;
+
+        // Time until mode switch
+        private float t;
+
+        // Object to chase (in chase mode)
         private GameObject objToChase;
+
+        // Direction to move (in move mode)
         private float directionToMove;
 
+        // Called when this object is instantiated with PUN
         public override void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             rb = GetComponent<Rigidbody2D>();
 
+            // Only master client controls movement of AI enemies
             if (!PhotonNetwork.isMasterClient)
                 return;
 
@@ -36,12 +67,14 @@ namespace TeamBronze.HexWars
 
         void Update()
         {
+            // Only master client controls movement of AI enemies
             if (!PhotonNetwork.isMasterClient)
                 return;
 
             MovementManagement();
             KeepInBoundary();
 
+            // Check if it's time to switch modes
             if (t > 0.0f)
             {
                 t -= Time.deltaTime;
@@ -52,6 +85,7 @@ namespace TeamBronze.HexWars
             ResetTime();
         }
 
+        // Switches to a random mode based on chaseProbability, either "move" or "chase"
         private void SwitchMode()
         {
             if (Random.value < chaseProbability)
@@ -68,6 +102,7 @@ namespace TeamBronze.HexWars
 
         }
 
+        // Moves depending on which mode we are currently in
         private void MovementManagement()
         {
             if (mode == "chase")
@@ -84,6 +119,7 @@ namespace TeamBronze.HexWars
             }
         }
 
+        // Finds the nearest hexagon/player gameobject (returns null if nothing in range)
         private GameObject FindNearestAttackableObj()
         {
             List<GameObject> gameObjList = new List<GameObject>();
@@ -112,19 +148,22 @@ namespace TeamBronze.HexWars
             return nearestObj;
         }
 
+        // Move towards a position by rotating towards it while moving forward
         private void MoveTowards(Vector3 position)
         {
             RotateToPoint(position);
             MoveForward();
         }
 
+        // Move forward
         private void MoveForward()
         {
             float angleInRad = rb.rotation * Mathf.Deg2Rad;
             Vector2 direction = new Vector2(-(float)Mathf.Cos(angleInRad), -(float)Mathf.Sin(angleInRad));
             rb.AddForce(direction * acceleration * rb.mass);
         }
-
+        
+        // Rotate towards a point at a constant rate
         private void RotateToPoint(Vector3 coord)
         {
             Vector3 p = new Vector3(rb.position.x, rb.position.y, 1) - new Vector3(coord.x, coord.y, 1);
@@ -133,37 +172,40 @@ namespace TeamBronze.HexWars
             rb.MoveRotation(Mathf.MoveTowardsAngle(rb.rotation, targetAngle, rotationSpeed * Time.deltaTime));
         }
 
+        // Keep inside the specified boundary. If at a boundary, switch mode to move and the direction away
+        // from the boundary (so that we don't get stuck at a boundary)
         private void KeepInBoundary()
         {
-            if (transform.position.x < minX)
+            if (transform.position.x < minBound.x)
             {
-                transform.position = new Vector3(minX, transform.position.y, transform.position.z);
+                transform.position = new Vector3(minBound.x, transform.position.y, transform.position.z);
                 mode = "move";
                 directionToMove = 180.0f;
             }
 
-            if (transform.position.y < minY)
+            if (transform.position.y < minBound.y)
             {
-                transform.position = new Vector3(transform.position.x, minY, transform.position.z);
+                transform.position = new Vector3(transform.position.x, minBound.y, transform.position.z);
                 mode = "move";
                 directionToMove = 270.0f;
             }
 
-            if (transform.position.x > maxX)
+            if (transform.position.x > maxBound.x)
             {
-                transform.position = new Vector3(maxX, transform.position.y, transform.position.z);
+                transform.position = new Vector3(maxBound.x, transform.position.y, transform.position.z);
                 mode = "move";
                 directionToMove = 0.0f;
             }
 
-            if (transform.position.y > maxY)
+            if (transform.position.y > maxBound.y)
             {
-                transform.position = new Vector3(transform.position.x, maxY, transform.position.z);
+                transform.position = new Vector3(transform.position.x, maxBound.y, transform.position.z);
                 mode = "move";
                 directionToMove = 90.0f;
             }
         }
 
+        // Reset mode switch timer to a random amount between the min and max
         private void ResetTime()
         {
             t = Random.Range(changeModeIntervalMin, changeModeIntervalMax);
