@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/* DragToRotate.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Controls the player drag-to-rotate mechanic
+ */
+
+using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
 using System;
@@ -8,15 +13,16 @@ namespace TeamBronze.HexWars
 {
     public class DragToRotate : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler
     {
-        float deltaRotation;
-        float previousRotation;
-        float currentRotation;
-        public float maxRotateSpeed;// = 50f;
+        [Tooltip("Maximum drag-to-rotate speed")]
+        public float maxRotateSpeed = 5.0f;
+
+        private float deltaRotation;
+        private float previousRotation;
+        private float currentRotation;
         bool touch = false;
 
         private GUIManager gui;
 
-        /*Initialise*/
         void Start()
         {
             // Make it so area fits half of screen
@@ -28,26 +34,27 @@ namespace TeamBronze.HexWars
                 Debug.Assert(gui);
         }
 
-        /*Returns false if the GUI is in a state where no joystick input should be accepted,
-        * or true otherwise.*/
-        private bool active() {
-        if (gui.gameOverSplashVisible() || gui.inGameMenuVisible())
-            return false;
-                
-           return true;
-        }
-
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (!active())
+            if (!Active())
                 return;
 
             GameObject playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
             deltaRotation = 0f;
-            previousRotation = angleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(eventData.position));
+            previousRotation = AngleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(eventData.position));
         }
 
-        float angleBetweenPoints(Vector2 position1, Vector2 position2)
+        // Returns false if the GUI is in a state where no joystick input should be accepted, or true otherwise.
+        private bool Active()
+        {
+            if (gui.gameOverSplashVisible() || gui.inGameMenuVisible())
+                return false;
+
+            return true;
+        }
+
+        // Returns the angle between two points
+        private float AngleBetweenPoints(Vector2 position1, Vector2 position2)
         {
             var fromLine = position2 - position1;
             var toLine = new Vector2(1, 0);
@@ -64,27 +71,27 @@ namespace TeamBronze.HexWars
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (!active())
+            if (!Active())
                 return;
 
             GameObject playerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
 
-            currentRotation = angleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(eventData.position));
+            currentRotation = AngleBetweenPoints(playerObj.transform.position, Camera.main.ScreenToWorldPoint(eventData.position));
                 deltaRotation = Mathf.DeltaAngle(currentRotation, previousRotation);
                 if (deltaRotation > maxRotateSpeed)
-                {
                     deltaRotation = maxRotateSpeed;
-                }
+
                 if (deltaRotation < -maxRotateSpeed)
-                {
                     deltaRotation = -maxRotateSpeed;
-                }
+
                 previousRotation = currentRotation;
 
                 playerObj.transform.Rotate(Vector3.back, deltaRotation);
         }
+
         public void OnPointerUp(PointerEventData eventData)
         {
+            // Nothing
         }
     }
 }
