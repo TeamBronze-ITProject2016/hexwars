@@ -1,9 +1,8 @@
 ﻿/* GameManager.cs
- * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
- * Description: Handles loading the game room and spawning players
- * 
- * Based on code provided in the PUN Basics Tutorial
+ * Based on code provided in the PUN Basics Tutorial:
  * https://doc.photonengine.com/en/pun/current/tutorials/pun-basics-tutorial/intro
+ * Adapted by: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Handles loading the game room and spawning players
  */
 
 using System;
