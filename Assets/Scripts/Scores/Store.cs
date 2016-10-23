@@ -50,7 +50,6 @@ namespace TeamBronze.HexWars
             // Display score if player has enough points
             if (player != null && (player.GetComponent<Player>().points >= storeMinimum && !store.GetActive()))
             {
-                GameObject.FindGameObjectWithTag("TriangleStoreIcon").GetComponent<Image>().sprite = triangleSprite;
                 store.SetActive(true);
             }
 
