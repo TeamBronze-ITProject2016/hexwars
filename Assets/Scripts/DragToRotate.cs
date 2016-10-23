@@ -19,7 +19,6 @@ namespace TeamBronze.HexWars
         private float deltaRotation;
         private float previousRotation;
         private float currentRotation;
-        private bool touch = false;
 
         private GUIManager gui;
 
