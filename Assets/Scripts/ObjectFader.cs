@@ -1,13 +1,9 @@
-﻿/*
-	FadeObjectInOut.cs
- 	Hayden Scott-Baron (Dock) - http://starfruitgames.com
- 	6 Dec 2012 
- 
-	This allows you to easily fade an object and its children. 
-	If an object is already partially faded it will continue from there. 
-	If you choose a different speed, it will use the new speed. 
- 
-	NOTE: Requires materials with a shader that allows transparency through color.  
+﻿/* ObjectFader.cs
+ * Adapted from FadeObjectInOut.cs (http://wiki.unity3d.com/index.php/FadeObjectInOut)
+ * Original author: Hayden Scott-Baron (Dock) - http://starfruitgames.com
+ * Adapted by: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * 
+ * Description: Allows an object to fade out over time
 */
 
 using UnityEngine;
@@ -17,41 +13,24 @@ namespace TeamBronze.HexWars
 {
     public class ObjectFader : Photon.MonoBehaviour
     {
-
-        // publically editable speed
-        public float fadeDelay = 0.0f;
+        [Tooltip("Length of fade effect in seconds")]
         public float fadeTime = 0.5f;
-        public bool fadeInOnStart = false;
+
+        [Tooltip("Whether or not to fade out on start")]
         public bool fadeOutOnStart = true;
-        private bool logInitialFadeSequence = false;
 
-
-        // store colours
+        // Store colors
         private Color[] colors;
 
-        // allow automatic fading on the start of the scene
-        IEnumerator Start()
+        // Allow automatic fading on the start of the scene
+        void Start()
         {
-            //yield return null; 
-            yield return new WaitForSeconds(fadeDelay);
-
-            if (fadeInOnStart)
-            {
-                logInitialFadeSequence = true;
-                FadeIn();
-            }
-
             if (fadeOutOnStart)
-            {
                 FadeOut(fadeTime);
-            }
         }
 
-
-
-
-        // check the alpha value of most opaque object
-        float MaxAlpha()
+        // Check the alpha value of most opaque object
+        private float MaxAlpha()
         {
             float maxAlpha = 0.0f;
             Renderer[] rendererObjects = GetComponentsInChildren<Renderer>();
@@ -62,47 +41,37 @@ namespace TeamBronze.HexWars
             return maxAlpha;
         }
 
-        // fade sequence
+        // Fade sequence
         IEnumerator FadeSequence(float fadingOutTime)
         {
-            // log fading direction, then precalculate fading speed as a multiplier
+            // Log fading direction, then precalculate fading speed as a multiplier
             bool fadingOut = (fadingOutTime < 0.0f);
             float fadingOutSpeed = 1.0f / fadingOutTime;
 
-            // grab all child objects
+            // Grab all child objects
             Renderer[] rendererObjects = GetComponentsInChildren<Renderer>();
             if (colors == null)
             {
-                //create a cache of colors if necessary
+                // Create a cache of colors if necessary
                 colors = new Color[rendererObjects.Length];
 
-                // store the original colours for all child objects
+                // Store the original colours for all child objects
                 for (int i = 0; i < rendererObjects.Length; i++)
                 {
                     colors[i] = rendererObjects[i].material.color;
                 }
             }
 
-            // make all objects visible
+            // Make all objects visible
             for (int i = 0; i < rendererObjects.Length; i++)
             {
                 rendererObjects[i].enabled = true;
             }
 
-
-            // get current max alpha
+            // Get current max alpha
             float alphaValue = MaxAlpha();
 
-
-            // This is a special case for objects that are set to fade in on start. 
-            // it will treat them as alpha 0, despite them not being so. 
-            if (logInitialFadeSequence && !fadingOut)
-            {
-                alphaValue = 0.0f;
-                logInitialFadeSequence = false;
-            }
-
-            // iterate to change alpha value 
+            // Iterate to change alpha value 
             while ((alphaValue >= 0.0f && fadingOut) || (alphaValue <= 1.0f && !fadingOut))
             {
                 alphaValue += Time.deltaTime * fadingOutSpeed;
@@ -118,7 +87,7 @@ namespace TeamBronze.HexWars
                 yield return null;
             }
 
-            // turn objects off after fading out
+            // Turn objects off after fading out
             if (fadingOut)
             {
                 for (int i = 0; i < rendererObjects.Length; i++)
@@ -127,18 +96,8 @@ namespace TeamBronze.HexWars
                 }
             }
 
+            // Destroy at end of fade out
             Destroy(gameObject);
-        }
-
-        [PunRPC]
-        void PunFadeOut()
-        {
-            FadeOut();
-        }
-
-        void FadeIn()
-        {
-            FadeIn(fadeTime);
         }
 
         public void FadeOut()
@@ -146,17 +105,10 @@ namespace TeamBronze.HexWars
             FadeOut(fadeTime);
         }
 
-        void FadeIn(float newFadeTime)
-        {
-            StopAllCoroutines();
-            StartCoroutine("FadeSequence", newFadeTime);
-        }
-
         void FadeOut(float newFadeTime)
         {
             StopAllCoroutines();
             StartCoroutine("FadeSequence", -newFadeTime);
         }
-
     }
 }
