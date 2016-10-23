@@ -25,7 +25,6 @@ namespace TeamBronze.HexWars
         public int storeMinimum = 3;
 
         private PartAdder partAdder;
-        private InputManager inputManager;
         private GameObject player;
 
         private bool isTriangleUnavailable;
@@ -36,12 +35,11 @@ namespace TeamBronze.HexWars
             StartCoroutine(LateStart());
             store.SetActive(false);
         }
-        
+
         // Delay store's start so that other objects are initialized
         IEnumerator LateStart()
         {
             yield return new WaitForSeconds(3);
-            inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
             partAdder = GameObject.FindGameObjectWithTag("PartAdder").GetComponent<PartAdder>();
             player = GameObject.FindGameObjectWithTag("LocalPlayer");
         }
@@ -54,11 +52,6 @@ namespace TeamBronze.HexWars
             {
                 GameObject.FindGameObjectWithTag("TriangleStoreIcon").GetComponent<Image>().sprite = triangleSprite;
                 store.SetActive(true);
-
-                if (!inputManager.IsActive()) 
-                    return;
-
-                Vector2 pos = -inputManager.lastMoveVector();
             }
 
             // If triangle unavailable icon is shown, check if we need to switch the icon back yet

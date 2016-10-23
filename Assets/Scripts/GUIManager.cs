@@ -7,7 +7,7 @@ using UnityEngine;
 using System.Collections;
 
 /*Uses the Blop sound effect from http://soundbible.com/2067-Blop.html
-Created by Mark DiAngelo. Used under the Creative Commons Attribution 3.0 
+Created by Mark DiAngelo. Used under the Creative Commons Attribution 3.0
 License: https://creativecommons.org/licenses/by/3.0/au/legalcode */
 
 namespace TeamBronze.HexWars
@@ -43,9 +43,6 @@ namespace TeamBronze.HexWars
         private Texture2D voiceiconenabled;
         private Texture2D gameoverText;
 
-        /*Classes needed to draw GUI.*/
-        private InputManager inputManager;
-
         /*Replay timer data*/
         private Vector2 replayTimerOffset = new Vector2(1.0f, 1.0f);
         private Color replayTimerColor = Color.red;
@@ -72,15 +69,10 @@ namespace TeamBronze.HexWars
         /*Initialise*/
         void Start()
         {
-            /*TODO: fix this - better method?*/
-            inputManager = FindObjectOfType<InputManager>();
-
-            if (!inputManager)
-                Debug.LogError("GUIManager::Start() - Could not find inputManager!");
 
             /*Register for game over event*/
             EventManager.registerListener("gameover", onGameOver);
-                
+
             /*Load textures*/
             voiceicondisabled = (Texture2D)Resources.Load("voiceicondisabled");
             voiceiconenabled = (Texture2D)Resources.Load("voiceiconenabled");
@@ -138,7 +130,7 @@ namespace TeamBronze.HexWars
                         GUI.color = replayTimerColor;
                         GUI.Label(new Rect(replayTimerOffset.x, replayTimerOffset.y, 128.0f, 32.0f), timerStr);
                     }
-                    
+
                     break;
 
                 /*In-Game Menu*/
@@ -193,7 +185,7 @@ namespace TeamBronze.HexWars
                     GUI.DrawTexture(new Rect(gameoverXOff, gameoverYOff, gameoverWidth, gameoverHeight), gameoverText);
 
                     /*Disconnect button*/
-                    if (GUI.Button(new Rect(gameoverXOff + GAMEOVER_PLAYAGAIN_WIDTH_FACTOR*Screen.width + 4, gameoverYOff + gameoverHeight, 
+                    if (GUI.Button(new Rect(gameoverXOff + GAMEOVER_PLAYAGAIN_WIDTH_FACTOR*Screen.width + 4, gameoverYOff + gameoverHeight,
                         GAMEOVER_PLAYAGAIN_WIDTH_FACTOR * Screen.width, GAMEOVER_PLAYAGAIN_HEIGHT_FACTOR * Screen.height), "Disconnect")) {
                             EventManager.triggerEvent("disconnect");
                             onElementSelected();
@@ -208,7 +200,7 @@ namespace TeamBronze.HexWars
             }
         }
 
-        /*Call the replay manager's update function. Here as there is no other place that this fits - GameManager 
+        /*Call the replay manager's update function. Here as there is no other place that this fits - GameManager
          does not have an Update() method.*/
         void Update() {
             ReplayManager.doUpdate();
