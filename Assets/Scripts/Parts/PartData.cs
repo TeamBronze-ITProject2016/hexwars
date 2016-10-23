@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿/* PartData.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Stores data about where/which parts are added to the local player
+ */
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace TeamBronze.HexWars
 {
-
     using UnityEngine;
     using System.Collections;
     using System.Collections.Generic;
@@ -17,11 +21,11 @@ namespace TeamBronze.HexWars
     }
 
     [Serializable]
-#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
-#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+    #pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+    #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
     public struct AxialCoordinate
-#pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+    #pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+    #pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
     {
         public int x;
         public int y;

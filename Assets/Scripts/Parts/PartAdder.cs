@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/* PartAdder.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Manages all adding and removing parts from players
+ */
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
