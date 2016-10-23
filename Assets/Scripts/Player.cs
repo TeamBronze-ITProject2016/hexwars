@@ -1,6 +1,6 @@
 ﻿/* Player.cs
  * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
- * Description: Handles basic player movement, including boundaries.
+ * Description: Handles basic player movement, including player boundaries.
  */
 
 using UnityEngine;
@@ -53,14 +53,6 @@ namespace TeamBronze.HexWars
 
             JoyStickMove();
             KeepInBoundary();
-
-            // Trigger replay (work-in-progress)
-            if(Input.GetKeyDown(KeyCode.F5))
-            {
-                EventManager.triggerEvent("replayStart");
-                EventManager.triggerEvent("gameover");
-            }
-
         } 
 
         // Move using the joystick

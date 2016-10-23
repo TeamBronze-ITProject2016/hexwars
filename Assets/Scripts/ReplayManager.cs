@@ -98,6 +98,16 @@ namespace TeamBronze.HexWars {
             ReplayManager.init();
         }
 
+        void Update()
+        {
+            // Trigger replay (work-in-progress)
+            if (Input.GetKeyDown(KeyCode.F5))
+            {
+                EventManager.triggerEvent("replayStart");
+                EventManager.triggerEvent("gameover");
+            }
+        }
+
         /*Update the stored replay data for all registered GameObjects.*/
         public static void doUpdate() {
             if (replayDict == null) {
