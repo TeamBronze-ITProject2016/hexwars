@@ -19,20 +19,22 @@ namespace TeamBronze.HexWars
         // Reference to the main camera
         private Camera mainCamera;
 
+        // Initialize
         void Start()
         {
             Debug.Log("CameraFollow: Initialising....");
 
             // Make sure that this script is only active for the local player
-            if(photonView.isMine) {
+            if (photonView.isMine)
                 mainCamera = Camera.main;
-            }
         }
 
+        // Called once per frame after all other Update functions
         void LateUpdate()
         {
             // Return if no reference to main camera
-            if (!mainCamera) { return; }
+            if (!mainCamera)
+                return;
 
             SetPos(mainCamera);
             SetZoom(mainCamera);

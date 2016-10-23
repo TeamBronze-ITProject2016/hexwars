@@ -1,7 +1,7 @@
 ﻿/* Player.cs
-* Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
-* Description: The base class for all players. 
-*/
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Handles basic player movement, including boundaries.
+ */
 
 using UnityEngine;
 using System.Collections;
@@ -30,105 +30,41 @@ namespace TeamBronze.HexWars
         [HideInInspector]
         public Rigidbody2D rb;
         
+        [Tooltip("The player's current points (visible in inspector for testing purposes)")]
         public int points = 0;
 
-        private InputManager inputManager; /* Need to fix namespaces */
-        
-		public float angle;
-
-        /*Initialise*/
+        // Initialize
         void Start()
         {
+            // Assign different tag for the local player
 			if (photonView.isMine)
-            {
 				gameObject.tag = "LocalPlayer";
-			}
 
             rb = GetComponent<Rigidbody2D>();
-            inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
             ReplayManager.registerGameObject(this.gameObject);
         }
 
-        /*Called once per frame*/
+        // Called every fixed framerate frame
         void FixedUpdate()
         {
-            JoyStickMove();
-
-            if (!inputManager)
-            {
-                Debug.Log("Player - Warning: Not initialised!");
-                Start();
-            }
-
+            // Only move local player
             if (!photonView.isMine)
-            {
                 return;
-            }
 
-            if (inputManager.IsActive())
-            {
-                	//
-                //MoveForward();
-                //RotateToPoint(inputManager.GetPos());
-            }
-
+            JoyStickMove();
             KeepInBoundary();
 
-            if(Input.GetKeyDown(KeyCode.F5)){
+            // Trigger replay (work-in-progress)
+            if(Input.GetKeyDown(KeyCode.F5))
+            {
                 EventManager.triggerEvent("replayStart");
                 EventManager.triggerEvent("gameover");
             }
 
         } 
 
-        /* Apply a forward force to the hexagon. */
-        void MoveForward()
-        {
-            float angleInRad = rb.rotation * Mathf.Deg2Rad;
-            Vector2 direction = new Vector2(-(float)Mathf.Cos(angleInRad), -(float)Mathf.Sin(angleInRad));
-            rb.AddForce(direction * acceleration * rb.mass);
-        }
-
-        /* Rotate hexagon at a constant rate towards a certain point */
-        void RotateToPoint(Vector2 coord)
-        {
-            /* Find the vector pointing from our position to the target */
-            Vector3 p = rb.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1));
-
-			float targetAngle = Mathf.Atan2(p.y, p.x) * Mathf.Rad2Deg;
-
-			float rightRotateAmount = normalizeAngle(normalizeAngle(targetAngle) - normalizeAngle(transform.rotation.eulerAngles.z));
-
-			int rotateDir;
-			// Don't rotate if within minimum threshold
-			if (rightRotateAmount < rotationThreshold || rightRotateAmount > 360 - rotationThreshold)
-				rotateDir = 0;
-			// Rotate Left
-			else if (rightRotateAmount > 180f)
-				rotateDir = -1;
-			// Rotate Right
-			else
-				rotateDir = 1;
-
-			transform.RotateAround(transform.position, Vector3.forward, rotateDir * rotationSpeed * Time.deltaTime);
-        }
-
-        /*Called when something collides with the player's hexagon*/
-        void OnCollisionEnter2D(Collision2D collision)
-        {
-            if (this.tag != "LocalPlayer")
-                return;
-
-            //doesn't work, as gameObject is always tagged as 'Player' or 'Enemy'.
-            if (collision.gameObject.tag == "EnemyAttackingPart") {
-                EventManager.triggerEvent("replayStart");
-                EventManager.triggerEvent("gameover");
-                //Destroy(this);
-            }
-        }
-
-        /* Move using joystick */
-        bool JoyStickMove()
+        // Move using the joystick
+        private bool JoyStickMove()
         {
             VirtualJoystick joystick = GameObject.FindGameObjectWithTag("Joystick").GetComponent<VirtualJoystick>();
 
@@ -136,8 +72,6 @@ namespace TeamBronze.HexWars
 
             direction.x = joystick.getHorizontal();
             direction.y = joystick.getVertical();
-
-            //Debug.Log(direction);
 
             if (direction.x == 0 && direction.y == 0)
                 return false;
@@ -147,7 +81,8 @@ namespace TeamBronze.HexWars
             return true;
         }
 
-        void KeepInBoundary()
+        // Clamp the player's position inside the specified XY boundary
+        private void KeepInBoundary()
         {
             if (transform.position.x < minBound.x)
                 transform.position = new Vector2(minBound.x, transform.position.y);
@@ -162,13 +97,53 @@ namespace TeamBronze.HexWars
                 transform.position = new Vector2(transform.position.x, maxBound.y);
         }
 
-		// Normalizes angle to 0 degrees to 360 degrees
-		private float normalizeAngle(float angle){
-			angle = angle % 360;
-			if (angle < 0) {
-				angle += 360;
-			}
-			return angle;
-		}
+        // Apply a forward force to the hexagon.
+        // Note: Currently un-used, part of an old movement system and has been replaced by joystick.
+        private void MoveForward()
+        {
+            // Get normalized direction vector from current player rotation
+            float angleInRad = rb.rotation * Mathf.Deg2Rad;
+            Vector2 direction = new Vector2(-(float)Mathf.Cos(angleInRad), -(float)Mathf.Sin(angleInRad));
+
+            // Multiply added force by current mass so that players of all sizes move at the same speed
+            rb.AddForce(direction * acceleration * rb.mass);
+        }
+
+        // Rotate hexagon at a constant rate towards a certain point
+        // Note: Currently un-used, part of an old movement system and has been replaced by joystick.
+        private void RotateToPoint(Vector2 coord)
+        {
+            /* Find the vector pointing from our position to the target */
+            Vector3 p = rb.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(coord.x, coord.y, 1));
+
+            float targetAngle = Mathf.Atan2(p.y, p.x) * Mathf.Rad2Deg;
+
+            float rightRotateAmount = NormalizeAngle(NormalizeAngle(targetAngle) - NormalizeAngle(transform.rotation.eulerAngles.z));
+
+            int rotateDir;
+            // Don't rotate if within minimum threshold
+            if (rightRotateAmount < rotationThreshold || rightRotateAmount > 360 - rotationThreshold)
+                rotateDir = 0;
+            // Rotate Left
+            else if (rightRotateAmount > 180f)
+                rotateDir = -1;
+            // Rotate Right
+            else
+                rotateDir = 1;
+
+            transform.RotateAround(transform.position, Vector3.forward, rotateDir * rotationSpeed * Time.deltaTime);
+        }
+
+        // Normalizes angle to 0 degrees to 360 degrees
+        // Note: Currently un-used, part of an old movement system and has been replaced by joystick.
+        private float NormalizeAngle(float angle)
+        {
+            angle = angle % 360;
+            if (angle < 0)
+            {
+                angle += 360;
+            }
+            return angle;
+        }
     }
 }
