@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/* EnemyCollisionHandler.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Handles collisons with enemies
+ */
+
+using UnityEngine;
 using System.Collections;
 
 namespace TeamBronze.HexWars
@@ -7,7 +12,7 @@ namespace TeamBronze.HexWars
     {
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            // Make sure collision is with core part
+            // Make sure collision is with core part and not a triangle
             if (!GetComponent<PolygonCollider2D>().IsTouching(collision.collider))
                 return;
 
@@ -16,6 +21,7 @@ namespace TeamBronze.HexWars
             // Destroy on player collision or collision with another AI
             if ((collisionObj.tag == "Triangle" && collisionObj.GetPhotonView().isMine) || collisionObj.tag == "EnemyTriangle")
             {
+                // Request master client to destroy this enemy
                 photonView.RPC("PunDestroy", PhotonTargets.MasterClient);
 
                 // Add points only for player collision
@@ -27,6 +33,8 @@ namespace TeamBronze.HexWars
             }
         }
 
+        // Destroys an enemy over PUN. Clients should request the master client to call this in order to
+        // destroy an enemy.
         [PunRPC]
         void PunDestroy()
         {
