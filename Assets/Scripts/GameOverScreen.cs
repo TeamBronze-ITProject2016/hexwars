@@ -1,6 +1,6 @@
 ﻿/* GameOverScreen.cs
  * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
- * Description: Collision handler for the player's central part, will cause game over
+ * Description: Manages game over screen scores and GUI components
  */
 
 using UnityEngine;
