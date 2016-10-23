@@ -29,7 +29,7 @@ namespace TeamBronze.HexWars
         {
             InvokeRepeating("connectPartAdder", 0.2f, 1.0f);
         }
-        
+
         void connectPartAdder()
         {
             if (player.shape == null)
@@ -39,7 +39,7 @@ namespace TeamBronze.HexWars
                 addPart(new AxialCoordinate { x = -1, y = 0 }, "Triangle");
             }
         }
-        
+
         public void addPart(AxialCoordinate location, string part)
         {
             // NOTE: type = 1 if player part. type = 0 if hexagon part. type = -1 if triangle part
@@ -47,7 +47,7 @@ namespace TeamBronze.HexWars
 
             GameObject partType;
             int type;
-            
+
             if (part == "Hexagon")
             {
                 partType = hexagonPart;
@@ -101,17 +101,8 @@ namespace TeamBronze.HexWars
             // Return the player to their position before the part was added
             player.shape.transform.position = playerLocation;
             player.shape.transform.rotation = playerRotation;
-
-            /*// Update the server when part added
-            PointScoreHandler pointsScoreHandler = player.shape.GetComponent<PointScoreHandler>();
-            pointsScoreHandler.updateServerScore();
-
-            // Update the scoreboard
-            GameObject scoreboard = GameObject.FindGameObjectWithTag("ScoreBoard");
-            PhotonView scoreboardView = PhotonView.Get(scoreboard);
-            scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);*/
         }
-        
+
         public bool addRandomPart(string part="None")
         {
             int maxCount = hexData.dataTable.Count;
@@ -147,7 +138,7 @@ namespace TeamBronze.HexWars
             return false;
 
         }
-        
+
         // From http://stackoverflow.com/questions/1028136/random-entry-from-dictionary
         public IEnumerable<TKey> RandomKeys<TKey, TValue>(IDictionary<TKey, TValue> dict)
         {
@@ -156,7 +147,7 @@ namespace TeamBronze.HexWars
             int size = dict.Count;
             while (true) yield return keys[rand.Next(size)];
         }
-        
+
         public void removePart(AxialCoordinate location)
         {
             try
@@ -171,7 +162,7 @@ namespace TeamBronze.HexWars
 
             hexData.removePart(location);
         }
-        
+
         private Vector3 axialToPixel(AxialCoordinate location)
         {
             // Convert the axial position of the location to a pixel location
@@ -181,7 +172,7 @@ namespace TeamBronze.HexWars
             y = size * (3f / 2f) * location.y;
             return new Vector3(x + player.shape.transform.position.x, y + player.shape.transform.position.y, 0);
         }
-        
+
         private Quaternion axialToRotation(AxialCoordinate location)
         {
             // Convert an axial location to the rotation that that GameObject should be at

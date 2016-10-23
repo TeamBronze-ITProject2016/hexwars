@@ -64,7 +64,7 @@ namespace TeamBronze.HexWars
             directions.Add(new AxialCoordinate { x = -1, y = 1 });
             directions.Add(new AxialCoordinate { x = -1, y = 0 });
         }
-        
+
         public bool checkPart(AxialCoordinate location)
         {
             // Check that a part can be added to the location provided. Will return true if:
@@ -74,7 +74,7 @@ namespace TeamBronze.HexWars
                 return true;
             else return false;
         }
-        
+
         public bool addPart(AxialCoordinate location, Part? part)
         {
             // Returns true if the part was successfully added
@@ -83,22 +83,14 @@ namespace TeamBronze.HexWars
             else return false;
             return true;
         }
-        
+
         public Part? getPart(AxialCoordinate location)
         {
             Part? val = new Part?();
             dataTable.TryGetValue(location, out val);
             return val;
         }
-        
-        /*public List<Part?> getParts()
-        {
-            List<Part?> items = new List<Part?>();
-            items.AddRange(dataTable.Values);
 
-            return items;
-        }*/
-        
         public List<AxialCoordinate> getEmptyNeighbors(AxialCoordinate location)
         {
             List<AxialCoordinate> empty = new List<AxialCoordinate>();
@@ -110,7 +102,7 @@ namespace TeamBronze.HexWars
             }
             return empty;
         }
-        
+
         public List<AxialCoordinate> getFullNeighbors(AxialCoordinate location)
         {
             List<AxialCoordinate> full = new List<AxialCoordinate>();
@@ -123,7 +115,7 @@ namespace TeamBronze.HexWars
 
             return full;
         }
-        
+
         public List<AxialCoordinate> getFullHexNeighbors(AxialCoordinate location)
         {
             List<AxialCoordinate> full = new List<AxialCoordinate>();
@@ -143,13 +135,13 @@ namespace TeamBronze.HexWars
 
             return full;
         }
-        
+
         public void removePart(AxialCoordinate location)
         {
             // Remove a part
             dataTable[location] = null;
         }
-        
+
         public AxialCoordinate getLocation(Vector3 location)
         {
             // Given a pixel coordinate, return the AxialCoordinate location of the closest part
@@ -172,7 +164,7 @@ namespace TeamBronze.HexWars
 
             return minCoordinate;
         }
-        
+
         public List<AxialCoordinate> findDestroyedPartLocations(AxialCoordinate destroyedPartLocation)
         {
             List<AxialCoordinate> destroyedLocations = new List<AxialCoordinate>();
@@ -189,10 +181,10 @@ namespace TeamBronze.HexWars
             // Restore the destroyed part
             addPart(destroyedPartLocation, tempPart);
             destroyedLocations.Add(destroyedPartLocation);
-            
+
             return destroyedLocations;
         }
-        
+
         private bool pathExistsToPlayer(AxialCoordinate location)
         {
             // Given a location, find a path that exists from that location back to the player
@@ -215,7 +207,7 @@ namespace TeamBronze.HexWars
 
             return false;
         }
-        
+
         public int getRotationFromNeighbor(AxialCoordinate neighborNormal)
         {
             // Given a neighborNormal, return the rotation a triangle should be at
@@ -226,13 +218,13 @@ namespace TeamBronze.HexWars
             if (neighborNormal.x == 1 && neighborNormal.y == 0) return 270;
             return 150;
         }
-        
+
         public AxialCoordinate? getNeighborFromTriangle(AxialCoordinate position)
         {
             // Returns a hexagon attached to the triangle at position. Returns null if error
 
             if (getPart(position).Value.type != -1) return null;
-            
+
             int rotation = ((int)(dataTable[position].Value.shape.transform.localRotation.eulerAngles.z) + 180)%360;
 
             AxialCoordinate neighbor;
@@ -246,7 +238,7 @@ namespace TeamBronze.HexWars
             else neighbor = new AxialCoordinate { x = 0, y = -1 };
 
             if (getPart(position + neighbor) != null) return position + neighbor;
-            
+
             return null;
         }
     }
