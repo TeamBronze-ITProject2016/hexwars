@@ -1,33 +1,41 @@
-﻿using UnityEngine;
+﻿/* PlayerColoring.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Sets the color of player parts using the player's nickname as the seed
+ */
+
+using UnityEngine;
 using System.Collections;
 
 namespace TeamBronze.HexWars
 {
     public class PlayerColoring : Photon.PunBehaviour
     {
-        public Color baseColor = new Color(0.5f, 0.5f, 0.5f);
-        public float colorStrength = 0.5f;
-
-        private Color[] colors;
-
         public override void OnPhotonInstantiate(PhotonMessageInfo info)
         {
-            colors = new Color[]
+            // Possible player colors
+            Color[] colors = new Color[]
             {
-                Color.Lerp(baseColor, Color.red, colorStrength),
-                Color.Lerp(baseColor, Color.yellow, colorStrength),
-                Color.Lerp(baseColor, Color.green, colorStrength),
-                Color.Lerp(baseColor, Color.cyan, colorStrength),
-                Color.Lerp(baseColor, Color.blue, colorStrength),
-                Color.Lerp(baseColor, Color.magenta, colorStrength),
+                Color.red,
+                Color.yellow,
+                Color.green,
+                Color.cyan,
+                Color.blue,
+                Color.magenta
             };
 
+            // Use player name as seed, so the same name will always have the same color (may change between builds)
             int seed = GetSeed(photonView.owner.name);
             System.Random random = new System.Random(seed);
-            Color playerColor = colors[random.Next(colors.Length)];
-            GetComponent<SpriteRenderer>().color = playerColor;
+            Color randomColor = colors[random.Next(colors.Length)];
+
+            // Interpolate color with gray (more visually pleasing)
+            randomColor = Color.Lerp(randomColor, Color.gray, 0.5f);
+
+            // Set sprite color
+            GetComponent<SpriteRenderer>().color = randomColor;
         }
 
+        // Converts a player name to a seed
         private int GetSeed(string name)
         {
             int seed = 0;
