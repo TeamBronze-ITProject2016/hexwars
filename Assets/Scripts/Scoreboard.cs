@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/* Scoreboard.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Displays a scoreboard with the current score of all in-game players.
+ */
+
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using System;
@@ -14,22 +19,24 @@ namespace TeamBronze.HexWars
 {
     public class Scoreboard : MonoBehaviour
     {
+        [Tooltip("Amount to multiply player mass by (score is a multiple of player mass)")]
         public float scoreMultiplier = 10.0f;
+
+        [Tooltip("How frequently to update scoreboard in seconds (may be too CPU intensive to do every frame")]
         public float updateInterval = 1.0f;
+
+        [Tooltip("The maximum number of scores to show on the scoreboard (highest scores will be shown")]
         public int maxScores = 4;
 
         private GameObject scoresDisplay;
         private float localPlayerHighestScore;
         private float t;
 
-        // Use this for initialization
+        // Initialize
         void Start()
         {
             scoresDisplay = transform.FindChild("Scores").gameObject;
             t = updateInterval;
-
-            // ---------- Old stuff ----------
-            //UpdateScoresBoard();
         }
 
         void Update()
@@ -47,6 +54,7 @@ namespace TeamBronze.HexWars
 
             ClearScores();
 
+            // Find all players including local player
             GameObject[] otherPlayers = GameObject.FindGameObjectsWithTag("Player");
             GameObject[] players = new GameObject[otherPlayers.Length + 1];
             players[0] = GameObject.FindGameObjectWithTag("LocalPlayer");
@@ -54,15 +62,18 @@ namespace TeamBronze.HexWars
 
             Array.Copy(otherPlayers, 0, players, 1, otherPlayers.Length);
 
+            // Find all player scores
             for (int i = 0; i < playerScores.Length; i++)
             {
                 playerScores[i] = players[i].GetComponent<Rigidbody2D>().mass * scoreMultiplier;
             }
 
-            Array.Sort(playerScores, players); // sort playerScores and players based on playerScores
+            // Sort playerScores and players based on playerScores
+            Array.Sort(playerScores, players); 
             Array.Reverse(playerScores);
             Array.Reverse(players);
 
+            // Number of scores to display, either maxScores or less if there aren't enough players
             int scoresToDisplay;
 
             if (players.Length < maxScores)
@@ -70,6 +81,7 @@ namespace TeamBronze.HexWars
             else
                 scoresToDisplay = maxScores;
 
+            // Display each score
             for(int i = 0; i < scoresToDisplay; i ++)
             {
                 string playerName = players[i].GetPhotonView().owner.name;
@@ -79,15 +91,16 @@ namespace TeamBronze.HexWars
                 text.color = Color.Lerp(players[i].GetComponent<SpriteRenderer>().color, Color.black, 0.5f);
                 text.fontStyle = FontStyle.Bold;
             }
-
-            // ---------- Old stuff ----------
-            /*GameObject scoresDisplay = transform.FindChild("PlayerBar").transform.FindChild("PlayerPointScore").gameObject;
-            GameObject player = GameObject.FindGameObjectWithTag("LocalPlayer");
-            Text text = scoresDisplay.GetComponent<Text>();
-            text.text = "Points/Score: " + player.GetComponent<Player>().points + "/" + player.GetComponent<Player>().rb.mass.ToString();*/
         }
 
-        void UpdateLocalPlayerHighestScore()
+        // Returns the highest score that the local player has had so far in this game
+        public float GetLocalPlayerHighestScore()
+        {
+            return localPlayerHighestScore;
+        }
+
+        // Finds the local player's current score, and updates their highest score if their current score is greater
+        private void UpdateLocalPlayerHighestScore()
         {
             GameObject localPlayerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
 
@@ -100,12 +113,8 @@ namespace TeamBronze.HexWars
                 localPlayerHighestScore = cur;
         }
 
-        public float GetLocalPlayerHighestScore()
-        {
-            return localPlayerHighestScore;
-        }
-
-        Text AddText(string text)
+        // Add text to the scoreboard
+        private Text AddText(string text)
         {
             GameObject textGO = new GameObject("myTextGO");
             textGO.transform.SetParent(scoresDisplay.transform);
@@ -119,7 +128,8 @@ namespace TeamBronze.HexWars
             return myText;
         }
 
-        void ClearScores()
+        // Clears the scoreboard
+        private void ClearScores()
         {
             for(int i = 0; i < scoresDisplay.transform.childCount; i++)
             {
@@ -127,6 +137,7 @@ namespace TeamBronze.HexWars
             }
         }
 
+        // Truncates string at the last '.' character (inclusive)
         private string RemoveDecimals(string s)
         {
             if (s.IndexOf(".") < 0)
@@ -134,47 +145,5 @@ namespace TeamBronze.HexWars
 
             return s.Substring(0, s.IndexOf("."));
         }
-
-        /*
-        [PunRPC]
-        IEnumerator UpdateScoresBoard () {
-            // Remove previous scores
-            GameObject scoresDisplay = transform.FindChild("Scores").gameObject;
-
-            string url = "http://128.199.229.64/hexwars";
-            WWW www = new WWW(url);
-            yield return www;
-            // Format string into array
-            // http://stackoverflow.com/questions/19178983/how-in-c-sharp-to-convert-a-string-of-comma-separated-bracket-enclosed-nested
-            string s = www.text;
-            var result = s
-                   .Split(']')
-                   .Select(i => i.Replace('[', ' '))
-                   .Select(i => i.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                   .ToList()).ToList();
-
-            for(int i = 1; i <= maxScores; i++)
-            {
-                string playerscore;
-                try
-                {
-                    playerscore = i + ". " + result[i][0].Trim('"').Remove(0,3) + ":" + result[i][1];
-                    Debug.Log(result[i][0].Trim('"').Remove(0, 3));
-                    try
-                    {
-                        scoresDisplay.transform.GetChild(i).gameObject.GetComponent<Text>().text = playerscore;
-                    }
-                    catch
-                    {
-                        AddText(playerscore);
-                    }
-                }
-                catch
-                {
-                    Destroy(scoresDisplay.transform.GetChild(i).gameObject);
-                }
-            }
-        }
-        */
     }
 }
