@@ -1,6 +1,7 @@
 ﻿/* InputManager.cs
  * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
  * Description: Handles user input.
+ * Note: CURRENTLY UNUSED. This was used for the old movement method.
  */
 
 using UnityEngine;

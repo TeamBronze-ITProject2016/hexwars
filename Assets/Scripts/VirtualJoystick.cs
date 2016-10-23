@@ -1,12 +1,17 @@
-﻿using UnityEngine;
+﻿/* VirtualJoystick.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Manages the virtual joystick to control the player
+ */
+
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-namespace TeamBronze.HexWars {
-
-    public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler {
-
+namespace TeamBronze.HexWars
+{
+    public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler
+    {
         private Image backgroundImage;
         private Image joystickImage;
         private Vector3 inputVector;
@@ -28,9 +33,9 @@ namespace TeamBronze.HexWars {
             joystickImage.enabled = false;
         }
 
-        /*Returns false if the GUI is in a state where no joystick input should be accepted,
-         * or true otherwise.*/
-        private bool active() {
+        // Returns false if the GUI is in a state where no joystick input should be accepted, or true otherwise.
+        private bool Active()
+        {
             if (gui.gameOverSplashVisible() || gui.inGameMenuVisible())
                 return false;
 
@@ -39,12 +44,12 @@ namespace TeamBronze.HexWars {
 
         public virtual void OnDrag(PointerEventData ped)
         {
-            if (!active())
+            if (!Active())
                 return;
 
             Vector2 pos = ped.position;
 
-            /*Don't enable joystick if we're over a GUI element.*/
+            // Don't enable joystick if we're over a GUI element.
             if(gui.isPointerOverGUIElement(new Vector2(ped.position.x, ped.position.y)))
                 return;
 
@@ -65,8 +70,8 @@ namespace TeamBronze.HexWars {
 
         public virtual void OnPointerDown(PointerEventData ped)
         {
-            /*Don't draw joystick if not active or over a gui element*/
-            if (!active() || gui.isPointerOverGUIElement(new Vector2(ped.position.x, ped.position.y)))
+            // Don't draw joystick if not active or over a gui element
+            if (!Active() || gui.isPointerOverGUIElement(new Vector2(ped.position.x, ped.position.y)))
                 return;
 
             // Enable joystick and move to correct position
