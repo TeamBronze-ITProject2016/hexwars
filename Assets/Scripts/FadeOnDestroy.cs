@@ -25,7 +25,7 @@ namespace TeamBronze.HexWars
             collider.SetPath(0, oldCollider.GetPath(0));
             fadeObj.AddComponent<OutlineRenderer>();
 
-            fadeObj.AddComponent<LocalObjectFader>();
+            fadeObj.AddComponent<ObjectFader>();
         }
     }
 }

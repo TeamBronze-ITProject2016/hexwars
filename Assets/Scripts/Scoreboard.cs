@@ -89,7 +89,12 @@ namespace TeamBronze.HexWars
 
         void UpdateLocalPlayerHighestScore()
         {
-            float cur = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<Rigidbody2D>().mass * scoreMultiplier;
+            GameObject localPlayerObj = GameObject.FindGameObjectWithTag("LocalPlayer");
+
+            if (localPlayerObj == null)
+                return;
+
+            float cur = localPlayerObj.GetComponent<Rigidbody2D>().mass * scoreMultiplier;
 
             if (cur > localPlayerHighestScore)
                 localPlayerHighestScore = cur;

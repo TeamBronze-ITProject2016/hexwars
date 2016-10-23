@@ -1,9 +1,14 @@
-﻿using UnityEngine;
+﻿/* DestructibleObjectSpawner.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Spawns destructible objects within bounds up to a max amount.
+ */
+
+using UnityEngine;
 using System.Collections;
 
 namespace TeamBronze.HexWars
 {
-    public class LocalDestructibleObjectSpawner : MonoBehaviour
+    public class DestructibleObjectSpawner : MonoBehaviour
     {
         [Tooltip("Prefab of the object to spawn")]
         public GameObject destructibleObjectPrefab;
@@ -11,20 +16,11 @@ namespace TeamBronze.HexWars
         [Tooltip("Max number of destructibles")]
         public int max = 60;
 
-        [Tooltip("Time interval (in seconds) to spawn a new object")]
-        public float interval = 2;
+        [Tooltip("Minimum XY pos to spawn at")]
+        public Vector2 minBound = new Vector2(-50.0f, -50.0f);
 
-        [Tooltip("Minimum x bound")]
-        public float x1 = -50.0f;
-
-        [Tooltip("Maximum x bound")]
-        public float x2 = 50.0f;
-
-        [Tooltip("Minimum y bound")]
-        public float y1 = -50.0f;
-
-        [Tooltip("Maximum y bound")]
-        public float y2 = 50.0f;
+        [Tooltip("Maximum XY pos to spawn at")]
+        public Vector2 maxBound = new Vector2(50.0f, 50.0f);
 
         [Tooltip("The magnitude of the force that a destructible object spawns with")]
         public float startingForce = 20.0f;
@@ -32,18 +28,15 @@ namespace TeamBronze.HexWars
         [Tooltip("The magnitude of the torque that a destructible object spawns with")]
         public float startingTorque = 5.0f;
 
-        private float t;
-
-        void Start()
-        {
-            t = interval;
-        }
-
         void Update()
         {
+            // Check if num of destructible objects is less than max
             if (GameObject.FindGameObjectsWithTag("DestructibleObject").Length < max)
             {
+                // Spawn new destructible object
                 GameObject destructibleObj = (GameObject)Instantiate(destructibleObjectPrefab, GetSpawnPos(), Quaternion.identity);
+
+                // Initialize rotation/velocity/torque of destructible object
                 Rigidbody2D rb = destructibleObj.GetComponent<Rigidbody2D>();
                 rb.rotation = Random.Range(0.0f, 360.0f);
                 float angleInRad = rb.rotation * Mathf.Deg2Rad;
@@ -51,18 +44,20 @@ namespace TeamBronze.HexWars
                 rb.AddForce(direction * startingForce);
                 rb.AddTorque(RandomNegOrPos() * startingTorque);
 
-                // Don't spawn if on top of something
+                // Remove if spawned on top of something
                 if (destructibleObj.GetComponent<PolygonCollider2D>().Cast(Vector2.zero, new RaycastHit2D[1], 0) > 0)
                     Destroy(destructibleObj);
             }
         }
 
-        Vector3 GetSpawnPos()
+        // Gets a random spawn position within the min and max bounds
+        private Vector3 GetSpawnPos()
         {
-            return new Vector3(Random.Range(x1, x2), Random.Range(y1, y2), 0.0f);
+            return new Vector3(Random.Range(minBound.x, maxBound.x), Random.Range(minBound.y, maxBound.y), 0.0f);
         }
 
-        int RandomNegOrPos()
+        // Coin flip, returns either -1 or 1
+        private int RandomNegOrPos()
         {
             if (Random.value > 0.5)
                 return -1;
