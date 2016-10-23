@@ -1,4 +1,9 @@
-﻿using System;
+﻿/* GameManager.cs
+ * Authors: Nihal Mirpuri, William Pan, Jamie Grooby, Michael De Pasquale
+ * Description: Handles loading the game room and spawning players
+ */
+
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,7 +12,6 @@ using UnityEngine.Experimental.Networking;
 #else
 using UnityEngine.Networking;
 #endif
-
 
 namespace TeamBronze.HexWars
 {
@@ -38,70 +42,15 @@ namespace TeamBronze.HexWars
 
         private ReplayManager replayManager;
 
-        /* Called when the local player left the room. We need to load the launcher scene. */
-        public override void OnLeftRoom()
-        {
-            if (isGameOver)
-                SceneManager.LoadScene(2);
-            else
-                SceneManager.LoadScene(0);
-        }
-
-        public void LeaveRoom()
-        {
-            PhotonNetwork.LeaveRoom();
-        }
-
-        public override void OnPhotonPlayerConnected(PhotonPlayer other)
-        {
-            Debug.Log("OnPhotonPlayerConnected() " + other.name); /* Not seen if you're the player connecting */
-
-            if (PhotonNetwork.isMasterClient)
-            {
-                Debug.Log("OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient); /* Called before OnPhotonPlayerDisconnected */
-                //LoadArena();
-            }
-        }
-
-        public override void OnPhotonPlayerDisconnected(PhotonPlayer other)
-        {
-            Debug.Log("OnPhotonPlayerDisconnected() " + other.name); /* Seen when other disconnects */
-
-            if (PhotonNetwork.isMasterClient)
-            {
-                Debug.Log("OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient); /* Called before OnPhotonPlayerDisconnected */
-                //LoadArena();
-                // Remove player from server
-
-                /* ----- OLD -----
-                string url = "http://128.199.229.64/remove/";
-                string name = PhotonNetwork.player.name;
-                UnityWebRequest request = UnityWebRequest.Get(url + name);
-                request.Send();
-                */
-            }
-            string url = "http://128.199.229.64/remove/";
-            string name = PhotonNetwork.player.name;
-            UnityWebRequest request = UnityWebRequest.Get(url + name);
-            request.Send();
-            // Update the scoreboard
-            GameObject scoreboard = GameObject.FindGameObjectWithTag("ScoreBoard");
-            PhotonView scoreboardView = PhotonView.Get(scoreboard);
-            scoreboardView.RPC("UpdateScoresBoard", PhotonTargets.All);
-        }
-
+        // Initialize
         void Start()
         {
-            EventManager.registerListener("playagain", spawnLocalPlayer);
+            EventManager.registerListener("playagain", SpawnLocalPlayer);
 
             if (playerPrefab == null)
-            {
                 Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
-            }
             else
-            {
-                spawnLocalPlayer();
-            }
+                SpawnLocalPlayer();
 
             replayManager = FindObjectOfType<ReplayManager>();
             Debug.Assert(replayManager);
@@ -111,11 +60,25 @@ namespace TeamBronze.HexWars
             EventManager.registerListener("playagain", DoReconnect);
         }
 
-        /*Create an instance of the local player at a random location free of other players.*/
-        void spawnLocalPlayer() {
-            Debug.Log("We are Instantiating LocalPlayer from " + Application.loadedLevelName);
+        // Called when the local player leaves the room
+        public override void OnLeftRoom()
+        {
+            if (isGameOver)
+                SceneManager.LoadScene(2);
+            else
+                SceneManager.LoadScene(0);
+        }
 
-            /* We're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate */
+        // Leave the current room
+        public void LeaveRoom()
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+
+        // Create an instance of the local player at a random location free of other players.
+        void SpawnLocalPlayer()
+        {
+            // Keep trying to spawn local player until we find a clear position
             Vector3 spawnPos;
             do
             {
@@ -123,19 +86,10 @@ namespace TeamBronze.HexWars
             }
             while (!IsPosClear(spawnPos));
 
-            GameObject playerObj = PhotonNetwork.Instantiate(this.playerPrefab.name, spawnPos, Quaternion.identity, 0);
+            GameObject playerObj = PhotonNetwork.Instantiate(playerPrefab.name, spawnPos, Quaternion.identity, 0);
         }
 
-        void LoadArena()
-        {
-            if (!PhotonNetwork.isMasterClient)
-            {
-                Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
-            }
-            Debug.Log("PhotonNetwork : Loading Level : Room");
-            PhotonNetwork.LoadLevel("Room");
-        }
-
+        // Check if a position is clear of other players
         bool IsPosClear(Vector3 position)
         {
             GameObject tempObj = new GameObject("Temp Obj");
@@ -150,12 +104,14 @@ namespace TeamBronze.HexWars
             return isPosClear;
         }
         
-        /*Replay callbacks.*/
-        void DisableSending() {
+        // Replay callbacks
+        void DisableSending()
+        {
             PhotonNetwork.SetSendingEnabled(0, false);
             PhotonNetwork.SetReceivingEnabled(0, false);
         }
-        void DoReconnect() {
+        void DoReconnect()
+        {
             PhotonNetwork.SetSendingEnabled(0, true);
             PhotonNetwork.SetReceivingEnabled(0, true);
             LeaveRoom();
