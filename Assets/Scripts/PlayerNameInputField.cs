@@ -33,12 +33,18 @@ namespace TeamBronze.HexWars
                 }
             }
 
+            if (defaultName == "")
+                defaultName = "Unnamed";
+
             PhotonNetwork.playerName = defaultName;
         }
 
         // Sets the name of the player, and save it in the PlayerPrefs for future sessions.
         public void SetPlayerName(string value)
         {
+            if (value == "")
+                value = "Unnamed";
+
             // Force a trailing space string in case value is an empty string
             PhotonNetwork.playerName = value + " ";
 
